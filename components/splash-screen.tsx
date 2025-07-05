@@ -148,7 +148,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         </div>
 
         {/* 加载进度条 */}
-        <div className="w-96 mx-auto mb-6">
+        <div className="w-[325px] mx-auto mb-6">
           <div className="relative">
             <div className="bg-green-100/50 rounded-full h-3 overflow-hidden backdrop-blur-sm border border-gray-200/30">
               <div
