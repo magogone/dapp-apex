@@ -42,6 +42,7 @@ import LanguageSwitcher from "@/components/language-switcher";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock Data
 const userData = {
@@ -75,6 +76,7 @@ export default function HomeDashboard() {
     disconnectWallet,
     isConnecting,
   } = useWallet();
+  const { toast } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isStakeModalOpen, setIsStakeModalOpen] = useState(false);
   const [isUnstakeModalOpen, setIsUnstakeModalOpen] = useState(false);
@@ -117,6 +119,18 @@ export default function HomeDashboard() {
     setStakeType(type);
     // 根据质押类型设置对应的金额
     const amount = type === "7days" ? sevenDaysAmount : threeSixtyDaysAmount;
+
+    // 检查是否输入了质押数量
+    if (!amount || parseFloat(amount) <= 0) {
+      // 使用toast提示
+      toast({
+        title: "提示",
+        description: "请先输入质押数量",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setStakeAmount(amount);
     setIsStakeModalOpen(true);
   };
