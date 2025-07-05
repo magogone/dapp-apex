@@ -311,15 +311,12 @@ export default function HomeDashboard() {
       <div className="max-w-md mx-auto px-6 py-6 space-y-6">
         {/* 全网数据 */}
         <div className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-gradient-to-br from-green-400 via-emerald-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg">
-              <BarChart className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <div className="font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+          <div className="flex flex-col items-center gap-2 mb-4">
+            <div className="text-center">
+              <div className="text-xl font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 全网数据
               </div>
-              <div className="text-xs text-gray-600">生态系统概览</div>
+              <div className="text-sm text-gray-600">生态系统概览</div>
             </div>
           </div>
 
@@ -606,11 +603,17 @@ export default function HomeDashboard() {
             {/* 质押按钮 */}
             <div className="w-full">
               <Button
-                className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white py-3 font-semibold"
+                className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white py-3 font-semibold disabled:opacity-50"
                 onClick={() => handleStakeClick(stakeType)}
-                disabled={!stakeAmount || parseFloat(stakeAmount) <= 0}
+                disabled={
+                  !stakeAmount ||
+                  parseFloat(stakeAmount) <= 0 ||
+                  parseFloat(stakeAmount) > userData.totalAssets.apex
+                }
               >
-                确认质押
+                {parseFloat(stakeAmount || "0") > userData.totalAssets.apex
+                  ? "余额不足，请先兑换"
+                  : "确认质押"}
               </Button>
             </div>
           </CardContent>
@@ -668,7 +671,7 @@ export default function HomeDashboard() {
             {swapSuccess ? (
               <div className="text-center">
                 <div className="bg-green-50 p-4 rounded-lg border border-gray-200 mb-4">
-                  <div className="flex items-center justify-center gap-2 mb-2">
+                  <div className="flex items-center justify-center gap-2">
                     <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                       <span className="text-white font-bold">✓</span>
                     </div>
@@ -676,9 +679,6 @@ export default function HomeDashboard() {
                       兑换成功！
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600">
-                    余额增加 {apexAmount} APEX
-                  </p>
                 </div>
               </div>
             ) : (
@@ -878,26 +878,20 @@ export default function HomeDashboard() {
                       isStakeLoading ||
                       !stakeAmount ||
                       parseFloat(stakeAmount) <= 0 ||
-                      (userData.totalAssets.apex >= parseFloat(stakeAmount)
-                        ? parseFloat(stakeAmount) > userData.totalAssets.apex
-                        : parseFloat(stakeAmount) / 1.038 >
-                          userData.totalAssets.usdt)
+                      parseFloat(stakeAmount) > userData.totalAssets.apex
                     }
                   >
                     {isStakeLoading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                        {userData.totalAssets.apex >=
-                        parseFloat(stakeAmount || "0")
-                          ? "质押中..."
-                          : "购买质押中..."}
+                        质押中...
                       </>
                     ) : (
                       <>
-                        {userData.totalAssets.apex >=
-                        parseFloat(stakeAmount || "0")
+                        {parseFloat(stakeAmount || "0") <=
+                        userData.totalAssets.apex
                           ? "确认质押"
-                          : "支付USDT质押"}
+                          : "余额不足，请先兑换"}
                       </>
                     )}
                   </Button>
