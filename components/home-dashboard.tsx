@@ -855,14 +855,7 @@ export default function HomeDashboard() {
                       )}
                     </div>
                   </div>
-                ) : (
-                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 text-center">
-                    <p className="text-gray-500 mb-2">💡 请先输入质押数量</p>
-                    <p className="text-xs text-gray-400">
-                      在静态质押页面输入要质押的APEX数量
-                    </p>
-                  </div>
-                )}
+                ) : null}
 
                 {/* 收益预览 */}
                 <div className="bg-gray-50 p-4 rounded-lg">
