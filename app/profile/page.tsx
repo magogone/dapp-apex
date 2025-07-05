@@ -344,6 +344,30 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
+        {/* 快捷操作按钮 */}
+        <div className="grid grid-cols-3 gap-3">
+          <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl py-3 h-auto">
+            <div className="flex flex-col items-center gap-1">
+              <Plus className="w-5 h-5" />
+              <span className="text-sm font-medium">充值</span>
+            </div>
+          </Button>
+          <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl py-3 h-auto">
+            <div className="flex flex-col items-center gap-1">
+              <ArrowUpDown className="w-5 h-5" />
+              <span className="text-sm font-medium">提取</span>
+            </div>
+          </Button>
+          <Link href="/">
+            <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl py-3 h-auto">
+              <div className="flex flex-col items-center gap-1">
+                <Lock className="w-5 h-5" />
+                <span className="text-sm font-medium">质押</span>
+              </div>
+            </Button>
+          </Link>
+        </div>
+
         {/* 标签页导航 */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-white rounded-xl shadow-sm border border-gray-200">
