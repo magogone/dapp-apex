@@ -70,55 +70,91 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
   if (isSkipped) return null;
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-green-900 via-emerald-800 to-teal-900 z-50 flex flex-col items-center justify-center">
-      {/* 动态科技光效背景 */}
-      <div className="absolute inset-0 bg-gradient-to-br from-green-900/95 via-emerald-800/90 to-teal-900/95"></div>
-      <div className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-green-400/20 via-emerald-400/15 to-teal-400/10 rounded-full blur-3xl animate-pulse"></div>
-      <div
-        className="absolute top-1/4 right-0 w-72 h-72 bg-gradient-to-bl from-green-500/15 via-emerald-500/10 to-transparent rounded-full blur-2xl animate-pulse"
-        style={{ animationDelay: "1s" }}
-      ></div>
-      <div
-        className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-tl from-emerald-400/20 via-green-500/15 to-teal-400/10 rounded-full blur-3xl animate-pulse"
-        style={{ animationDelay: "2s" }}
-      ></div>
-      <div
-        className="absolute bottom-1/4 left-0 w-80 h-80 bg-gradient-to-tr from-teal-500/15 via-green-400/10 to-transparent rounded-full blur-2xl animate-pulse"
-        style={{ animationDelay: "0.5s" }}
-      ></div>
+    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 z-50 flex flex-col items-center justify-center overflow-hidden">
+      {/* 动态网格背景 */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+      </div>
+
+      {/* 粒子效果 */}
+      <div className="absolute inset-0">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-cyan-400 rounded-full animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${3 + Math.random() * 2}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* 波浪动画背景 */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -inset-10 opacity-30">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-pink-500/20 rounded-full animate-spin-slow"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-pink-500/20 via-cyan-500/20 to-purple-500/20 rounded-full animate-spin-reverse"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-cyan-500/20 rounded-full animate-spin-slow"></div>
+        </div>
+      </div>
 
       {/* 主内容 */}
       <div className="relative z-10 text-center">
         {/* Logo动画 */}
         <div className="mb-8">
-          <div className="w-24 h-24 mx-auto bg-gradient-to-br from-teal-400 to-green-500 rounded-3xl flex items-center justify-center shadow-2xl transform animate-bounce">
-            <span className="text-white font-bold text-4xl">🌿</span>
+          <div className="relative w-32 h-32 mx-auto mb-6">
+            {/* 外圈旋转环 */}
+            <div className="absolute inset-0 border-4 border-transparent border-t-cyan-400 border-r-purple-400 rounded-full animate-spin"></div>
+            <div className="absolute inset-2 border-4 border-transparent border-b-pink-400 border-l-cyan-400 rounded-full animate-spin-reverse"></div>
+
+            {/* 中心Logo */}
+            <div className="absolute inset-6 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-2xl">
+              <div className="w-16 h-16 bg-gradient-to-br from-white to-gray-100 rounded-full flex items-center justify-center">
+                <span className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-purple-600 bg-clip-text text-transparent">
+                  A
+                </span>
+              </div>
+            </div>
+
+            {/* 光晕效果 */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-purple-500/20 to-pink-500/20 rounded-full blur-xl animate-pulse"></div>
           </div>
 
           {/* 品牌名称 */}
-          <div className="mt-6 animate-fade-in">
-            <h1 className="text-4xl font-bold text-white mb-2 tracking-wide">
-              {t("splash.title")}
+          <div className="animate-fade-in-up">
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 tracking-wide">
+              APEX DApp
             </h1>
-            <p className="text-emerald-200 text-lg font-light">
-              {t("splash.subtitle")}
-            </p>
+            <p className="text-gray-300 text-lg font-light">去中心化质押平台</p>
           </div>
         </div>
 
         {/* 加载进度条 */}
-        <div className="w-80 mx-auto mb-6">
-          <div className="bg-white/20 rounded-full h-2 overflow-hidden backdrop-blur-sm">
-            <div
-              className="h-full bg-gradient-to-r from-teal-400 to-green-500 rounded-full transition-all duration-300 ease-out shadow-lg"
-              style={{ width: `${progress}%` }}
-            ></div>
+        <div className="w-96 mx-auto mb-6">
+          <div className="relative">
+            <div className="bg-gray-700/50 rounded-full h-3 overflow-hidden backdrop-blur-sm border border-gray-600/30">
+              <div
+                className="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full transition-all duration-300 ease-out relative"
+                style={{ width: `${progress}%` }}
+              >
+                <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full animate-pulse shadow-lg"></div>
+          </div>
+          <div className="mt-2 text-right">
+            <span className="text-sm text-gray-400 font-mono">
+              {Math.round(progress)}%
+            </span>
           </div>
         </div>
 
         {/* 加载状态文字 */}
         <div className="mb-8">
-          <p className="text-emerald-100 text-sm font-medium animate-pulse">
+          <p className="text-gray-300 text-sm font-medium animate-pulse">
             {t(loadingSteps[currentStep]?.key || "splash.initializing")}
           </p>
         </div>
@@ -126,30 +162,31 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         {/* 跳过按钮 */}
         <button
           onClick={handleSkip}
-          className="text-emerald-300 hover:text-white text-sm font-medium transition-colors duration-200 underline underline-offset-4"
+          className="group relative px-6 py-2 bg-gradient-to-r from-gray-800 to-gray-700 text-gray-300 hover:text-white text-sm font-medium transition-all duration-300 rounded-full border border-gray-600 hover:border-cyan-400/50 hover:shadow-lg hover:shadow-cyan-400/20"
         >
-          {t("splash.skip")}
+          <span className="relative z-10">{t("splash.skip")}</span>
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/0 to-purple-400/0 group-hover:from-cyan-400/10 group-hover:to-purple-400/10 rounded-full transition-all duration-300"></div>
         </button>
       </div>
 
       {/* 底部装饰 */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-        <div className="flex space-x-2">
-          {[...Array(3)].map((_, i) => (
+        <div className="flex space-x-3">
+          {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
-              style={{ animationDelay: `${i * 0.3}s` }}
+              className="w-2 h-2 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full animate-bounce"
+              style={{ animationDelay: `${i * 0.2}s` }}
             ></div>
           ))}
         </div>
       </div>
 
       <style jsx>{`
-        @keyframes fade-in {
+        @keyframes fade-in-up {
           from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
           }
           to {
             opacity: 1;
@@ -157,8 +194,50 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
           }
         }
 
-        .animate-fade-in {
-          animation: fade-in 1s ease-out;
+        @keyframes float {
+          0%,
+          100% {
+            transform: translateY(0px);
+            opacity: 0.7;
+          }
+          50% {
+            transform: translateY(-20px);
+            opacity: 1;
+          }
+        }
+
+        @keyframes spin-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes spin-reverse {
+          from {
+            transform: rotate(360deg);
+          }
+          to {
+            transform: rotate(0deg);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 1s ease-out;
+        }
+
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+
+        .animate-spin-slow {
+          animation: spin-slow 8s linear infinite;
+        }
+
+        .animate-spin-reverse {
+          animation: spin-reverse 6s linear infinite;
         }
       `}</style>
     </div>
