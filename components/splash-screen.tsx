@@ -12,6 +12,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [isSkipped, setIsSkipped] = useState(false);
+  const [opacity, setOpacity] = useState(0);
 
   const loadingSteps = [
     { key: "splash.initializing", duration: 800 },
@@ -23,6 +24,9 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
   useEffect(() => {
     if (isSkipped) return;
 
+    // 初始渐入动画
+    setTimeout(() => setOpacity(1), 100);
+
     const totalDuration = 3000; // 3秒总时长
     const intervalTime = 30; // 每30ms更新一次
     const progressIncrement = 100 / (totalDuration / intervalTime);
@@ -30,9 +34,13 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         const newProgress = prev + progressIncrement;
+        if (newProgress >= 90) {
+          // 在90%时开始渐出
+          setOpacity(0);
+        }
         if (newProgress >= 100) {
           clearInterval(progressInterval);
-          setTimeout(onComplete, 200); // 完成后稍微延迟
+          setTimeout(onComplete, 500); // 完成后稍微延迟，等待渐出完成
           return 100;
         }
         return newProgress;
@@ -64,13 +72,17 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
 
   const handleSkip = () => {
     setIsSkipped(true);
-    onComplete();
+    setOpacity(0);
+    setTimeout(onComplete, 300); // 跳过时也有渐出效果
   };
 
   if (isSkipped) return null;
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-white via-gray-50 to-white z-50 flex flex-col items-center justify-center overflow-hidden">
+    <div
+      className="fixed inset-0 bg-gradient-to-br from-white via-gray-50 to-white z-50 flex flex-col items-center justify-center overflow-hidden transition-opacity duration-500 ease-in-out"
+      style={{ opacity }}
+    >
       {/* 动态网格背景 */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#22c55e2e_1px,transparent_1px),linear-gradient(to_bottom,#22c55e2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
@@ -128,19 +140,17 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
             <h1 className="text-5xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 bg-clip-text text-transparent mb-2 tracking-wide">
               APEX
             </h1>
-            <p className="text-green-600 text-lg font-light mb-1">
+            <p className="text-gray-600 text-lg font-light mb-1">
               Advanced Privacy Exchange
             </p>
-            <p className="text-green-500 text-sm font-light">
-              顶尖隐私交换协议
-            </p>
+            <p className="text-gray-500 text-sm font-light">顶尖隐私交换协议</p>
           </div>
         </div>
 
         {/* 加载进度条 */}
         <div className="w-96 mx-auto mb-6">
           <div className="relative">
-            <div className="bg-green-100/50 rounded-full h-3 overflow-hidden backdrop-blur-sm border border-green-200/30">
+            <div className="bg-green-100/50 rounded-full h-3 overflow-hidden backdrop-blur-sm border border-gray-200/30">
               <div
                 className="h-full bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 rounded-full transition-all duration-300 ease-out relative"
                 style={{ width: `${progress}%` }}
@@ -151,7 +161,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
             <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse shadow-lg"></div>
           </div>
           <div className="mt-2 text-right">
-            <span className="text-sm text-green-500 font-mono">
+            <span className="text-sm text-gray-500 font-mono">
               {Math.round(progress)}%
             </span>
           </div>
@@ -159,7 +169,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
 
         {/* 加载状态文字 */}
         <div className="mb-8">
-          <p className="text-green-600 text-sm font-medium animate-pulse">
+          <p className="text-gray-600 text-sm font-medium animate-pulse">
             {t(loadingSteps[currentStep]?.key || "splash.initializing")}
           </p>
         </div>
@@ -167,7 +177,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         {/* 跳过按钮 */}
         <button
           onClick={handleSkip}
-          className="group relative px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white hover:text-green-100 text-sm font-medium transition-all duration-300 rounded-full border border-green-500 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20"
+          className="group relative px-6 py-2 bg-gradient-to-r from-green-500/80 via-emerald-500/80 to-green-600/80 text-white hover:text-green-100 text-sm font-medium transition-all duration-300 rounded-full border border-green-400/50 hover:border-green-400/70 hover:shadow-lg hover:shadow-green-400/20"
         >
           <span className="relative z-10">{t("splash.skip")}</span>
           <div className="absolute inset-0 bg-gradient-to-r from-green-400/0 to-emerald-400/0 group-hover:from-green-400/10 group-hover:to-emerald-400/10 rounded-full transition-all duration-300"></div>

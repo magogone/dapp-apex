@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 
 import {
   Bell,
@@ -53,7 +54,7 @@ const userData = {
   apedBalance: 45,
   totalAssets: {
     usdt: 719.67,
-    apex: 0, // 设置为0来测试兑换APEX功能
+    apex: 4798, // 恢复APEX余额用于质押测试
   },
 };
 
@@ -88,9 +89,8 @@ export default function HomeDashboard() {
   const [stakeAmount, setStakeAmount] = useState("");
   const [stakeType, setStakeType] = useState<"7days" | "360days">("7days");
   const [isStakeLoading, setIsStakeLoading] = useState(false);
-  const [sevenDaysAmount, setSevenDaysAmount] = useState("");
-  const [threeSixtyDaysAmount, setThreeSixtyDaysAmount] = useState("");
   const [stakeSuccess, setStakeSuccess] = useState(false);
+  const [autoReinvest, setAutoReinvest] = useState(false);
 
   const pathname = usePathname();
 
@@ -117,11 +117,9 @@ export default function HomeDashboard() {
 
   const handleStakeClick = (type: "7days" | "360days") => {
     setStakeType(type);
-    // 根据质押类型设置对应的金额
-    const amount = type === "7days" ? sevenDaysAmount : threeSixtyDaysAmount;
 
     // 检查是否输入了质押数量
-    if (!amount || parseFloat(amount) <= 0) {
+    if (!stakeAmount || parseFloat(stakeAmount) <= 0) {
       // 使用toast提示
       toast({
         title: "提示",
@@ -131,7 +129,6 @@ export default function HomeDashboard() {
       return;
     }
 
-    setStakeAmount(amount);
     setIsStakeModalOpen(true);
   };
 
@@ -193,12 +190,7 @@ export default function HomeDashboard() {
         setIsStakeModalOpen(false);
         setStakeSuccess(false);
         setStakeAmount("");
-        // 清空对应的输入框
-        if (stakeType === "7days") {
-          setSevenDaysAmount("");
-        } else {
-          setThreeSixtyDaysAmount("");
-        }
+        setAutoReinvest(false);
       }, 2000);
     } catch (error) {
       console.error("质押失败:", error);
@@ -218,7 +210,9 @@ export default function HomeDashboard() {
                 <span className="text-white font-bold text-sm">🌿</span>
               </div>
               <div>
-                <div className="text-xl font-bold text-gray-800">APEX</div>
+                <div className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  APEX
+                </div>
                 <div className="text-xs text-gray-500">流动性质押</div>
               </div>
             </div>
@@ -255,7 +249,7 @@ export default function HomeDashboard() {
           <div className="fixed top-20 right-6 z-50 bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
             <div className="py-2">
               <Link href="/" onClick={() => setIsMenuOpen(false)}>
-                <div className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors bg-green-50 text-green-600">
+                <div className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors bg-green-50 text-gray-600">
                   <Home className="w-5 h-5" />
                   <span className="font-medium">首页</span>
                 </div>
@@ -273,7 +267,7 @@ export default function HomeDashboard() {
                         flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors
                         ${
                           item.isActive
-                            ? "bg-green-50 text-green-600"
+                            ? "bg-green-50 text-gray-600"
                             : "text-gray-700"
                         }
                       `}
@@ -316,74 +310,72 @@ export default function HomeDashboard() {
 
       <div className="max-w-md mx-auto px-6 py-6 space-y-6">
         {/* 全网数据 */}
-        <Card className="bg-white/40 backdrop-blur-sm shadow-lg border border-white/20">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-green-500 rounded-lg flex items-center justify-center">
-                <BarChart className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <div className="font-semibold text-gray-800">全网数据</div>
-                <div className="text-xs text-gray-600">生态系统概览</div>
-              </div>
+        <div className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 bg-gradient-to-br from-green-400 via-emerald-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg">
+              <BarChart className="w-4 h-4 text-white" />
             </div>
+            <div>
+              <div className="font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                全网数据
+              </div>
+              <div className="text-xs text-gray-600">生态系统概览</div>
+            </div>
+          </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">
-                    $19.25M
-                  </div>
-                  <div className="text-xs text-gray-600">总锁定价值</div>
-                  <div className="text-xs text-green-600 mt-1">+12.5%</div>
-                </div>
-              </div>
-              <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">9.16%</div>
-                  <div className="text-xs text-gray-600">平均收益率</div>
-                  <div className="text-xs text-blue-600 mt-1">稳定</div>
-                </div>
-              </div>
-              <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">8,456</div>
-                  <div className="text-xs text-gray-600">活跃用户</div>
-                  <div className="text-xs text-green-600 mt-1">+5.2%</div>
-                </div>
-              </div>
-              <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">$2.89</div>
-                  <div className="text-xs text-gray-600">APED价格</div>
-                  <div className="text-xs text-yellow-600 mt-1">+$0.10</div>
-                </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gradient-to-br from-green-400/20 via-emerald-500/15 to-green-600/20 backdrop-blur-md rounded-lg p-4 border border-green-400/30 shadow-sm">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">$19.25M</div>
+                <div className="text-xs text-green-600">总锁定价值</div>
+                <div className="text-xs text-gray-600 mt-1">+12.5%</div>
               </div>
             </div>
+            <div className="bg-gradient-to-br from-green-400/20 via-emerald-500/15 to-green-600/20 backdrop-blur-md rounded-lg p-4 border border-green-400/30 shadow-sm">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">9.16%</div>
+                <div className="text-xs text-gray-600">平均收益率</div>
+                <div className="text-xs text-gray-800 mt-1">稳定</div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-green-400/20 via-emerald-500/15 to-green-600/20 backdrop-blur-md rounded-lg p-4 border border-green-400/30 shadow-sm">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">8,456</div>
+                <div className="text-xs text-gray-600">活跃用户</div>
+                <div className="text-xs text-gray-600 mt-1">+5.2%</div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-green-400/20 via-emerald-500/15 to-green-600/20 backdrop-blur-md rounded-lg p-4 border border-green-400/30 shadow-sm">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">$2.89</div>
+                <div className="text-xs text-gray-600">APED价格</div>
+                <div className="text-xs text-green-600 mt-1">+$0.10</div>
+              </div>
+            </div>
+          </div>
 
-            <div className="mt-4 p-3 bg-white rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">总销毁量</span>
-                <span className="text-sm font-bold text-orange-600">
-                  124,580 APEX
-                </span>
-              </div>
-              <div className="flex justify-between items-center mt-2">
-                <span className="text-sm text-gray-600">节点总数</span>
-                <span className="text-sm font-bold text-purple-600">
-                  1,156 个
-                </span>
-              </div>
+          <div className="mt-4 p-3 bg-gradient-to-br from-green-400/20 via-emerald-500/15 to-green-600/20 backdrop-blur-md rounded-lg border border-green-400/30 shadow-sm">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-black">总销毁量</span>
+              <span className="text-sm font-bold text-green-600">
+                124,580 <span className="text-black">APEX</span>
+              </span>
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex justify-between items-center mt-2">
+              <span className="text-sm text-black">节点总数</span>
+              <span className="text-sm font-bold text-gray-800">
+                1,156 <span className="text-black">个</span>
+              </span>
+            </div>
+          </div>
+        </div>
 
         {/* 代币余额区域 */}
         <Card className="bg-white shadow-sm border border-gray-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-teal-400 to-green-500 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">🪙</span>
                 </div>
                 <span className="font-medium text-gray-700">APEX</span>
@@ -399,7 +391,7 @@ export default function HomeDashboard() {
         </Card>
 
         {/* 质押功能区域 */}
-        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 shadow-sm border border-green-200">
+        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 shadow-sm border border-gray-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -407,10 +399,10 @@ export default function HomeDashboard() {
                   <Lock className="w-4 h-4 text-gray-700" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-green-800">
+                  <h3 className="text-lg font-semibold text-gray-800">
                     静态质押
                   </h3>
-                  <p className="text-sm text-green-600">选择质押方案</p>
+                  <p className="text-sm text-gray-600">选择质押方案</p>
                 </div>
               </div>
               <Dialog>
@@ -472,142 +464,155 @@ export default function HomeDashboard() {
               </Dialog>
             </div>
 
-            <Tabs defaultValue="7days" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-green-100">
-                <TabsTrigger value="7days" className="text-sm">
-                  7天质押
-                </TabsTrigger>
-                <TabsTrigger value="360days" className="text-sm">
-                  360天质押
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="7days" className="space-y-4 mt-4">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-blue-600" />
-                      <span className="font-semibold text-blue-800">
-                        7天质押
-                      </span>
-                    </div>
-                    <div className="text-sm text-blue-600 font-medium">
-                      0.7% → 1.2%/天
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs text-blue-700">
-                      💡 递增收益，支持复利
-                    </p>
-                  </div>
+            {/* 质押方案选择 */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <button
+                onClick={() => setStakeType("7days")}
+                className={`rounded-xl p-3 border text-center transition-all duration-200 ${
+                  stakeType === "7days"
+                    ? "bg-gradient-to-r from-teal-400 to-green-500 border-teal-400 text-white"
+                    : "bg-white border-green-200 hover:border-green-300 hover:bg-green-50"
+                }`}
+              >
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <Clock
+                    className={`w-4 h-4 ${
+                      stakeType === "7days" ? "text-white" : "text-green-600"
+                    }`}
+                  />
+                  <span
+                    className={`font-semibold text-sm ${
+                      stakeType === "7days" ? "text-white" : "text-gray-800"
+                    }`}
+                  >
+                    7天质押
+                  </span>
                 </div>
+                <div
+                  className={`text-xs font-medium ${
+                    stakeType === "7days" ? "text-green-100" : "text-green-600"
+                  }`}
+                >
+                  0.7% → 1.2%/天
+                </div>
+                <div
+                  className={`text-xs ${
+                    stakeType === "7days" ? "text-green-200" : "text-gray-600"
+                  }`}
+                >
+                  递增收益
+                </div>
+              </button>
+              <button
+                onClick={() => setStakeType("360days")}
+                className={`rounded-xl p-3 border text-center transition-all duration-200 ${
+                  stakeType === "360days"
+                    ? "bg-gradient-to-r from-teal-400 to-green-500 border-teal-400 text-white"
+                    : "bg-white border-green-200 hover:border-green-300 hover:bg-green-50"
+                }`}
+              >
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <Lock
+                    className={`w-4 h-4 ${
+                      stakeType === "360days" ? "text-white" : "text-green-600"
+                    }`}
+                  />
+                  <span
+                    className={`font-semibold text-sm ${
+                      stakeType === "360days" ? "text-white" : "text-gray-800"
+                    }`}
+                  >
+                    360天质押
+                  </span>
+                </div>
+                <div
+                  className={`text-xs font-medium ${
+                    stakeType === "360days"
+                      ? "text-green-100"
+                      : "text-green-600"
+                  }`}
+                >
+                  1.2%/天 + APED
+                </div>
+                <div
+                  className={`text-xs ${
+                    stakeType === "360days" ? "text-green-200" : "text-gray-600"
+                  }`}
+                >
+                  稳定收益
+                </div>
+              </button>
+            </div>
 
-                <div className="space-y-3">
-                  <div className="bg-gray-50 rounded-xl p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700">
-                        质押数量
-                      </span>
-                      <span className="text-sm text-gray-600">
-                        余额: {userData.totalAssets.apex} APEX
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Input
-                        type="number"
-                        placeholder="输入质押数量"
-                        className="flex-1 text-lg font-semibold bg-white border-gray-300"
-                        value={sevenDaysAmount}
-                        onChange={(e) => setSevenDaysAmount(e.target.value)}
-                      />
+            {/* 质押数量输入 */}
+            <div className="bg-gray-50 rounded-xl p-4 mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">
+                  质押数量
+                </span>
+                <span className="text-xs text-gray-500">
+                  余额: {userData.totalAssets.apex} APEX
+                </span>
+              </div>
+              <div className="flex items-center gap-3 mb-3">
+                <Input
+                  type="number"
+                  placeholder="输入APEX数量"
+                  className="flex-1 text-lg font-semibold bg-white border-gray-300"
+                  value={stakeAmount}
+                  onChange={(e) => setStakeAmount(e.target.value)}
+                />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-green-500 text-green-600 hover:bg-green-50"
+                  onClick={() =>
+                    setStakeAmount(userData.totalAssets.apex.toString())
+                  }
+                >
+                  最大
+                </Button>
+              </div>
+
+              {/* 支付方式提示 */}
+              {stakeAmount &&
+                parseFloat(stakeAmount) > 0 &&
+                userData.totalAssets.apex < parseFloat(stakeAmount) && (
+                  <div className="bg-white rounded-lg p-3 border">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <span className="text-orange-600">💵</span>
+                        <span>余额不足，兑换APEX</span>
+                      </div>
                       <Button
-                        variant="outline"
                         size="sm"
-                        className="text-blue-600 border-blue-200 hover:bg-blue-50"
-                        onClick={() =>
-                          setSevenDaysAmount(
-                            userData.totalAssets.apex.toString()
-                          )
-                        }
+                        className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
+                        onClick={() => {
+                          const neededApex =
+                            parseFloat(stakeAmount) - userData.totalAssets.apex;
+                          const neededUsdt = (neededApex / 1.038).toFixed(2);
+                          setUsdtAmount(neededUsdt);
+                          calculateApexAmount(neededUsdt);
+                          setIsSwapNoticeOpen(true);
+                        }}
                       >
-                        最大
+                        去兑换
                       </Button>
                     </div>
                   </div>
+                )}
+            </div>
 
-                  <Button
-                    className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white py-3 font-semibold"
-                    onClick={() => handleStakeClick("7days")}
-                  >
-                    开始7天质押
-                  </Button>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="360days" className="space-y-4 mt-4">
-                <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl p-4 border border-emerald-200">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <Lock className="w-5 h-5 text-emerald-600" />
-                      <span className="font-semibold text-emerald-800">
-                        360天质押
-                      </span>
-                    </div>
-                    <div className="text-sm text-emerald-600 font-medium">
-                      1.2%/天 + APED
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs text-emerald-700">
-                      🎁 稳定收益 + 治理代币
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="bg-gray-50 rounded-xl p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700">
-                        质押数量
-                      </span>
-                      <span className="text-sm text-gray-600">
-                        余额: {userData.totalAssets.apex} APEX
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Input
-                        type="number"
-                        placeholder="输入质押数量"
-                        className="flex-1 text-lg font-semibold bg-white border-gray-300"
-                        value={threeSixtyDaysAmount}
-                        onChange={(e) =>
-                          setThreeSixtyDaysAmount(e.target.value)
-                        }
-                      />
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-emerald-600 border-emerald-200 hover:bg-emerald-50"
-                        onClick={() =>
-                          setThreeSixtyDaysAmount(
-                            userData.totalAssets.apex.toString()
-                          )
-                        }
-                      >
-                        最大
-                      </Button>
-                    </div>
-                  </div>
-
-                  <Button
-                    className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white py-3 font-semibold"
-                    onClick={() => handleStakeClick("360days")}
-                  >
-                    开始360天质押
-                  </Button>
-                </div>
-              </TabsContent>
-            </Tabs>
+            {/* 质押按钮 */}
+            <div className="w-full">
+              <Button
+                className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white py-3 font-semibold"
+                onClick={() => handleStakeClick(stakeType)}
+                disabled={!stakeAmount || parseFloat(stakeAmount) <= 0}
+              >
+                确认质押
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -622,7 +627,7 @@ export default function HomeDashboard() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">💵</span>
@@ -631,9 +636,6 @@ export default function HomeDashboard() {
                   <h4 className="font-semibold text-orange-800">
                     1 USDT = 1.038 APEX
                   </h4>
-                  <p className="text-sm text-orange-600">
-                    输入USDT数量兑换APEX
-                  </p>
                 </div>
               </div>
               <div className="space-y-3">
@@ -648,7 +650,7 @@ export default function HomeDashboard() {
                   <span className="text-sm text-gray-600">USDT</span>
                 </div>
                 <div className="text-center">
-                  <ArrowRight className="w-4 h-4 text-gray-400 mx-auto" />
+                  <ArrowRight className="w-4 h-4 text-green-400 mx-auto" />
                 </div>
                 <div className="flex items-center gap-3">
                   <Input
@@ -665,17 +667,17 @@ export default function HomeDashboard() {
 
             {swapSuccess ? (
               <div className="text-center">
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200 mb-4">
+                <div className="bg-green-50 p-4 rounded-lg border border-gray-200 mb-4">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                       <span className="text-white font-bold">✓</span>
                     </div>
-                    <span className="text-green-800 font-semibold">
+                    <span className="text-gray-800 font-semibold">
                       兑换成功！
                     </span>
                   </div>
-                  <p className="text-sm text-green-600">
-                    已成功兑换 {usdtAmount} USDT → {apexAmount} APEX
+                  <p className="text-sm text-gray-600">
+                    余额增加 {apexAmount} APEX
                   </p>
                 </div>
               </div>
@@ -692,7 +694,7 @@ export default function HomeDashboard() {
                   </Button>
                   <Button
                     onClick={handleSwapConfirm}
-                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white disabled:opacity-50"
+                    className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white disabled:opacity-50"
                     disabled={
                       isSwapLoading ||
                       !usdtAmount ||
@@ -727,19 +729,19 @@ export default function HomeDashboard() {
             {stakeSuccess ? (
               /* 成功状态显示 */
               <div className="text-center">
-                <div className="bg-green-50 p-6 rounded-lg border border-green-200 mb-4">
+                <div className="bg-green-50 p-6 rounded-lg border border-gray-200 mb-4">
                   <div className="flex items-center justify-center gap-2 mb-3">
                     <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
                       <span className="text-white font-bold text-xl">✓</span>
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-green-800 mb-2">
+                  <h3 className="text-lg font-bold text-gray-800 mb-2">
                     质押成功！
                   </h3>
-                  <p className="text-sm text-green-600 mb-4">
+                  <p className="text-sm text-gray-600 mb-4">
                     已成功质押 {stakeAmount} APEX
                   </p>
-                  <div className="bg-white p-3 rounded-lg border border-green-200">
+                  <div className="bg-white p-3 rounded-lg border border-gray-200">
                     <div className="text-sm text-gray-600 space-y-1">
                       <div className="flex justify-between">
                         <span>质押期限:</span>
@@ -749,7 +751,7 @@ export default function HomeDashboard() {
                       </div>
                       <div className="flex justify-between">
                         <span>预期日收益:</span>
-                        <span className="font-medium text-green-600">
+                        <span className="font-medium text-gray-600">
                           {stakeType === "7days" ? "0.7%" : "1.2%"}
                         </span>
                       </div>
@@ -761,65 +763,6 @@ export default function HomeDashboard() {
 
             {!stakeSuccess && (
               <>
-                {/* 支付方式说明 */}
-                <div
-                  className={`p-4 rounded-lg border ${
-                    userData.totalAssets.apex >= parseFloat(stakeAmount || "0")
-                      ? "bg-green-50 border-green-200"
-                      : "bg-blue-50 border-blue-200"
-                  }`}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        userData.totalAssets.apex >=
-                        parseFloat(stakeAmount || "0")
-                          ? "bg-green-500"
-                          : "bg-blue-500"
-                      }`}
-                    >
-                      <span className="text-white font-bold text-sm">
-                        {userData.totalAssets.apex >=
-                        parseFloat(stakeAmount || "0")
-                          ? "🌿"
-                          : "💵"}
-                      </span>
-                    </div>
-                    <div>
-                      <h4
-                        className={`font-semibold ${
-                          userData.totalAssets.apex >=
-                          parseFloat(stakeAmount || "0")
-                            ? "text-green-800"
-                            : "text-blue-800"
-                        }`}
-                      >
-                        {userData.totalAssets.apex >=
-                        parseFloat(stakeAmount || "0")
-                          ? "APEX直接质押"
-                          : "USDT购买质押"}
-                      </h4>
-                      <p
-                        className={`text-sm ${
-                          userData.totalAssets.apex >=
-                          parseFloat(stakeAmount || "0")
-                            ? "text-green-600"
-                            : "text-blue-600"
-                        }`}
-                      >
-                        {userData.totalAssets.apex >=
-                        parseFloat(stakeAmount || "0")
-                          ? `可用余额: ${userData.totalAssets.apex.toFixed(
-                              2
-                            )} APEX`
-                          : `可用余额: ${userData.totalAssets.usdt.toFixed(
-                              2
-                            )} USDT`}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
                 {/* 支付金额显示 */}
                 {stakeAmount ? (
                   <div>
@@ -831,16 +774,16 @@ export default function HomeDashboard() {
                     <div
                       className={`p-4 rounded-lg border ${
                         userData.totalAssets.apex >= parseFloat(stakeAmount)
-                          ? "bg-green-50 border-green-200"
-                          : "bg-blue-50 border-blue-200"
+                          ? "bg-green-50 border-gray-200"
+                          : "bg-green-50 border-green-200"
                       }`}
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="text-center">
                         <span
                           className={`text-2xl font-bold ${
                             userData.totalAssets.apex >= parseFloat(stakeAmount)
-                              ? "text-green-800"
-                              : "text-blue-800"
+                              ? "text-gray-800"
+                              : "text-green-600"
                           }`}
                         >
                           {userData.totalAssets.apex >= parseFloat(stakeAmount)
@@ -849,20 +792,9 @@ export default function HomeDashboard() {
                                 2
                               )} USDT`}
                         </span>
-                        <span
-                          className={`text-sm ${
-                            userData.totalAssets.apex >= parseFloat(stakeAmount)
-                              ? "text-green-600"
-                              : "text-blue-600"
-                          }`}
-                        >
-                          {userData.totalAssets.apex >= parseFloat(stakeAmount)
-                            ? "直接质押"
-                            : "支付金额"}
-                        </span>
                       </div>
                       {userData.totalAssets.apex < parseFloat(stakeAmount) && (
-                        <div className="text-xs text-blue-600 mt-2 flex justify-between">
+                        <div className="text-xs text-gray-600 mt-2 flex justify-between">
                           <span>质押数量: {stakeAmount} APEX</span>
                           <span>汇率: 1 USDT = 1.038 APEX</span>
                         </div>
@@ -876,19 +808,19 @@ export default function HomeDashboard() {
                   <div className="text-sm text-gray-600 space-y-2">
                     <div className="flex justify-between">
                       <span>质押期限:</span>
-                      <span className="font-medium">
+                      <span className="font-medium text-gray-800">
                         {stakeType === "7days" ? "7天" : "360天"}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>预期日收益:</span>
-                      <span className="font-medium text-green-600">
+                      <span className="font-medium text-gray-800">
                         {stakeType === "7days" ? "0.7%" : "1.2%"}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>APED生成:</span>
-                      <span className="font-medium text-purple-600">
+                      <span className="font-medium text-gray-800">
                         {stakeType === "7days" ? "0.7%" : "1.2%"} 每日
                       </span>
                     </div>
@@ -896,7 +828,7 @@ export default function HomeDashboard() {
                       <div className="pt-2 border-t border-gray-200">
                         <div className="flex justify-between">
                           <span className="font-medium">预计日收益:</span>
-                          <span className="font-bold text-green-600">
+                          <span className="font-bold text-gray-800">
                             {(
                               parseFloat(stakeAmount) *
                               (stakeType === "7days" ? 0.007 : 0.012)
@@ -909,6 +841,22 @@ export default function HomeDashboard() {
                   </div>
                 </div>
 
+                {/* 自动复投开关 - 仅7天质押显示 */}
+                {stakeType === "7days" && (
+                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-800">自动复投</h4>
+                      </div>
+                      <Switch
+                        checked={autoReinvest}
+                        onCheckedChange={setAutoReinvest}
+                        className="ml-4"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 {/* 操作按钮 */}
                 <div className="flex gap-3">
                   <Button
@@ -916,6 +864,7 @@ export default function HomeDashboard() {
                     onClick={() => {
                       setIsStakeModalOpen(false);
                       setStakeAmount("");
+                      setAutoReinvest(false);
                     }}
                     className="flex-1"
                     disabled={isStakeLoading}
@@ -924,7 +873,7 @@ export default function HomeDashboard() {
                   </Button>
                   <Button
                     onClick={handleStakeConfirm}
-                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white disabled:opacity-50"
+                    className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white disabled:opacity-50"
                     disabled={
                       isStakeLoading ||
                       !stakeAmount ||
@@ -961,7 +910,7 @@ export default function HomeDashboard() {
 
       {/* 解押弹窗 */}
       <Dialog open={isUnstakeModalOpen} onOpenChange={setIsUnstakeModalOpen}>
-        <DialogContent className="bg-white/95 backdrop-blur-sm shadow-xl">
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-gray-800">
               Unstake APEX
@@ -978,7 +927,7 @@ export default function HomeDashboard() {
                 className="mt-1"
               />
             </div>
-            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
               <div className="text-sm text-yellow-800">
                 <div className="font-medium mb-1">Notice:</div>
                 <div>10% service fee applies to reward withdrawals</div>

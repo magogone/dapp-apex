@@ -222,23 +222,7 @@ export default function MyStakesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-900 via-emerald-800 to-teal-900 relative">
-      {/* 动态科技光效背景 */}
-      <div className="fixed inset-0 bg-gradient-to-br from-green-900/95 via-emerald-800/90 to-teal-900/95 z-0"></div>
-      <div className="fixed -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-green-400/20 via-emerald-400/15 to-teal-400/10 rounded-full blur-3xl animate-pulse pointer-events-none z-1"></div>
-      <div
-        className="fixed top-1/4 right-0 w-72 h-72 bg-gradient-to-bl from-green-500/15 via-emerald-500/10 to-transparent rounded-full blur-2xl animate-pulse pointer-events-none z-1"
-        style={{ animationDelay: "1s" }}
-      ></div>
-      <div
-        className="fixed -bottom-32 -right-32 w-96 h-96 bg-gradient-to-tl from-emerald-400/20 via-green-500/15 to-teal-400/10 rounded-full blur-3xl animate-pulse pointer-events-none z-1"
-        style={{ animationDelay: "2s" }}
-      ></div>
-      <div
-        className="fixed bottom-1/4 left-0 w-80 h-80 bg-gradient-to-tr from-teal-500/15 via-green-400/10 to-transparent rounded-full blur-2xl animate-pulse pointer-events-none z-1"
-        style={{ animationDelay: "0.5s" }}
-      ></div>
-
+    <div className="min-h-screen bg-white relative">
       {/* 顶部导航栏 */}
       <header className="bg-white shadow-sm border-b relative z-20">
         <div className="max-w-md mx-auto px-6 py-4">
@@ -248,7 +232,7 @@ export default function MyStakesPage() {
                 <span className="text-white font-bold text-sm">🌿</span>
               </div>
               <div>
-                <div className="text-xl font-bold text-gray-800">APEX</div>
+                <div className="text-xl font-bold text-green-600">APEX</div>
                 <div className="text-xs text-gray-500">我的质押</div>
               </div>
             </div>
@@ -301,7 +285,7 @@ export default function MyStakesPage() {
                         flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors
                         ${
                           item.isActive
-                            ? "bg-green-50 text-green-600"
+                            ? "bg-green-50 text-gray-600"
                             : "text-gray-700"
                         }
                       `}
@@ -354,7 +338,7 @@ export default function MyStakesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">🎯</span>
                 </div>
                 <div>
@@ -365,10 +349,10 @@ export default function MyStakesPage() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-gray-900">
+                <div className="text-2xl font-bold text-green-600">
                   ${apedData.currentPrice}
                 </div>
-                <div className="text-sm text-green-600">
+                <div className="text-sm text-gray-600">
                   每日+${apedData.dailyIncrease}
                 </div>
               </div>
@@ -485,7 +469,7 @@ export default function MyStakesPage() {
               <Button
                 onClick={() => setIsSwapModalOpen(true)}
                 variant="outline"
-                className="flex-1 border-green-500 text-green-600 hover:bg-green-50 hover:border-green-600"
+                className="flex-1 border-green-500 text-gray-600 hover:bg-gray-50 hover:border-green-600"
               >
                 <ArrowUpDown className="w-4 h-4 mr-2" />
                 闪兑
@@ -495,39 +479,39 @@ export default function MyStakesPage() {
         </Card>
 
         {/* 质押统计概览 */}
-        <Card className="bg-white shadow-sm border border-gray-200">
+        <Card className="bg-gradient-to-br from-green-400/20 via-emerald-500/15 to-green-600/20 backdrop-blur-md shadow-lg border border-green-400/30 hover:from-green-400/25 hover:via-emerald-500/20 hover:to-green-600/25 transition-all duration-300">
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-4">
-              <BarChart className="w-5 h-5 text-gray-500" />
-              <span className="text-lg font-semibold text-gray-800">
+              <BarChart className="w-5 h-5 text-green-600" />
+              <span className="text-lg font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 质押概览
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">
+                <div className="text-2xl font-bold text-gray-900">
                   {stakingStats.totalStaked.toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-600">总质押量</div>
+                <div className="text-xs text-gray-600">总质押量</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-gray-600">
                   {stakingStats.dailyRewards}
                 </div>
-                <div className="text-sm text-gray-600">每日利息</div>
+                <div className="text-xs text-gray-600">每日利息</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-blue-600">
+                <div className="text-2xl font-bold text-green-600">
                   {stakingStats.apedGenerated}
                 </div>
-                <div className="text-sm text-gray-600">已生成APED</div>
+                <div className="text-xs text-gray-600">已生成APED</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-purple-600">
+                <div className="text-2xl font-bold text-gray-800">
                   {stakingStats.availableRewards}
                 </div>
-                <div className="text-sm text-gray-600">可用利息</div>
+                <div className="text-xs text-gray-600">可用利息</div>
               </div>
             </div>
           </CardContent>
@@ -569,7 +553,7 @@ export default function MyStakesPage() {
                       <div
                         className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                           stake.status === "进行中"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-green-100 text-gray-800"
                             : "bg-gray-100 text-gray-800"
                         }`}
                       >
@@ -587,7 +571,7 @@ export default function MyStakesPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">已获得:</span>
-                      <span className="font-medium text-green-600">
+                      <span className="font-medium text-gray-600">
                         {stake.earned} APEX
                       </span>
                     </div>
@@ -655,7 +639,7 @@ export default function MyStakesPage() {
                       <div
                         className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                           withdrawal.status === "完成"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-green-100 text-gray-800"
                             : "bg-yellow-100 text-yellow-800"
                         }`}
                       >
@@ -679,7 +663,7 @@ export default function MyStakesPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">实际到账:</span>
-                      <span className="font-medium text-green-600">
+                      <span className="font-medium text-gray-600">
                         {withdrawal.received} APEX
                       </span>
                     </div>
@@ -707,24 +691,24 @@ export default function MyStakesPage() {
 
       {/* 提取APED弹窗 */}
       <Dialog open={isWithdrawModalOpen} onOpenChange={setIsWithdrawModalOpen}>
-        <DialogContent className="max-w-md mx-auto">
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Download className="w-5 h-5 text-green-500" />
+              <Download className="w-5 h-5 text-gray-500" />
               提取APED
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+            <div className="bg-green-50 p-4 rounded-lg border border-gray-200">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">🎯</span>
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-green-800">
+                  <h4 className="font-semibold text-gray-800">
                     余额: {apedData.userBalance} APED
                   </h4>
-                  <p className="text-sm text-green-600">免费提取到钱包</p>
+                  <p className="text-sm text-gray-600">免费提取到钱包</p>
                 </div>
               </div>
             </div>
@@ -783,26 +767,24 @@ export default function MyStakesPage() {
 
       {/* 闪兑APED弹窗 */}
       <Dialog open={isSwapModalOpen} onOpenChange={setIsSwapModalOpen}>
-        <DialogContent className="max-w-md mx-auto">
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <ArrowUpDown className="w-5 h-5 text-green-500" />
+              <ArrowUpDown className="w-5 h-5 text-gray-500" />
               闪兑APED
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+            <div className="bg-green-50 p-4 rounded-lg border border-gray-200">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">⚡</span>
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-green-800">
+                  <h4 className="font-semibold text-gray-800">
                     闪兑价格: ${flashSwapPrice.toFixed(2)} USDT
                   </h4>
-                  <p className="text-sm text-green-600">
-                    系统定价70%，即时到账
-                  </p>
+                  <p className="text-sm text-gray-600">系统定价70%，即时到账</p>
                 </div>
               </div>
             </div>
@@ -837,7 +819,7 @@ export default function MyStakesPage() {
               <div className="bg-gray-50 rounded-lg p-3">
                 <div className="flex justify-between text-sm font-medium">
                   <span className="text-gray-600">预计收到:</span>
-                  <span className="text-green-600">
+                  <span className="text-gray-600">
                     ${calculateSwapValue(swapAmount)} USDT
                   </span>
                 </div>
@@ -870,7 +852,7 @@ export default function MyStakesPage() {
 
       {/* 解押弹窗 */}
       <Dialog open={isUnstakeModalOpen} onOpenChange={setIsUnstakeModalOpen}>
-        <DialogContent className="bg-white/95 backdrop-blur-sm shadow-xl">
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-gray-800">
               解除质押
@@ -893,14 +875,14 @@ export default function MyStakesPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>已获得:</span>
-                    <span className="font-medium text-green-600">
+                    <span className="font-medium text-gray-600">
                       {selectedStake.earned} APEX
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <div className="text-sm text-yellow-800">
                   <div className="font-medium mb-1">注意:</div>
                   <div>

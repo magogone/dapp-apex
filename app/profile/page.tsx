@@ -75,6 +75,12 @@ export default function ProfilePage() {
   } = useWallet();
   const [activeTab, setActiveTab] = useState("profile");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [depositAmount, setDepositAmount] = useState("");
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [withdrawType, setWithdrawType] = useState<"APEX" | "APED">("APEX");
+  const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
 
   const navItems = [
@@ -98,28 +104,32 @@ export default function ProfilePage() {
     },
   ];
 
+  const handleDeposit = async () => {
+    if (!depositAmount || parseFloat(depositAmount) <= 0) return;
+    setIsLoading(true);
+    // 模拟充值处理
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setIsLoading(false);
+    setIsDepositModalOpen(false);
+    setDepositAmount("");
+  };
+
+  const handleWithdraw = async () => {
+    if (!withdrawAmount || parseFloat(withdrawAmount) <= 0) return;
+    setIsLoading(true);
+    // 模拟提取处理
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setIsLoading(false);
+    setIsWithdrawModalOpen(false);
+    setWithdrawAmount("");
+  };
+
   const copyAddress = () => {
     navigator.clipboard.writeText(user.address);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-900 via-emerald-800 to-teal-900 relative">
-      {/* 动态科技光效背景 */}
-      <div className="fixed inset-0 bg-gradient-to-br from-green-900/95 via-emerald-800/90 to-teal-900/95 z-0"></div>
-      <div className="fixed -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-green-400/20 via-emerald-400/15 to-teal-400/10 rounded-full blur-3xl animate-pulse pointer-events-none z-1"></div>
-      <div
-        className="fixed top-1/4 right-0 w-72 h-72 bg-gradient-to-bl from-green-500/15 via-emerald-500/10 to-transparent rounded-full blur-2xl animate-pulse pointer-events-none z-1"
-        style={{ animationDelay: "1s" }}
-      ></div>
-      <div
-        className="fixed -bottom-32 -right-32 w-96 h-96 bg-gradient-to-tl from-emerald-400/20 via-green-500/15 to-teal-400/10 rounded-full blur-3xl animate-pulse pointer-events-none z-1"
-        style={{ animationDelay: "2s" }}
-      ></div>
-      <div
-        className="fixed bottom-1/4 left-0 w-80 h-80 bg-gradient-to-tr from-teal-500/15 via-green-400/10 to-transparent rounded-full blur-2xl animate-pulse pointer-events-none z-1"
-        style={{ animationDelay: "0.5s" }}
-      ></div>
-
+    <div className="min-h-screen bg-white relative">
       {/* 顶部导航栏 */}
       <header className="bg-white shadow-sm border-b relative z-20">
         <div className="max-w-md mx-auto px-6 py-4">
@@ -129,7 +139,7 @@ export default function ProfilePage() {
                 <span className="text-white font-bold text-sm">🌿</span>
               </div>
               <div>
-                <div className="text-xl font-bold text-gray-800">APEX</div>
+                <div className="text-xl font-bold text-green-600">APEX</div>
                 <div className="text-xs text-gray-500">个人中心</div>
               </div>
             </div>
@@ -182,7 +192,7 @@ export default function ProfilePage() {
                         flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors
                         ${
                           item.isActive
-                            ? "bg-green-50 text-green-600"
+                            ? "bg-green-50 text-gray-600"
                             : "text-gray-700"
                         }
                       `}
@@ -202,7 +212,7 @@ export default function ProfilePage() {
                       </div>
                       {/* VIP等级标识 */}
                       {user.stakingAmount >= 10000 && (
-                        <div className="px-1.5 py-0.5 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold rounded-full">
+                        <div className="px-1.5 py-0.5 bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xs font-bold rounded-full">
                           VIP2
                         </div>
                       )}
@@ -239,18 +249,20 @@ export default function ProfilePage() {
 
       <div className="max-w-md mx-auto px-6 py-6 space-y-6 relative z-10">
         {/* 用户信息卡片 */}
-        <Card className="bg-white shadow-sm border border-gray-200">
+        <Card className="bg-gradient-to-br from-green-400/20 via-emerald-500/15 to-green-600/20 backdrop-blur-md shadow-lg border border-green-400/30 hover:from-green-400/25 hover:via-emerald-500/20 hover:to-green-600/25 transition-all duration-300">
           <CardContent className="p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-teal-400 to-green-500 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-400 via-emerald-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
                 <User className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <div className="font-semibold text-gray-800">钱包地址</div>
+                  <div className="font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    钱包地址
+                  </div>
                   {/* VIP等级标识 - 基于360天质押 */}
                   {user.stakingAmount >= 10000 && (
-                    <div className="px-2 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold rounded-full">
+                    <div className="px-2 py-1 bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xs font-bold rounded-full">
                       VIP2
                     </div>
                   )}
@@ -277,9 +289,9 @@ export default function ProfilePage() {
             {/* 个人资产 */}
             <div className="border-t border-gray-100 pt-4">
               {/* 总资产价值 */}
-              <div className="mb-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+              <div className="mb-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-gray-200">
                 <div className="text-center">
-                  <div className="text-sm font-medium text-green-800 mb-2">
+                  <div className="text-sm font-medium text-gray-800 mb-2">
                     总资产价值
                   </div>
                   <div className="text-3xl font-bold text-green-900 mb-1">
@@ -294,8 +306,9 @@ export default function ProfilePage() {
                       maximumFractionDigits: 2,
                     })}
                   </div>
-                  <div className="text-xs text-green-600">
-                    APED按$2.89计算，APEX按$0.963计算
+                  <div className="text-xs text-gray-600">
+                    APED=${(user.apedBalance * 2.89).toFixed(2)} APEX=$
+                    {((user.apexBalance || 4798) * 0.963).toFixed(2)}
                   </div>
                 </div>
               </div>
@@ -327,7 +340,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="bg-gray-50 rounded-lg p-3">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-blue-600">
+                    <div className="text-lg font-bold text-gray-800">
                       {user.stakingAmount || 4000}
                     </div>
                     <div className="text-xs text-gray-600">质押中</div>
@@ -340,22 +353,72 @@ export default function ProfilePage() {
 
         {/* 快捷操作按钮 */}
         <div className="grid grid-cols-3 gap-3">
-          <Button className="bg-white hover:bg-gray-50 text-green-600 border border-green-200 rounded-xl py-3 h-auto shadow-sm">
+          <Button
+            onClick={() => setIsDepositModalOpen(true)}
+            className="bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 rounded-xl py-3 h-auto shadow-sm"
+          >
             <div className="flex flex-col items-center gap-1">
-              <Plus className="w-5 h-5" />
+              <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center shadow-sm">
+                <svg
+                  className="w-4 h-4 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                  <circle cx="12" cy="12" r="10" strokeWidth={1.5} />
+                </svg>
+              </div>
               <span className="text-sm font-medium">充值</span>
             </div>
           </Button>
-          <Button className="bg-white hover:bg-gray-50 text-green-600 border border-green-200 rounded-xl py-3 h-auto shadow-sm">
+          <Button
+            onClick={() => setIsWithdrawModalOpen(true)}
+            className="bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 rounded-xl py-3 h-auto shadow-sm"
+          >
             <div className="flex flex-col items-center gap-1">
-              <ArrowUpDown className="w-5 h-5" />
+              <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center shadow-sm">
+                <svg
+                  className="w-4 h-4 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
+                  />
+                </svg>
+              </div>
               <span className="text-sm font-medium">提取</span>
             </div>
           </Button>
           <Link href="/">
-            <Button className="w-full bg-white hover:bg-gray-50 text-green-600 border border-green-200 rounded-xl py-3 h-auto shadow-sm">
+            <Button className="w-full bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 rounded-xl py-3 h-auto shadow-sm">
               <div className="flex flex-col items-center gap-1">
-                <Lock className="w-5 h-5" />
+                <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center shadow-sm">
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                    <circle cx="12" cy="15" r="1" />
+                  </svg>
+                </div>
                 <span className="text-sm font-medium">质押</span>
               </div>
             </Button>
@@ -384,7 +447,7 @@ export default function ProfilePage() {
             <Card className="bg-white shadow-sm border border-gray-200">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center">
                     <Shield className="w-4 h-4 text-white" />
                   </div>
                   <div>
@@ -401,14 +464,14 @@ export default function ProfilePage() {
                     </div>
                     <div className="flex items-center gap-1">
                       {user.securitySettings.tradingPassword ? (
-                        <Check className="w-4 h-4 text-green-500" />
+                        <Check className="w-4 h-4 text-gray-500" />
                       ) : (
                         <AlertCircle className="w-4 h-4 text-red-500" />
                       )}
                       <span
                         className={`text-sm font-medium ${
                           user.securitySettings.tradingPassword
-                            ? "text-green-600"
+                            ? "text-gray-600"
                             : "text-red-600"
                         }`}
                       >
@@ -425,14 +488,14 @@ export default function ProfilePage() {
                     </div>
                     <div className="flex items-center gap-1">
                       {user.securitySettings.emailVerified ? (
-                        <Check className="w-4 h-4 text-green-500" />
+                        <Check className="w-4 h-4 text-gray-500" />
                       ) : (
                         <AlertCircle className="w-4 h-4 text-yellow-500" />
                       )}
                       <span
                         className={`text-sm font-medium ${
                           user.securitySettings.emailVerified
-                            ? "text-green-600"
+                            ? "text-gray-600"
                             : "text-yellow-600"
                         }`}
                       >
@@ -453,6 +516,195 @@ export default function ProfilePage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* 充值弹窗 */}
+      <Dialog open={isDepositModalOpen} onOpenChange={setIsDepositModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>💰 充值APEX</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                充值数量 (APEX)
+              </label>
+              <Input
+                type="number"
+                placeholder="输入APEX数量"
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+                className="text-lg"
+              />
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="text-sm text-gray-600">
+                <div className="flex justify-between">
+                  <span>充值数量:</span>
+                  <span className="font-medium">
+                    {depositAmount || "0"} APEX
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>手续费:</span>
+                  <span className="font-medium">0 APEX</span>
+                </div>
+                <div className="flex justify-between border-t pt-2 mt-2">
+                  <span>到账数量:</span>
+                  <span className="font-bold text-green-600">
+                    {depositAmount || "0"} APEX
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setIsDepositModalOpen(false)}
+                className="flex-1"
+                disabled={isLoading}
+              >
+                取消
+              </Button>
+              <Button
+                onClick={handleDeposit}
+                className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
+                disabled={
+                  isLoading || !depositAmount || parseFloat(depositAmount) <= 0
+                }
+              >
+                {isLoading ? "充值中..." : "确认充值"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* 提取弹窗 */}
+      <Dialog open={isWithdrawModalOpen} onOpenChange={setIsWithdrawModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>💸 提取代币</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {/* 代币类型选择 */}
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant={withdrawType === "APEX" ? "default" : "outline"}
+                onClick={() => setWithdrawType("APEX")}
+                className={
+                  withdrawType === "APEX"
+                    ? "bg-gradient-to-r from-teal-400 to-green-500 text-white"
+                    : ""
+                }
+              >
+                APEX
+              </Button>
+              <Button
+                variant={withdrawType === "APED" ? "default" : "outline"}
+                onClick={() => setWithdrawType("APED")}
+                className={
+                  withdrawType === "APED"
+                    ? "bg-gradient-to-r from-teal-400 to-green-500 text-white"
+                    : ""
+                }
+              >
+                APED
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                提取数量 ({withdrawType})
+              </label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  placeholder={`输入${withdrawType}数量`}
+                  value={withdrawAmount}
+                  onChange={(e) => setWithdrawAmount(e.target.value)}
+                  className="flex-1 text-lg"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setWithdrawAmount(
+                      withdrawType === "APEX"
+                        ? user.apexBalance.toString()
+                        : user.apedBalance.toString()
+                    )
+                  }
+                  className="text-green-600 border-green-200"
+                >
+                  全部
+                </Button>
+              </div>
+              <div className="text-xs text-gray-500">
+                可提取余额:{" "}
+                {withdrawType === "APEX" ? user.apexBalance : user.apedBalance}{" "}
+                {withdrawType}
+              </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="text-sm text-gray-600">
+                <div className="flex justify-between">
+                  <span>提取数量:</span>
+                  <span className="font-medium">
+                    {withdrawAmount || "0"} {withdrawType}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>手续费 (10%):</span>
+                  <span className="font-medium text-red-600">
+                    {withdrawAmount
+                      ? (parseFloat(withdrawAmount) * 0.1).toFixed(2)
+                      : "0"}{" "}
+                    {withdrawType}
+                  </span>
+                </div>
+                <div className="flex justify-between border-t pt-2 mt-2">
+                  <span>实际到账:</span>
+                  <span className="font-bold text-green-600">
+                    {withdrawAmount
+                      ? (parseFloat(withdrawAmount) * 0.9).toFixed(2)
+                      : "0"}{" "}
+                    {withdrawType}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setIsWithdrawModalOpen(false)}
+                className="flex-1"
+                disabled={isLoading}
+              >
+                取消
+              </Button>
+              <Button
+                onClick={handleWithdraw}
+                className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
+                disabled={
+                  isLoading ||
+                  !withdrawAmount ||
+                  parseFloat(withdrawAmount) <= 0 ||
+                  parseFloat(withdrawAmount) >
+                    (withdrawType === "APEX"
+                      ? user.apexBalance
+                      : user.apedBalance)
+                }
+              >
+                {isLoading ? "提取中..." : "确认提取"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -491,7 +743,7 @@ const StudioSection = ({ user }: { user: any }) => {
       <Card className="bg-white shadow-sm border border-gray-200">
         <CardContent className="p-6">
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center">
               <Building className="w-4 h-4 text-white" />
             </div>
             <div>
@@ -507,7 +759,7 @@ const StudioSection = ({ user }: { user: any }) => {
                 <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs font-medium">
                   {studioData.level}
                 </span>
-                <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                <span className="bg-green-100 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
                   {studioData.status}
                 </span>
               </div>
@@ -547,7 +799,7 @@ const StudioSection = ({ user }: { user: any }) => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">月增长率</span>
-                <span className="font-medium text-green-600">
+                <span className="font-medium text-gray-600">
                   +{studioData.monthlyGrowth}%
                 </span>
               </div>
@@ -573,23 +825,23 @@ const StudioSection = ({ user }: { user: any }) => {
             <div className="space-y-4">
               {/* 报销统计 */}
               <div className="grid grid-cols-3 gap-3">
-                <div className="bg-blue-50 rounded-lg p-3">
+                <div className="bg-green-50 rounded-lg p-3">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-blue-600">
+                    <div className="text-lg font-bold text-green-600">
                       {studioData.reimbursement.availableToday}
                     </div>
-                    <div className="text-xs text-blue-600">今日可申请</div>
+                    <div className="text-xs text-green-600">今日可申请</div>
                   </div>
                 </div>
                 <div className="bg-green-50 rounded-lg p-3">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-green-600">
+                    <div className="text-lg font-bold text-gray-600">
                       {studioData.reimbursement.todayNewPerformance.toLocaleString()}
                     </div>
-                    <div className="text-xs text-green-600">今日新增业绩</div>
+                    <div className="text-xs text-gray-600">今日新增业绩</div>
                   </div>
                 </div>
-                <div className="bg-orange-50 rounded-lg p-3">
+                <div className="bg-green-50 rounded-lg p-3">
                   <div className="text-center">
                     <div className="text-lg font-bold text-orange-600">
                       {studioData.reimbursement.pendingApplications}
@@ -602,7 +854,7 @@ const StudioSection = ({ user }: { user: any }) => {
               {/* 申请按钮 */}
               <Button
                 onClick={() => setIsReimbursementModalOpen(true)}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
+                className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
                 disabled={studioData.reimbursement.availableToday <= 0}
               >
                 <DollarSign className="w-4 h-4 mr-2" />
@@ -640,15 +892,15 @@ const StudioSection = ({ user }: { user: any }) => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">可申请金额:</span>
-                  <span className="font-medium text-green-600">
+                  <span className="font-medium text-gray-600">
                     {studioData.reimbursement.availableToday} USDT
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-              <div className="text-xs text-blue-800">
+            <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+              <div className="text-xs text-gray-800">
                 <div className="font-medium mb-1">📱 申请流程：</div>
                 <div>1. 点击"确认申请"提交申请</div>
                 <div>2. 前往电报群提交素材（讲课/吃饭视频）</div>
@@ -671,7 +923,7 @@ const StudioSection = ({ user }: { user: any }) => {
                   setIsReimbursementModalOpen(false);
                   // 可以添加 toast 提示
                 }}
-                className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
+                className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
               >
                 确认申请
               </Button>

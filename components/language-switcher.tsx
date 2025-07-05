@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { useLanguage } from "@/contexts/language-context"
-import { Globe } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/language-context";
+import { Globe } from "lucide-react";
 
 export default function LanguageSwitcher() {
-  const { language, setLanguage } = useLanguage()
+  const { language, setLanguage } = useLanguage();
 
   const toggleLanguage = () => {
-    setLanguage(language === "en" ? "zh" : "en")
-  }
+    setLanguage(language === "en" ? "zh" : "en");
+  };
 
   return (
     <Button
@@ -21,5 +21,5 @@ export default function LanguageSwitcher() {
     >
       <Globe className="h-5 w-5 text-gray-600" />
     </Button>
-  )
+  );
 }

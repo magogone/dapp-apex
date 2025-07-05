@@ -173,23 +173,7 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-900 via-emerald-800 to-teal-900 relative">
-      {/* 动态科技光效背景 */}
-      <div className="fixed inset-0 bg-gradient-to-br from-green-900/95 via-emerald-800/90 to-teal-900/95 z-0"></div>
-      <div className="fixed -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-green-400/20 via-emerald-400/15 to-teal-400/10 rounded-full blur-3xl animate-pulse pointer-events-none z-1"></div>
-      <div
-        className="fixed top-1/4 right-0 w-72 h-72 bg-gradient-to-bl from-green-500/15 via-emerald-500/10 to-transparent rounded-full blur-2xl animate-pulse pointer-events-none z-1"
-        style={{ animationDelay: "1s" }}
-      ></div>
-      <div
-        className="fixed -bottom-32 -right-32 w-96 h-96 bg-gradient-to-tl from-emerald-400/20 via-green-500/15 to-teal-400/10 rounded-full blur-3xl animate-pulse pointer-events-none z-1"
-        style={{ animationDelay: "2s" }}
-      ></div>
-      <div
-        className="fixed bottom-1/4 left-0 w-80 h-80 bg-gradient-to-tr from-teal-500/15 via-green-400/10 to-transparent rounded-full blur-2xl animate-pulse pointer-events-none z-1"
-        style={{ animationDelay: "0.5s" }}
-      ></div>
-
+    <div className="min-h-screen bg-white relative">
       {/* 顶部导航栏 */}
       <header className="bg-white shadow-sm border-b relative z-20">
         <div className="max-w-md mx-auto px-6 py-4">
@@ -199,7 +183,7 @@ export default function AnalyticsPage() {
                 <span className="text-white font-bold text-sm">🌿</span>
               </div>
               <div>
-                <div className="text-xl font-bold text-gray-800">APEX</div>
+                <div className="text-xl font-bold text-green-600">APEX</div>
                 <div className="text-xs text-gray-500">团队</div>
               </div>
             </div>
@@ -252,7 +236,7 @@ export default function AnalyticsPage() {
                         flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors
                         ${
                           item.isActive
-                            ? "bg-green-50 text-green-600"
+                            ? "bg-green-50 text-gray-600"
                             : "text-gray-700"
                         }
                       `}
@@ -276,22 +260,24 @@ export default function AnalyticsPage() {
 
       <div className="max-w-md mx-auto px-6 py-6 space-y-6 relative z-10">
         {/* 团队总览卡片 */}
-        <Card className="bg-white shadow-sm border border-gray-200">
+        <Card className="bg-gradient-to-br from-green-400/20 via-emerald-500/15 to-green-600/20 backdrop-blur-md shadow-lg border border-green-400/30 hover:from-green-400/25 hover:via-emerald-500/20 hover:to-green-600/25 transition-all duration-300">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-teal-400 to-green-500 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-400 via-emerald-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
                   <span className="text-white font-bold text-sm">👥</span>
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-800">团队业绩</div>
+                  <div className="font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    团队业绩
+                  </div>
                   <div className="text-xs text-gray-500">动态奖励概览</div>
                 </div>
               </div>
               <Button
                 variant="outline"
                 size="sm"
-                className="border-green-200 text-green-600 hover:bg-green-50"
+                className="border-gray-200 text-gray-600 hover:bg-gray-50"
                 onClick={shareData}
               >
                 <Share2 className="w-4 h-4" />
@@ -306,19 +292,19 @@ export default function AnalyticsPage() {
                 <div className="text-sm text-gray-600">TVL总锁定</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-green-600">
+                <div className="text-xl font-bold text-gray-600">
                   +{tvlData.change}%
                 </div>
                 <div className="text-sm text-gray-600">24h增长</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-blue-600">
+                <div className="text-xl font-bold text-green-600">
                   {teamStats.teamSize}
                 </div>
                 <div className="text-sm text-gray-600">团队规模</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-purple-600">
+                <div className="text-xl font-bold text-gray-800">
                   {tvlData.apr}%
                 </div>
                 <div className="text-sm text-gray-600">APR收益率</div>
@@ -336,7 +322,7 @@ export default function AnalyticsPage() {
               </div>
 
               {/* 动态可用额度显示 */}
-              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+              <div className="bg-green-50 rounded-lg p-3 border border-green-200">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">动态可用额度:</span>
                   <span
@@ -346,7 +332,7 @@ export default function AnalyticsPage() {
                         4 -
                         dynamicRewardsData.capData.withdrawnAmount >
                       0
-                        ? "text-green-600"
+                        ? "text-gray-600"
                         : "text-red-600"
                     }`}
                   >
@@ -419,7 +405,7 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">有效推荐:</span>
-                      <span className="font-medium text-green-600">
+                      <span className="font-medium text-gray-600">
                         {dynamicRewardsData.directBonus.validReferrals} (≥10
                         APEX)
                       </span>
@@ -431,7 +417,7 @@ export default function AnalyticsPage() {
               <Card className="bg-white shadow-sm border border-gray-200">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center">
                       <Layers className="w-4 h-4 text-white" />
                     </div>
                     <div>
@@ -455,7 +441,7 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full"
+                        className="bg-gradient-to-r from-green-400 to-emerald-500 h-2 rounded-full"
                         style={{
                           width: `${
                             (dynamicRewardsData.levelBonus.layers /
@@ -472,7 +458,7 @@ export default function AnalyticsPage() {
               <Card className="bg-white shadow-sm border border-gray-200">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-500 rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center">
                       <Crown className="w-4 h-4 text-white" />
                     </div>
                     <div>
@@ -506,7 +492,7 @@ export default function AnalyticsPage() {
               <Card className="bg-white shadow-sm border border-gray-200">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center">
                       <Zap className="w-4 h-4 text-white" />
                     </div>
                     <div>
@@ -659,7 +645,7 @@ const RewardCalculator = () => {
               <div className="border-t pt-2">
                 <div className="flex justify-between font-medium">
                   <span className="text-gray-900">总收益:</span>
-                  <span className="text-green-600">
+                  <span className="text-gray-600">
                     {rewards.total.toFixed(2)} APEX
                   </span>
                 </div>
