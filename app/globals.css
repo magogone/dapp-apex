@@ -138,9 +138,16 @@ body {
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
-    width: 100% !important;
+    width: calc(100% - 2rem) !important;
     max-width: 28rem !important;
     margin: 0 auto !important;
+  }
+
+  /* 全局弹窗样式 - 确保所有弹窗都有左右间距 */
+  [role="dialog"] {
+    width: calc(100% - 2rem) !important;
+    max-width: 28rem !important;
+    margin: 0 1rem !important;
   }
 
   .dialog-content-fixed {
