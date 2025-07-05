@@ -78,7 +78,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
 
       {/* 粒子效果 */}
       <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(10)].map((_, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-green-400 rounded-full animate-float"
