@@ -93,13 +93,11 @@ body {
     user-select: auto;
   }
 
-  /* 完全禁用点击时的任何视觉变化 */
-  *:active {
-    opacity: 1 !important;
-    background-color: inherit !important;
-    filter: none !important;
-    transform: none !important;
-    box-shadow: inherit !important;
+  /* 移除过度的点击效果，但保持正常的交互反馈 */
+  button:active,
+  [role="button"]:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease-in-out;
   }
 }
 
