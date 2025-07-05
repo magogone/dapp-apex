@@ -276,12 +276,6 @@ export default function ProfilePage() {
 
             {/* 个人资产 */}
             <div className="border-t border-gray-100 pt-4">
-              <div className="flex items-center gap-2 mb-3">
-                <DollarSign className="w-4 h-4 text-gray-500" />
-                <span className="text-sm font-medium text-gray-800">
-                  我的资产
-                </span>
-              </div>
               {/* 总资产价值 */}
               <div className="mb-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
                 <div className="text-center">
@@ -346,20 +340,20 @@ export default function ProfilePage() {
 
         {/* 快捷操作按钮 */}
         <div className="grid grid-cols-3 gap-3">
-          <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl py-3 h-auto">
+          <Button className="bg-white hover:bg-gray-50 text-green-600 border border-green-200 rounded-xl py-3 h-auto shadow-sm">
             <div className="flex flex-col items-center gap-1">
               <Plus className="w-5 h-5" />
               <span className="text-sm font-medium">充值</span>
             </div>
           </Button>
-          <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl py-3 h-auto">
+          <Button className="bg-white hover:bg-gray-50 text-green-600 border border-green-200 rounded-xl py-3 h-auto shadow-sm">
             <div className="flex flex-col items-center gap-1">
               <ArrowUpDown className="w-5 h-5" />
               <span className="text-sm font-medium">提取</span>
             </div>
           </Button>
           <Link href="/">
-            <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl py-3 h-auto">
+            <Button className="w-full bg-white hover:bg-gray-50 text-green-600 border border-green-200 rounded-xl py-3 h-auto shadow-sm">
               <div className="flex flex-col items-center gap-1">
                 <Lock className="w-5 h-5" />
                 <span className="text-sm font-medium">质押</span>
