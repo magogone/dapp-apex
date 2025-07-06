@@ -7,6 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Menu,
   X,
   Home,
@@ -27,6 +33,8 @@ import {
   Zap,
   AlertCircle,
   AlertTriangle,
+  Leaf,
+  Gem,
 } from "lucide-react";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/language-context";
@@ -93,6 +101,8 @@ export default function AnalyticsPage() {
   const [selectedTab, setSelectedTab] = useState("overview");
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
+  const [isTeamWithdrawModalOpen, setIsTeamWithdrawModalOpen] = useState(false);
+  const [teamWithdrawAmount, setTeamWithdrawAmount] = useState("");
 
   const navItems = [
     {
@@ -139,12 +149,12 @@ export default function AnalyticsPage() {
   };
 
   const shareData = () => {
-    const content = `🚀 APEX DeFi 团队业绩分享
+    const content = `APEX DeFi 团队业绩分享
 
-💰 TVL总锁定: $${teamData.tvl}
-📈 24h增长: ${teamData.growth24h}
-👥 团队规模: ${teamData.teamSize}人
-💎 APR收益率: ${teamData.apr}
+TVL总锁定: $${teamData.tvl}
+24h增长: ${teamData.growth24h}
+团队规模: ${teamData.teamSize}人
+APR收益率: ${teamData.apr}
 
 #APEX #DeFi #TeamPerformance`;
 
@@ -172,6 +182,14 @@ export default function AnalyticsPage() {
     }
   };
 
+  // 处理团队收益提取
+  const handleTeamWithdraw = () => {
+    // 这里添加团队提取逻辑，扣10%手续费
+    console.log("团队提取", teamWithdrawAmount, "APEX，扣10%手续费");
+    setIsTeamWithdrawModalOpen(false);
+    setTeamWithdrawAmount("");
+  };
+
   return (
     <div className="min-h-screen bg-white relative">
       {/* 顶部导航栏 */}
@@ -180,7 +198,7 @@ export default function AnalyticsPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-green-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">🌿</span>
+                <Leaf className="w-4 h-4 text-white" />
               </div>
               <div>
                 <div className="text-xl font-bold text-green-600">APEX</div>
@@ -265,7 +283,7 @@ export default function AnalyticsPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-gradient-to-br from-green-400 via-emerald-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-sm">👥</span>
+                  <Users className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <div className="font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
@@ -284,40 +302,62 @@ export default function AnalyticsPage() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">
-                  ${tvlData.current.toLocaleString()}
+            <div className="flex gap-4 mb-4">
+              {/* 左侧 - 团队规模（正方形卡片） */}
+              <div className="flex-1 flex flex-col justify-center">
+                <div className="w-36 h-36 mx-auto bg-gray-50 rounded-lg flex flex-col items-center justify-center">
+                  <div className="text-4xl font-bold text-green-600">
+                    {teamStats.teamSize}
+                  </div>
+                  <div className="text-xs text-gray-600">团队规模</div>
                 </div>
-                <div className="text-sm text-gray-600">TVL总锁定</div>
               </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-gray-600">
-                  +{tvlData.change}%
+
+              {/* 右侧 - 其他三个指标（下划线样式） */}
+              <div className="flex-1 grid grid-cols-1 gap-1">
+                <div className="text-center py-1.5">
+                  <div className="text-base font-bold text-green-600">
+                    ${tvlData.current.toLocaleString()}
+                  </div>
+                  <div className="text-xs text-gray-600 border-b border-green-400 pb-1">
+                    TVL总锁定
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600">24h增长</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-green-600">
-                  {teamStats.teamSize}
+                <div className="text-center py-1.5">
+                  <div className="text-base font-bold text-gray-600">
+                    +{tvlData.change}%
+                  </div>
+                  <div className="text-xs text-gray-600 border-b border-green-400 pb-1">
+                    24h增长
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600">团队规模</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-gray-800">
-                  {tvlData.apr}%
+                <div className="text-center py-1.5">
+                  <div className="text-base font-bold text-gray-800">
+                    {tvlData.apr}%
+                  </div>
+                  <div className="text-xs text-gray-600 border-b border-green-400 pb-1">
+                    APR收益率
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600">APR收益率</div>
               </div>
             </div>
 
             <div className="space-y-3">
               <div className="bg-gray-50 rounded-lg p-3">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-600">总收益:</span>
-                  <span className="font-medium text-gray-900">
-                    {teamStats.totalEarnings} APEX
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-gray-900">
+                      {teamStats.totalEarnings} APEX
+                    </span>
+                    <Button
+                      size="sm"
+                      onClick={() => setIsTeamWithdrawModalOpen(true)}
+                      className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white text-xs px-3 py-1"
+                    >
+                      提取
+                    </Button>
+                  </div>
                 </div>
               </div>
 
@@ -538,6 +578,91 @@ export default function AnalyticsPage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* 团队收益提取弹窗 */}
+      <Dialog
+        open={isTeamWithdrawModalOpen}
+        onOpenChange={setIsTeamWithdrawModalOpen}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-gray-500" />
+              提取团队收益
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
+                  <DollarSign className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-800">
+                    可提取: {teamStats.totalEarnings} APEX
+                  </h4>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  提取数量
+                </label>
+                <div className="flex items-center gap-3">
+                  <Input
+                    type="number"
+                    placeholder="输入提取数量"
+                    value={teamWithdrawAmount}
+                    onChange={(e) => setTeamWithdrawAmount(e.target.value)}
+                    className="flex-1"
+                    max={teamStats.totalEarnings}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setTeamWithdrawAmount(teamStats.totalEarnings.toString())
+                    }
+                    className="shrink-0"
+                  >
+                    全部
+                  </Button>
+                </div>
+                <div className="text-xs text-gray-500">
+                  实际到账:{" "}
+                  {teamWithdrawAmount
+                    ? (parseFloat(teamWithdrawAmount) * 0.9).toFixed(2)
+                    : "0"}{" "}
+                  APEX（扣除10%手续费）
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsTeamWithdrawModalOpen(false)}
+                  className="flex-1"
+                >
+                  取消
+                </Button>
+                <Button
+                  onClick={handleTeamWithdraw}
+                  disabled={
+                    !teamWithdrawAmount ||
+                    parseFloat(teamWithdrawAmount) <= 0 ||
+                    parseFloat(teamWithdrawAmount) > teamStats.totalEarnings
+                  }
+                  className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                >
+                  确认提取
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* 分享成功提示 */}
       {shareSuccess && (

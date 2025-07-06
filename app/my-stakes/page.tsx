@@ -45,6 +45,8 @@ import {
   RotateCcw,
   Download,
   AlertTriangle,
+  Leaf,
+  Target,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import { useWallet } from "@/contexts/wallet-context";
@@ -224,8 +226,8 @@ export default function MyStakesPage() {
   // 根据轮次计算显示的APY
   const getDisplayApy = (stake: any) => {
     if (stake.type === "7天" && stake.currentRound > 0) {
-      // 计算当前轮次的利息：0.7% + (轮次-1) * 0.05%
-      const currentRate = 0.7 + (stake.currentRound - 1) * 0.05;
+      // 计算当前轮次的利息：0.7% + (轮次-1) * 0.05%，最高封顶1.1%
+      const currentRate = Math.min(0.7 + (stake.currentRound - 1) * 0.05, 1.1);
       return `${currentRate.toFixed(1)}%`;
     }
     return stake.apy;
@@ -239,7 +241,7 @@ export default function MyStakesPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-green-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">🌿</span>
+                <Leaf className="w-4 h-4 text-white" />
               </div>
               <div>
                 <div className="text-xl font-bold text-green-600">APEX</div>
@@ -349,7 +351,7 @@ export default function MyStakesPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">🎯</span>
+                  <Target className="w-4 h-4 text-white" />
                 </div>
                 <div>
                   <div className="font-semibold text-gray-800">AD价格</div>
@@ -470,16 +472,8 @@ export default function MyStakesPage() {
             {/* 操作按钮 */}
             <div className="flex gap-3">
               <Button
-                onClick={() => setIsWithdrawModalOpen(true)}
-                className="flex-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                提取
-              </Button>
-              <Button
                 onClick={() => setIsSwapModalOpen(true)}
-                variant="outline"
-                className="flex-1 border-green-500 text-gray-600 hover:bg-gray-50 hover:border-green-600"
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white"
               >
                 <ArrowUpDown className="w-4 h-4 mr-2" />
                 闪兑
@@ -591,10 +585,17 @@ export default function MyStakesPage() {
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">轮次:</span>
                         <span className="font-medium text-gray-900">
-                          {stake.currentRound}/{stake.maxRounds}
+                          {stake.currentRound}
                         </span>
                       </div>
                     )}
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">起止日期:</span>
+                      <span className="font-medium text-gray-900">
+                        {stake.startDate.replace(/-/g, "/")} ~{" "}
+                        {stake.endDate.replace(/-/g, "/")}
+                      </span>
+                    </div>
                     {stake.autoCompound && (
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-gray-600">自动复投:</span>
@@ -604,21 +605,12 @@ export default function MyStakesPage() {
                   </div>
 
                   <div className="flex gap-3 mt-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
-                      disabled={!stake.canUnstake}
-                    >
-                      <ArrowDownToLine className="w-4 h-4 mr-2" />
-                      提现
-                    </Button>
                     {stake.canUnstake && (
                       <Button
                         onClick={() => handleUnstake(stake)}
                         variant="outline"
                         size="sm"
-                        className="flex-1 border-red-300 text-red-700 hover:bg-red-50"
+                        className="w-full border-red-300 text-red-700 hover:bg-red-50"
                       >
                         <Lock className="w-4 h-4 mr-2" />
                         解押
@@ -714,7 +706,7 @@ export default function MyStakesPage() {
             <div className="bg-green-50 p-4 rounded-lg border border-gray-200">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">🎯</span>
+                  <Target className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-800">
@@ -790,7 +782,7 @@ export default function MyStakesPage() {
             <div className="bg-green-50 p-4 rounded-lg border border-gray-200">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">⚡</span>
+                  <Zap className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-800">

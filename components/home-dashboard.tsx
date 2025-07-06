@@ -36,6 +36,11 @@ import {
   Gift,
   HelpCircle,
   AlertCircle,
+  Leaf,
+  Banknote,
+  Download,
+  Smartphone,
+  Award,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import { useWallet } from "@/contexts/wallet-context";
@@ -207,7 +212,7 @@ export default function HomeDashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">🌿</span>
+                <Leaf className="w-4 h-4 text-white" />
               </div>
               <div>
                 <div className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
@@ -373,7 +378,7 @@ export default function HomeDashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">🪙</span>
+                  <Banknote className="w-4 h-4 text-white" />
                 </div>
                 <span className="font-medium text-gray-700">APEX</span>
               </div>
@@ -410,7 +415,10 @@ export default function HomeDashboard() {
                 </DialogTrigger>
                 <DialogContent className="max-w-md">
                   <DialogHeader>
-                    <DialogTitle>🔒 静态质押规则说明</DialogTitle>
+                    <DialogTitle className="flex items-center gap-2">
+                      <Lock className="w-5 h-5" />
+                      静态质押规则说明
+                    </DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4 text-sm">
                     <div>
@@ -439,7 +447,10 @@ export default function HomeDashboard() {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold mb-2">🏆 360天质押合约</h4>
+                      <h4 className="font-semibold mb-2 flex items-center gap-2">
+                        <Award className="w-4 h-4" />
+                        360天质押合约
+                      </h4>
                       <p className="text-gray-600">
                         • 固定利息：1.2%/天
                         <br />
@@ -448,7 +459,10 @@ export default function HomeDashboard() {
                       </p>
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-2">💸 提现规则</h4>
+                      <h4 className="font-semibold mb-2 flex items-center gap-2">
+                        <Download className="w-4 h-4" />
+                        提现规则
+                      </h4>
                       <p className="text-gray-600">
                         • 单次提币：1-2000 枚 APEX
                         <br />
