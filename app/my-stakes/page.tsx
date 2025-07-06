@@ -93,8 +93,8 @@ export default function MyStakesPage() {
     },
   ];
 
-  // APED价格数据
-  const apedData = {
+  // AD价格数据
+  const adData = {
     currentPrice: 1.23,
     dailyIncrease: 0.1,
     userBalance: 45,
@@ -114,7 +114,7 @@ export default function MyStakesPage() {
   ];
 
   // 计算闪兑价格 (系统定价的70%)
-  const flashSwapPrice = apedData.currentPrice * 0.7;
+  const flashSwapPrice = adData.currentPrice * 0.7;
 
   // 计算闪兑收益
   const calculateSwapValue = (amount: string) => {
@@ -126,7 +126,7 @@ export default function MyStakesPage() {
   const stakingStats = {
     totalStaked: 4798,
     dailyRewards: 57.58,
-    apedGenerated: 108,
+    adGenerated: 108,
     availableRewards: 245.67,
   };
 
@@ -134,7 +134,7 @@ export default function MyStakesPage() {
     {
       id: 1,
       name: "7天质押",
-      apy: "0.7% - 1.2%",
+      apy: "0.8%",
       duration: "7天",
       status: "进行中",
       type: "7天",
@@ -173,7 +173,7 @@ export default function MyStakesPage() {
       amount: 150,
       fee: 15,
       received: 135,
-      useAped: false,
+      useAd: false,
       time: "2小时前",
       status: "完成",
       txHash: "0x123...abc",
@@ -183,7 +183,7 @@ export default function MyStakesPage() {
       amount: 200,
       fee: 20,
       received: 200,
-      useAped: true,
+      useAd: true,
       time: "1天前",
       status: "完成",
       txHash: "0x456...def",
@@ -193,7 +193,7 @@ export default function MyStakesPage() {
       amount: 1800,
       fee: 180,
       received: 0,
-      useAped: false,
+      useAd: false,
       time: "2天前",
       status: "审核中",
       txHash: "",
@@ -208,7 +208,7 @@ export default function MyStakesPage() {
   // 处理提取
   const handleWithdraw = () => {
     // 这里添加提取逻辑
-    console.log("提取", withdrawAmount, "APED");
+    console.log("提取", withdrawAmount, "AD");
     setIsWithdrawModalOpen(false);
     setWithdrawAmount("");
   };
@@ -216,9 +216,19 @@ export default function MyStakesPage() {
   // 处理闪兑
   const handleFlashSwap = () => {
     // 这里添加闪兑逻辑
-    console.log("闪兑", swapAmount, "APED -> USDT");
+    console.log("闪兑", swapAmount, "AD -> USDT");
     setIsSwapModalOpen(false);
     setSwapAmount("");
+  };
+
+  // 根据轮次计算显示的APY
+  const getDisplayApy = (stake: any) => {
+    if (stake.type === "7天" && stake.currentRound > 0) {
+      // 计算当前轮次的利息：0.7% + (轮次-1) * 0.05%
+      const currentRate = 0.7 + (stake.currentRound - 1) * 0.05;
+      return `${currentRate.toFixed(1)}%`;
+    }
+    return stake.apy;
   };
 
   return (
@@ -333,7 +343,7 @@ export default function MyStakesPage() {
       )}
 
       <div className="max-w-md mx-auto px-6 py-6 space-y-6 relative z-10">
-        {/* APED 价格卡片 */}
+        {/* AD 价格卡片 */}
         <Card className="bg-white shadow-sm border border-gray-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
@@ -342,18 +352,18 @@ export default function MyStakesPage() {
                   <span className="text-white font-bold text-sm">🎯</span>
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-800">APED价格</div>
-                  <div className="text-xs text-gray-500">
-                    余额: {apedData.userBalance} APED
+                  <div className="font-semibold text-gray-800">AD价格</div>
+                  <div className="text-xs text-gray-600">
+                    余额: {adData.userBalance} AD
                   </div>
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold text-green-600">
-                  ${apedData.currentPrice}
+                  ${adData.currentPrice}
                 </div>
                 <div className="text-sm text-gray-600">
-                  每日+${apedData.dailyIncrease}
+                  每日+${adData.dailyIncrease}
                 </div>
               </div>
             </div>
@@ -503,9 +513,9 @@ export default function MyStakesPage() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  {stakingStats.apedGenerated}
+                  {stakingStats.adGenerated}
                 </div>
-                <div className="text-xs text-gray-600">已生成APED</div>
+                <div className="text-xs text-gray-600">已生成AD</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-800">
@@ -547,7 +557,9 @@ export default function MyStakesPage() {
                       <div className="font-semibold text-gray-800">
                         {stake.name}
                       </div>
-                      <div className="text-sm text-gray-600">{stake.apy}</div>
+                      <div className="text-sm text-gray-600">
+                        {getDisplayApy(stake)}
+                      </div>
                     </div>
                     <div className="text-right">
                       <div
@@ -668,9 +680,9 @@ export default function MyStakesPage() {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">APED抵扣:</span>
-                      <span className="font-medium text-gray-900">
-                        {withdrawal.useAped ? "是" : "否"}
+                      <span className="text-gray-600">AD抵扣:</span>
+                      <span className="font-medium text-gray-800">
+                        {withdrawal.useAd ? "是" : "否"}
                       </span>
                     </div>
                     {withdrawal.txHash && (
@@ -689,13 +701,13 @@ export default function MyStakesPage() {
         </Tabs>
       </div>
 
-      {/* 提取APED弹窗 */}
+      {/* 提取AD弹窗 */}
       <Dialog open={isWithdrawModalOpen} onOpenChange={setIsWithdrawModalOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Download className="w-5 h-5 text-gray-500" />
-              提取APED
+              提取AD
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -706,7 +718,7 @@ export default function MyStakesPage() {
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-800">
-                    余额: {apedData.userBalance} APED
+                    余额: {adData.userBalance} AD
                   </h4>
                   <p className="text-sm text-gray-600">免费提取到钱包</p>
                 </div>
@@ -725,13 +737,13 @@ export default function MyStakesPage() {
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(e.target.value)}
                     className="flex-1"
-                    max={apedData.userBalance}
+                    max={adData.userBalance}
                   />
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() =>
-                      setWithdrawAmount(apedData.userBalance.toString())
+                      setWithdrawAmount(adData.userBalance.toString())
                     }
                     className="shrink-0"
                   >
@@ -753,7 +765,7 @@ export default function MyStakesPage() {
                   disabled={
                     !withdrawAmount ||
                     parseFloat(withdrawAmount) <= 0 ||
-                    parseFloat(withdrawAmount) > apedData.userBalance
+                    parseFloat(withdrawAmount) > adData.userBalance
                   }
                   className="flex-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white"
                 >
@@ -765,13 +777,13 @@ export default function MyStakesPage() {
         </DialogContent>
       </Dialog>
 
-      {/* 闪兑APED弹窗 */}
+      {/* 闪兑AD弹窗 */}
       <Dialog open={isSwapModalOpen} onOpenChange={setIsSwapModalOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ArrowUpDown className="w-5 h-5 text-gray-500" />
-              闪兑APED
+              闪兑AD
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -801,14 +813,12 @@ export default function MyStakesPage() {
                     value={swapAmount}
                     onChange={(e) => setSwapAmount(e.target.value)}
                     className="flex-1"
-                    max={apedData.userBalance}
+                    max={adData.userBalance}
                   />
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() =>
-                      setSwapAmount(apedData.userBalance.toString())
-                    }
+                    onClick={() => setSwapAmount(adData.userBalance.toString())}
                     className="shrink-0"
                   >
                     全部
@@ -838,7 +848,7 @@ export default function MyStakesPage() {
                   disabled={
                     !swapAmount ||
                     parseFloat(swapAmount) <= 0 ||
-                    parseFloat(swapAmount) > apedData.userBalance
+                    parseFloat(swapAmount) > adData.userBalance
                   }
                   className="flex-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white"
                 >

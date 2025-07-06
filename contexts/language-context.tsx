@@ -28,7 +28,7 @@ const translations = {
 
     // Home Dashboard
     "home.totalStaking": "Your Total Staking Value",
-    "home.apedGenerated": "APED Generated",
+    "home.adGenerated": "AD Generated",
     "home.dailyInterest": "Daily Interest",
     "home.dynamicRewards": "Dynamic Rewards",
     "home.stakingPools": "Staking Pools",
@@ -40,12 +40,13 @@ const translations = {
     "home.interest": "Interest",
     "home.cycle": "Cycle",
     "home.compound": "Comp.",
-    "home.aped": "APED",
+    "home.aped": "AD",
     "home.fixed": "Fixed",
     "home.days": "Days",
     "home.daily": "Daily",
     "home.on": "On",
     "home.yes": "Yes",
+    "home.ad": "AD",
 
     // Analytics
     "analytics.title": "Analytics",
@@ -86,16 +87,16 @@ const translations = {
     "staking.unstake": "Unstake",
     "staking.withdraw": "Withdraw",
     "staking.fee": "Fee",
-    "staking.apedDeduction": "Use APED for Fee",
+    "staking.adDeduction": "Use AD for Fee",
 
-    // APED
-    "aped.title": "APED Token",
-    "aped.price": "Current Price",
-    "aped.dailyIncrease": "Daily Increase: +0.1 USDT",
-    "aped.uses": "Uses",
-    "aped.feeDeduction": "Fee Deduction",
-    "aped.governance": "Governance Voting",
-    "aped.ecosystem": "Ecosystem Applications",
+    // AD
+    "ad.title": "AD Token",
+    "ad.price": "Current Price",
+    "ad.dailyIncrease": "Daily Increase: +0.1 USDT",
+    "ad.uses": "Uses",
+    "ad.feeDeduction": "Fee Deduction",
+    "ad.governance": "Governance Voting",
+    "ad.ecosystem": "Ecosystem Applications",
 
     // Dynamic Rewards
     "dynamic.directBonus": "Direct Bonus",
@@ -151,7 +152,7 @@ const translations = {
 
     // Home Dashboard
     "home.totalStaking": "您的总质押价值",
-    "home.apedGenerated": "已生成",
+    "home.adGenerated": "已生成",
     "home.dailyInterest": "每日利息",
     "home.dynamicRewards": "动态奖励",
     "home.stakingPools": "质押池",
@@ -163,12 +164,13 @@ const translations = {
     "home.interest": "利息",
     "home.cycle": "周期",
     "home.compound": "复利",
-    "home.aped": "APED",
+    "home.aped": "AD",
     "home.fixed": "固定",
     "home.days": "天",
     "home.daily": "每日",
     "home.on": "开启",
     "home.yes": "是",
+    "home.ad": "AD",
 
     // Analytics
     "analytics.title": "分析",

@@ -49,9 +49,9 @@ import { useToast } from "@/hooks/use-toast";
 const userData = {
   name: "Wallet 0x12...fEa3",
   totalStaked: 4798,
-  apedGenerated: 108,
+  adGenerated: 108,
   cap: 8000,
-  apedBalance: 45,
+  adBalance: 45,
   totalAssets: {
     usdt: 719.67,
     apex: 4798, // 恢复APEX余额用于质押测试
@@ -345,7 +345,7 @@ export default function HomeDashboard() {
             <div className="bg-gradient-to-br from-green-400/20 via-emerald-500/15 to-green-600/20 backdrop-blur-md rounded-lg p-4 border border-green-400/30 shadow-sm">
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-900">$2.89</div>
-                <div className="text-xs text-gray-600">APED价格</div>
+                <div className="text-xs text-gray-600">AD价格</div>
                 <div className="text-xs text-green-600 mt-1">+$0.10</div>
               </div>
             </div>
@@ -418,10 +418,10 @@ export default function HomeDashboard() {
                       <p className="text-gray-600">
                         • 利息发放：以币本位实时结算
                         <br />
-                        • APED 生成：钱包中利息按金本位每天 1.2%
+                        • AD 生成：钱包中利息按金本位每天 1.2%
                         <br />
                         • 解押：无需服务费
-                        <br />• 提现：收取 10% 服务费（可用 APED 抵扣）
+                        <br />• 提现：收取 10% 服务费（可用 AD 抵扣）
                       </p>
                     </div>
                     <div>
@@ -443,7 +443,7 @@ export default function HomeDashboard() {
                       <p className="text-gray-600">
                         • 固定利息：1.2%/天
                         <br />
-                        • 治理代币奖励：按利息金本位发放 APED
+                        • 治理代币奖励：按利息金本位发放 AD
                         <br />• 长期收益更稳定
                       </p>
                     </div>
@@ -490,7 +490,7 @@ export default function HomeDashboard() {
                     stakeType === "7days" ? "text-green-100" : "text-green-600"
                   }`}
                 >
-                  0.7% → 1.2%/天
+                  0.7% → 1.1%/天
                 </div>
                 <div
                   className={`text-xs ${
@@ -529,7 +529,7 @@ export default function HomeDashboard() {
                       : "text-green-600"
                   }`}
                 >
-                  1.2%/天 + APED
+                  1.2%/天 + AD
                 </div>
                 <div
                   className={`text-xs ${
@@ -752,7 +752,7 @@ export default function HomeDashboard() {
                       <div className="flex justify-between">
                         <span>预期日收益:</span>
                         <span className="font-medium text-gray-600">
-                          {stakeType === "7days" ? "0.7%" : "1.2%"}
+                          {stakeType === "7days" ? "0.7% → 1.1%" : "1.2%"}
                         </span>
                       </div>
                     </div>
@@ -815,13 +815,13 @@ export default function HomeDashboard() {
                     <div className="flex justify-between">
                       <span>预期日收益:</span>
                       <span className="font-medium text-gray-800">
-                        {stakeType === "7days" ? "0.7%" : "1.2%"}
+                        {stakeType === "7days" ? "0.7% → 1.1%" : "1.2%"}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span>APED生成:</span>
+                      <span>AD生成:</span>
                       <span className="font-medium text-gray-800">
-                        {stakeType === "7days" ? "0.7%" : "1.2%"} 每日
+                        {stakeType === "7days" ? "0.7% → 1.1%" : "1.2%"} 每日
                       </span>
                     </div>
                     {stakeAmount && parseFloat(stakeAmount) > 0 && (

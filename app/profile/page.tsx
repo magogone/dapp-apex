@@ -46,7 +46,7 @@ import { usePathname } from "next/navigation";
 
 const user = {
   address: "0x1234...fEa3",
-  apedBalance: 45,
+  adBalance: 45,
   apexBalance: 4798,
   teamPerformance: 45280,
   isNode: true,
@@ -79,7 +79,9 @@ export default function ProfilePage() {
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [depositAmount, setDepositAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
-  const [withdrawType, setWithdrawType] = useState<"APEX" | "APED">("APEX");
+  const [withdrawType, setWithdrawType] = useState<"APEX" | "AD" | "USDT">(
+    "APEX"
+  );
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
 
@@ -297,7 +299,7 @@ export default function ProfilePage() {
                   <div className="text-3xl font-bold text-green-900 mb-1">
                     $
                     {(
-                      user.apedBalance * 2.89 +
+                      user.adBalance * 2.89 +
                       user.apexBalance * 0.963 +
                       user.totalEarnings * 0.963 +
                       user.stakingAmount * 0.963
@@ -307,7 +309,7 @@ export default function ProfilePage() {
                     })}
                   </div>
                   <div className="text-xs text-gray-600">
-                    APED=${(user.apedBalance * 2.89).toFixed(2)} APEX=$
+                    AD=${(user.adBalance * 2.89).toFixed(2)} APEX=$
                     {((user.apexBalance || 4798) * 0.963).toFixed(2)}
                   </div>
                 </div>
@@ -317,9 +319,9 @@ export default function ProfilePage() {
                 <div className="bg-gray-50 rounded-lg p-3">
                   <div className="text-center">
                     <div className="text-lg font-bold text-gray-900">
-                      {user.apedBalance}
+                      {user.adBalance}
                     </div>
-                    <div className="text-xs text-gray-600">APED余额</div>
+                    <div className="text-xs text-gray-600">AD余额</div>
                   </div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-3">
@@ -332,10 +334,8 @@ export default function ProfilePage() {
                 </div>
                 <div className="bg-gray-50 rounded-lg p-3">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-green-600">
-                      {user.totalEarnings}
-                    </div>
-                    <div className="text-xs text-gray-600">累计收益</div>
+                    <div className="text-lg font-bold text-green-600">2485</div>
+                    <div className="text-xs text-gray-600">USDT</div>
                   </div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-3">
@@ -343,7 +343,7 @@ export default function ProfilePage() {
                     <div className="text-lg font-bold text-gray-800">
                       {user.stakingAmount || 4000}
                     </div>
-                    <div className="text-xs text-gray-600">质押中</div>
+                    <div className="text-xs text-gray-600">APEX质押中</div>
                   </div>
                 </div>
               </div>
@@ -589,7 +589,7 @@ export default function ProfilePage() {
           </DialogHeader>
           <div className="space-y-4">
             {/* 代币类型选择 */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <Button
                 variant={withdrawType === "APEX" ? "default" : "outline"}
                 onClick={() => setWithdrawType("APEX")}
@@ -602,15 +602,26 @@ export default function ProfilePage() {
                 APEX
               </Button>
               <Button
-                variant={withdrawType === "APED" ? "default" : "outline"}
-                onClick={() => setWithdrawType("APED")}
+                variant={withdrawType === "AD" ? "default" : "outline"}
+                onClick={() => setWithdrawType("AD")}
                 className={
-                  withdrawType === "APED"
+                  withdrawType === "AD"
                     ? "bg-gradient-to-r from-teal-400 to-green-500 text-white"
                     : ""
                 }
               >
-                APED
+                AD
+              </Button>
+              <Button
+                variant={withdrawType === "USDT" ? "default" : "outline"}
+                onClick={() => setWithdrawType("USDT")}
+                className={
+                  withdrawType === "USDT"
+                    ? "bg-gradient-to-r from-teal-400 to-green-500 text-white"
+                    : ""
+                }
+              >
+                USDT
               </Button>
             </div>
 
@@ -633,7 +644,9 @@ export default function ProfilePage() {
                     setWithdrawAmount(
                       withdrawType === "APEX"
                         ? user.apexBalance.toString()
-                        : user.apedBalance.toString()
+                        : withdrawType === "AD"
+                        ? user.adBalance.toString()
+                        : "2485"
                     )
                   }
                   className="text-green-600 border-green-200"
@@ -643,7 +656,11 @@ export default function ProfilePage() {
               </div>
               <div className="text-xs text-gray-500">
                 可提取余额:{" "}
-                {withdrawType === "APEX" ? user.apexBalance : user.apedBalance}{" "}
+                {withdrawType === "APEX"
+                  ? user.apexBalance
+                  : withdrawType === "AD"
+                  ? user.adBalance
+                  : "2485"}{" "}
                 {withdrawType}
               </div>
             </div>
@@ -696,7 +713,9 @@ export default function ProfilePage() {
                   parseFloat(withdrawAmount) >
                     (withdrawType === "APEX"
                       ? user.apexBalance
-                      : user.apedBalance)
+                      : withdrawType === "AD"
+                      ? user.adBalance
+                      : 2485)
                 }
               >
                 {isLoading ? "提取中..." : "确认提取"}
