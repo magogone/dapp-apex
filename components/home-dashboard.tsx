@@ -315,7 +315,7 @@ export default function HomeDashboard() {
 
       <div className="max-w-md mx-auto px-6 py-6 space-y-6">
         {/* 全网数据 */}
-        <div className="p-6">
+        <div className="p-6 pb-2">
           <div className="flex flex-col items-center gap-2 mb-4">
             <div className="text-center">
               <div className="text-xl font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
@@ -372,266 +372,276 @@ export default function HomeDashboard() {
           </div>
         </div>
 
-        {/* 代币余额区域 */}
-        <Card className="bg-white shadow-sm border border-gray-200">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                  <Banknote className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-medium text-gray-700">APEX</span>
-              </div>
-              <div className="text-right">
-                <div className="text-xl font-bold text-gray-900">
-                  {userData.totalAssets.apex}
-                </div>
-                <div className="text-sm text-gray-500">持有数量</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 质押功能区域 */}
-        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 shadow-sm border border-gray-200">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                  <Lock className="w-4 h-4 text-gray-700" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    静态质押
-                  </h3>
-                  <p className="text-sm text-gray-600">选择质押方案</p>
-                </div>
-              </div>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <HelpCircle className="h-4 w-4 text-gray-500" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                      <Lock className="w-5 h-5" />
-                      静态质押规则说明
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 text-sm">
-                    <div>
-                      <h4 className="font-semibold mb-2">📋 基本规则</h4>
-                      <p className="text-gray-600">
-                        • 利息发放：以币本位实时结算
-                        <br />
-                        • AD 生成：钱包中利息按金本位每天 1.2%
-                        <br />
-                        • 解押：无需服务费
-                        <br />• 提现：收取 10% 服务费（可用 AD 抵扣）
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-2">⏰ 7天质押合约</h4>
-                      <p className="text-gray-600">
-                        • 每轮 0.05% 间隔（支持一键复利）
-                        <br />
-                        • 第一轮：0.7%/天
-                        <br />
-                        • 第二轮：0.75%/天
-                        <br />
-                        • 第三轮：0.8%/天
-                        <br />• 利息递增，最高封顶 1.2%/天
-                      </p>
-                    </div>
-
-                    <div>
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <Award className="w-4 h-4" />
-                        360天质押合约
-                      </h4>
-                      <p className="text-gray-600">
-                        • 固定利息：1.2%/天
-                        <br />
-                        • 治理代币奖励：按利息金本位发放 AD
-                        <br />• 长期收益更稳定
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-2 flex items-center gap-2">
-                        <Download className="w-4 h-4" />
-                        提现规则
-                      </h4>
-                      <p className="text-gray-600">
-                        • 单次提币：1-2000 枚 APEX
-                        <br />
-                        • ≤2000 枚：智能合约即时执行
-                        <br />• &gt;2000 枚：需人工审核
-                      </p>
-                    </div>
+        {/* 代币余额区域和质押功能区域 */}
+        <div className="space-y-4 -mt-6">
+          {/* 代币余额区域 */}
+          <Card className="bg-white shadow-sm border border-gray-200 -mt-4 mb-4">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
+                    <Banknote className="w-4 h-4 text-white" />
                   </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-
-            {/* 质押方案选择 */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <button
-                onClick={() => setStakeType("7days")}
-                className={`rounded-xl p-3 border text-center transition-all duration-200 ${
-                  stakeType === "7days"
-                    ? "bg-gradient-to-r from-teal-400 to-green-500 border-teal-400 text-white"
-                    : "bg-white border-green-200 hover:border-green-300 hover:bg-green-50"
-                }`}
-              >
-                <div className="flex items-center justify-center gap-1 mb-1">
-                  <Clock
-                    className={`w-4 h-4 ${
-                      stakeType === "7days" ? "text-white" : "text-green-600"
-                    }`}
-                  />
-                  <span
-                    className={`font-semibold text-sm ${
-                      stakeType === "7days" ? "text-white" : "text-gray-800"
-                    }`}
-                  >
-                    7天质押
-                  </span>
+                  <span className="font-medium text-gray-700">APEX</span>
                 </div>
-                <div
-                  className={`text-xs font-medium ${
-                    stakeType === "7days" ? "text-green-100" : "text-green-600"
-                  }`}
-                >
-                  0.7% → 1.1%/天
+                <div className="text-right">
+                  <div className="text-xl font-bold text-gray-900">
+                    {userData.totalAssets.apex}
+                  </div>
+                  <div className="text-sm text-gray-500">持有数量</div>
                 </div>
-                <div
-                  className={`text-xs ${
-                    stakeType === "7days" ? "text-green-200" : "text-gray-600"
-                  }`}
-                >
-                  递增收益
-                </div>
-              </button>
-              <button
-                onClick={() => setStakeType("360days")}
-                className={`rounded-xl p-3 border text-center transition-all duration-200 ${
-                  stakeType === "360days"
-                    ? "bg-gradient-to-r from-teal-400 to-green-500 border-teal-400 text-white"
-                    : "bg-white border-green-200 hover:border-green-300 hover:bg-green-50"
-                }`}
-              >
-                <div className="flex items-center justify-center gap-1 mb-1">
-                  <Lock
-                    className={`w-4 h-4 ${
-                      stakeType === "360days" ? "text-white" : "text-green-600"
-                    }`}
-                  />
-                  <span
-                    className={`font-semibold text-sm ${
-                      stakeType === "360days" ? "text-white" : "text-gray-800"
-                    }`}
-                  >
-                    360天质押
-                  </span>
-                </div>
-                <div
-                  className={`text-xs font-medium ${
-                    stakeType === "360days"
-                      ? "text-green-100"
-                      : "text-green-600"
-                  }`}
-                >
-                  1.2%/天 + AD
-                </div>
-                <div
-                  className={`text-xs ${
-                    stakeType === "360days" ? "text-green-200" : "text-gray-600"
-                  }`}
-                >
-                  稳定收益
-                </div>
-              </button>
-            </div>
-
-            {/* 质押数量输入 */}
-            <div className="bg-gray-50 rounded-xl p-4 mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">
-                  质押数量
-                </span>
-                <span className="text-xs text-gray-500">
-                  余额: {userData.totalAssets.apex} APEX
-                </span>
               </div>
-              <div className="flex items-center gap-3 mb-3">
-                <Input
-                  type="number"
-                  placeholder="输入APEX数量"
-                  className="flex-1 text-lg font-semibold bg-white border-gray-300"
-                  value={stakeAmount}
-                  onChange={(e) => setStakeAmount(e.target.value)}
-                />
+            </CardContent>
+          </Card>
+
+          {/* 质押功能区域 */}
+          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 shadow-sm border border-gray-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                    <Lock className="w-4 h-4 text-gray-700" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      静态质押
+                    </h3>
+                    <p className="text-sm text-gray-600">选择质押方案</p>
+                  </div>
+                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <HelpCircle className="h-4 w-4 text-gray-500" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <Lock className="w-5 h-5" />
+                        静态质押规则说明
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 text-sm">
+                      <div>
+                        <h4 className="font-semibold mb-2">📋 基本规则</h4>
+                        <p className="text-gray-600">
+                          • 利息发放：以币本位实时结算
+                          <br />
+                          • AD 生成：钱包中利息按金本位每天 1.2%
+                          <br />
+                          • 解押：无需服务费
+                          <br />• 提现：收取 10% 服务费（可用 AD 抵扣）
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">⏰ 7天质押合约</h4>
+                        <p className="text-gray-600">
+                          • 每轮 0.05% 间隔（支持一键复利）
+                          <br />
+                          • 第一轮：0.7%/天
+                          <br />
+                          • 第二轮：0.75%/天
+                          <br />
+                          • 第三轮：0.8%/天
+                          <br />• 利息递增，最高封顶 1.2%/天
+                        </p>
+                      </div>
+
+                      <div>
+                        <h4 className="font-semibold mb-2 flex items-center gap-2">
+                          <Award className="w-4 h-4" />
+                          360天质押合约
+                        </h4>
+                        <p className="text-gray-600">
+                          • 固定利息：1.2%/天
+                          <br />
+                          • 治理代币奖励：按利息金本位发放 AD
+                          <br />• 长期收益更稳定
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2 flex items-center gap-2">
+                          <Download className="w-4 h-4" />
+                          提现规则
+                        </h4>
+                        <p className="text-gray-600">
+                          • 单次提币：1-2000 枚 APEX
+                          <br />
+                          • ≤2000 枚：智能合约即时执行
+                          <br />• &gt;2000 枚：需人工审核
+                        </p>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+
+              {/* 质押方案选择 */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <button
+                  onClick={() => setStakeType("7days")}
+                  className={`rounded-xl p-3 border text-center transition-all duration-200 ${
+                    stakeType === "7days"
+                      ? "bg-gradient-to-r from-teal-400 to-green-500 border-teal-400 text-white"
+                      : "bg-white border-green-200 hover:border-green-300 hover:bg-green-50"
+                  }`}
+                >
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Clock
+                      className={`w-4 h-4 ${
+                        stakeType === "7days" ? "text-white" : "text-green-600"
+                      }`}
+                    />
+                    <span
+                      className={`font-semibold text-sm ${
+                        stakeType === "7days" ? "text-white" : "text-gray-800"
+                      }`}
+                    >
+                      7天质押
+                    </span>
+                  </div>
+                  <div
+                    className={`text-xs font-medium ${
+                      stakeType === "7days"
+                        ? "text-green-100"
+                        : "text-green-600"
+                    }`}
+                  >
+                    0.7% → 1.1%/天
+                  </div>
+                  <div
+                    className={`text-xs ${
+                      stakeType === "7days" ? "text-green-200" : "text-gray-600"
+                    }`}
+                  >
+                    递增收益
+                  </div>
+                </button>
+                <button
+                  onClick={() => setStakeType("360days")}
+                  className={`rounded-xl p-3 border text-center transition-all duration-200 ${
+                    stakeType === "360days"
+                      ? "bg-gradient-to-r from-teal-400 to-green-500 border-teal-400 text-white"
+                      : "bg-white border-green-200 hover:border-green-300 hover:bg-green-50"
+                  }`}
+                >
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Lock
+                      className={`w-4 h-4 ${
+                        stakeType === "360days"
+                          ? "text-white"
+                          : "text-green-600"
+                      }`}
+                    />
+                    <span
+                      className={`font-semibold text-sm ${
+                        stakeType === "360days" ? "text-white" : "text-gray-800"
+                      }`}
+                    >
+                      360天质押
+                    </span>
+                  </div>
+                  <div
+                    className={`text-xs font-medium ${
+                      stakeType === "360days"
+                        ? "text-green-100"
+                        : "text-green-600"
+                    }`}
+                  >
+                    1.2%/天 + AD
+                  </div>
+                  <div
+                    className={`text-xs ${
+                      stakeType === "360days"
+                        ? "text-green-200"
+                        : "text-gray-600"
+                    }`}
+                  >
+                    稳定收益
+                  </div>
+                </button>
+              </div>
+
+              {/* 质押数量输入 */}
+              <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">
+                    质押数量
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    余额: {userData.totalAssets.apex} APEX
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 mb-3">
+                  <Input
+                    type="number"
+                    placeholder="输入APEX数量"
+                    className="flex-1 text-lg font-semibold bg-white border-gray-300"
+                    value={stakeAmount}
+                    onChange={(e) => setStakeAmount(e.target.value)}
+                  />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-green-500 text-green-600 hover:bg-green-50"
+                    onClick={() =>
+                      setStakeAmount(userData.totalAssets.apex.toString())
+                    }
+                  >
+                    最大
+                  </Button>
+                </div>
+
+                {/* 支付方式提示 */}
+                {stakeAmount &&
+                  parseFloat(stakeAmount) > 0 &&
+                  userData.totalAssets.apex < parseFloat(stakeAmount) && (
+                    <div className="bg-white rounded-lg p-3 border">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <span className="text-orange-600">💵</span>
+                          <span>余额不足，兑换APEX</span>
+                        </div>
+                        <Button
+                          size="sm"
+                          className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
+                          onClick={() => {
+                            const neededApex =
+                              parseFloat(stakeAmount) -
+                              userData.totalAssets.apex;
+                            const neededUsdt = (neededApex / 1.038).toFixed(2);
+                            setUsdtAmount(neededUsdt);
+                            calculateApexAmount(neededUsdt);
+                            setIsSwapNoticeOpen(true);
+                          }}
+                        >
+                          去兑换
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+              </div>
+
+              {/* 质押按钮 */}
+              <div className="w-full">
                 <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-green-500 text-green-600 hover:bg-green-50"
-                  onClick={() =>
-                    setStakeAmount(userData.totalAssets.apex.toString())
+                  className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white py-3 font-semibold disabled:opacity-50"
+                  onClick={() => handleStakeClick(stakeType)}
+                  disabled={
+                    !stakeAmount ||
+                    parseFloat(stakeAmount) <= 0 ||
+                    parseFloat(stakeAmount) > userData.totalAssets.apex
                   }
                 >
-                  最大
+                  {parseFloat(stakeAmount || "0") > userData.totalAssets.apex
+                    ? "余额不足，请先兑换"
+                    : "确认质押"}
                 </Button>
               </div>
-
-              {/* 支付方式提示 */}
-              {stakeAmount &&
-                parseFloat(stakeAmount) > 0 &&
-                userData.totalAssets.apex < parseFloat(stakeAmount) && (
-                  <div className="bg-white rounded-lg p-3 border">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <span className="text-orange-600">💵</span>
-                        <span>余额不足，兑换APEX</span>
-                      </div>
-                      <Button
-                        size="sm"
-                        className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
-                        onClick={() => {
-                          const neededApex =
-                            parseFloat(stakeAmount) - userData.totalAssets.apex;
-                          const neededUsdt = (neededApex / 1.038).toFixed(2);
-                          setUsdtAmount(neededUsdt);
-                          calculateApexAmount(neededUsdt);
-                          setIsSwapNoticeOpen(true);
-                        }}
-                      >
-                        去兑换
-                      </Button>
-                    </div>
-                  </div>
-                )}
-            </div>
-
-            {/* 质押按钮 */}
-            <div className="w-full">
-              <Button
-                className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white py-3 font-semibold disabled:opacity-50"
-                onClick={() => handleStakeClick(stakeType)}
-                disabled={
-                  !stakeAmount ||
-                  parseFloat(stakeAmount) <= 0 ||
-                  parseFloat(stakeAmount) > userData.totalAssets.apex
-                }
-              >
-                {parseFloat(stakeAmount || "0") > userData.totalAssets.apex
-                  ? "余额不足，请先兑换"
-                  : "确认质押"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* 兑换APEX弹窗 */}
