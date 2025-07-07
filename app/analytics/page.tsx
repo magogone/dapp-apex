@@ -303,24 +303,24 @@ APR收益率: ${teamData.apr}
             </div>
 
             <div className="flex gap-4 mb-4">
-              {/* 左侧 - 团队规模（正方形卡片） */}
+              {/* 左侧 - TVL总锁定（正方形卡片） */}
               <div className="flex-1 flex flex-col justify-center">
                 <div className="w-36 h-36 mx-auto bg-gray-50 rounded-lg flex flex-col items-center justify-center">
-                  <div className="text-4xl font-bold text-green-600">
-                    {teamStats.teamSize}
+                  <div className="text-3xl font-bold text-green-600">
+                    $19.3M
                   </div>
-                  <div className="text-xs text-gray-600">团队规模</div>
+                  <div className="text-sm text-gray-600">TVL总锁定</div>
                 </div>
               </div>
 
               {/* 右侧 - 其他三个指标（下划线样式） */}
               <div className="flex-1 grid grid-cols-1 gap-1">
                 <div className="text-center py-1.5">
-                  <div className="text-base font-bold text-green-600">
-                    ${tvlData.current.toLocaleString()}
+                  <div className="text-base font-bold text-gray-800">
+                    {teamStats.teamSize}
                   </div>
                   <div className="text-xs text-gray-600 border-b border-green-400 pb-1">
-                    TVL总锁定
+                    团队规模
                   </div>
                 </div>
                 <div className="text-center py-1.5">
