@@ -75,6 +75,8 @@ export default function MyStakesPage() {
   const [swapAmount, setSwapAmount] = useState("");
   const [flashSwapSuccess, setFlashSwapSuccess] = useState(false);
   const [isFlashSwapLoading, setIsFlashSwapLoading] = useState(false);
+  const [unstakeSuccess, setUnstakeSuccess] = useState(false);
+  const [isUnstakeLoading, setIsUnstakeLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"staking" | "completed">(
     "staking"
   );
@@ -292,6 +294,37 @@ export default function MyStakesPage() {
       console.error("闪兑失败:", error);
     } finally {
       setIsFlashSwapLoading(false);
+    }
+  };
+
+  // 处理解除质押确认
+  const handleUnstakeConfirm = async () => {
+    if (!selectedStake) return;
+
+    setIsUnstakeLoading(true);
+    try {
+      // 模拟解除质押操作
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log(
+        "解除质押成功:",
+        selectedStake.amount,
+        "APEX，类型:",
+        selectedStake.type
+      );
+
+      // 显示成功状态
+      setUnstakeSuccess(true);
+
+      // 2秒后关闭弹窗并重置状态
+      setTimeout(() => {
+        setIsUnstakeModalOpen(false);
+        setUnstakeSuccess(false);
+        setSelectedStake(null);
+      }, 2000);
+    } catch (error) {
+      console.error("解除质押失败:", error);
+    } finally {
+      setIsUnstakeLoading(false);
     }
   };
 
@@ -960,53 +993,99 @@ export default function MyStakesPage() {
               解除质押
             </DialogTitle>
           </DialogHeader>
-          {selectedStake && (
-            <div className="space-y-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-600 mb-2">质押详情:</div>
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span>类型:</span>
-                    <span className="font-medium">{selectedStake.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>已质押:</span>
-                    <span className="font-medium">
-                      {selectedStake.staked} APEX
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>已获得:</span>
-                    <span className="font-medium text-gray-600">
-                      {selectedStake.earned} APEX
-                    </span>
-                  </div>
+          <div className="space-y-4">
+            {unstakeSuccess ? (
+              /* 解押成功状态显示 */
+              <div className="flex flex-col items-center py-6 space-y-6">
+                {/* 第一行：解押成功！ */}
+                <div className="text-lg font-semibold text-gray-900">
+                  解押成功！
                 </div>
-              </div>
 
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <div className="text-sm text-yellow-800">
-                  <div className="font-medium mb-1">注意:</div>
-                  <div>
-                    解除质押将结束您的质押合约。任何待处理的利息将自动提取。
+                {/* 第二行：解押金额 */}
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-600">
+                    {selectedStake?.amount || 0}
                   </div>
+                  <div className="text-sm text-gray-500">APEX</div>
                 </div>
-              </div>
 
-              <div className="flex gap-3">
+                {/* 第三行：确定按钮 */}
                 <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setIsUnstakeModalOpen(false)}
+                  onClick={() => {
+                    setIsUnstakeModalOpen(false);
+                    setUnstakeSuccess(false);
+                    setSelectedStake(null);
+                  }}
+                  className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
                 >
-                  取消
-                </Button>
-                <Button className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white">
-                  确认解押
+                  确定
                 </Button>
               </div>
-            </div>
-          )}
+            ) : (
+              selectedStake && (
+                <>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="text-sm text-gray-600 mb-2">质押详情:</div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <span>类型:</span>
+                        <span className="font-medium">
+                          {selectedStake.type}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>已质押:</span>
+                        <span className="font-medium">
+                          {selectedStake.amount} APEX
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>已获得:</span>
+                        <span className="font-medium text-gray-600">
+                          {selectedStake.earnedApex} APEX
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <div className="text-sm text-yellow-800">
+                      <div className="font-medium mb-1">注意:</div>
+                      <div>
+                        解除质押将结束您的质押合约。任何待处理的利息将自动提取。
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => setIsUnstakeModalOpen(false)}
+                      disabled={isUnstakeLoading}
+                    >
+                      取消
+                    </Button>
+                    <Button
+                      onClick={handleUnstakeConfirm}
+                      disabled={isUnstakeLoading}
+                      className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white disabled:opacity-50"
+                    >
+                      {isUnstakeLoading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                          解押中...
+                        </>
+                      ) : (
+                        "确认解押"
+                      )}
+                    </Button>
+                  </div>
+                </>
+              )
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

@@ -842,64 +842,46 @@ export default function AnalyticsPage() {
               邀请好友
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            {/* 团队奖励规则 */}
-            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-              <div className="text-sm font-medium text-green-700 mb-3">
-                团队奖励机制
+          <div className="space-y-3">
+            {/* 团队奖励规则 - 简化版本 */}
+            <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+              <div className="text-xs font-medium text-green-700 mb-2">
+                🎯 团队奖励机制
               </div>
-              <div className="space-y-2 text-sm text-green-700">
+              <div className="space-y-1 text-xs text-green-700">
                 <div className="flex justify-between">
-                  <span>• 直推奖:</span>
-                  <span className="font-medium">好友质押收益的15%</span>
+                  <span>直推奖:</span>
+                  <span className="font-medium">15%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>• 层级奖:</span>
-                  <span className="font-medium">2-15层用户收益的2%</span>
+                  <span>层级奖:</span>
+                  <span className="font-medium">2%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>• 管理奖:</span>
-                  <span className="font-medium">基于小区算力占比</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>• 加权分红:</span>
-                  <span className="font-medium">按7日新增算力分配</span>
+                  <span>管理奖+分红:</span>
+                  <span className="font-medium">算力占比</span>
                 </div>
               </div>
             </div>
 
-            {/* 层级权益说明 */}
-            <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-              <div className="text-sm font-medium text-blue-700 mb-2">
-                层级权益解锁
+            {/* 层级权益说明 - 简化版本 */}
+            <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
+              <div className="text-xs font-medium text-blue-700 mb-1">
+                🔓 层级解锁
               </div>
-              <div className="space-y-1 text-xs text-blue-600">
-                <div>直推2个有效用户 → 拿4层奖励</div>
-                <div>直推3个有效用户 → 拿7层奖励</div>
-                <div>直推4个有效用户 → 拿10层奖励</div>
-                <div>直推5个有效用户 → 拿15层奖励</div>
-                <div className="text-blue-500 mt-2">
-                  *有效用户需质押≥10枚APEX
-                </div>
-              </div>
-            </div>
-
-            {/* 封顶机制说明 */}
-            <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
-              <div className="text-sm font-medium text-orange-700 mb-2">
-                收益封顶机制
-              </div>
-              <div className="text-xs text-orange-600">
-                每账号封顶 = (质押量(最大200) + 销毁AD数量) × 4
+              <div className="text-xs text-blue-600 leading-tight">
+                直推2/3/4/5个 → 拿4/7/10/15层奖励
+                <br />
+                <span className="text-blue-500">*需质押≥10枚APEX</span>
               </div>
             </div>
 
             {/* 邀请链接展示 */}
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <div className="text-sm font-medium text-gray-700 mb-2">
-                您的专属邀请链接
+            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+              <div className="text-xs font-medium text-gray-700 mb-2">
+                🔗 您的专属邀请链接
               </div>
-              <div className="bg-white rounded border p-3 text-sm text-gray-800 break-all">
+              <div className="bg-white rounded border p-2 text-xs text-gray-800 break-all">
                 https://apex-dapp.com/invite?ref=USER123456
               </div>
             </div>
