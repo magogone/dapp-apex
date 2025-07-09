@@ -144,7 +144,7 @@ export default function LiquidityPage() {
       return (
         <g key={index}>
           <defs>
-            {/* 主渐变 */}
+            {/* 主渐变 - 增强颜色对比度 */}
             <linearGradient
               id={`gradient-${index}`}
               x1="0%"
@@ -152,9 +152,44 @@ export default function LiquidityPage() {
               x2="100%"
               y2="100%"
             >
-              <stop offset="0%" stopColor={item.color} />
-              <stop offset="50%" stopColor={item.color} stopOpacity="0.9" />
-              <stop offset="100%" stopColor={item.color} stopOpacity="0.7" />
+              <stop offset="0%" stopColor={item.color} stopOpacity="1" />
+              <stop offset="30%" stopColor={item.color} stopOpacity="0.95" />
+              <stop offset="70%" stopColor={item.color} stopOpacity="0.85" />
+              <stop offset="100%" stopColor={item.color} stopOpacity="0.75" />
+            </linearGradient>
+
+            {/* 呼吸渐变 - 用于动画效果，增强对比度 */}
+            <linearGradient
+              id={`gradient-breathe-${index}`}
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor={item.color} stopOpacity="1">
+                <animate
+                  attributeName="stop-opacity"
+                  values="1;0.4;1"
+                  dur="2.5s"
+                  repeatCount="indefinite"
+                />
+              </stop>
+              <stop offset="50%" stopColor={item.color} stopOpacity="0.9">
+                <animate
+                  attributeName="stop-opacity"
+                  values="0.9;0.3;0.9"
+                  dur="2.5s"
+                  repeatCount="indefinite"
+                />
+              </stop>
+              <stop offset="100%" stopColor={item.color} stopOpacity="0.8">
+                <animate
+                  attributeName="stop-opacity"
+                  values="0.8;0.2;0.8"
+                  dur="2.5s"
+                  repeatCount="indefinite"
+                />
+              </stop>
             </linearGradient>
 
             {/* 悬停渐变 */}
@@ -219,10 +254,10 @@ export default function LiquidityPage() {
             className="pointer-events-none"
           />
 
-          {/* 主路径 */}
+          {/* 主路径 - 使用呼吸渐变 */}
           <path
             d={pathData}
-            fill={`url(#gradient-${index})`}
+            fill={`url(#gradient-breathe-${index})`}
             className="transition-all duration-300 ease-out"
             style={{
               filter: `url(#shadow-${index})`,
@@ -386,35 +421,45 @@ export default function LiquidityPage() {
           <div className="relative">
             {/* 圆环图 - 丰富样式和呼吸效果 */}
             <div className="flex items-center justify-center relative mb-4">
-              {/* 多层背景光晕和呼吸效果 */}
+              {/* 多层背景光晕和呼吸效果 - 增强版 */}
               <div className="absolute inset-0 flex items-center justify-center">
-                {/* 外层呼吸光圈 */}
+                {/* 外层呼吸光圈 - 增强颜色 */}
                 <div
-                  className="rounded-full w-80 h-80 animate-pulse"
+                  className="rounded-full w-80 h-80"
                   style={{
                     background:
-                      "radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.08) 40%, rgba(34, 197, 94, 0.03) 70%, transparent 100%)",
-                    animation: "breathe 4s ease-in-out infinite",
+                      "radial-gradient(circle, rgba(34, 197, 94, 0.25) 0%, rgba(34, 197, 94, 0.15) 40%, rgba(34, 197, 94, 0.08) 70%, transparent 100%)",
+                    animation: "breathe 3s ease-in-out infinite",
                   }}
                 ></div>
 
-                {/* 中层光晕 */}
+                {/* 中层光晕 - 增强颜色 */}
                 <div
                   className="absolute rounded-full w-72 h-72"
                   style={{
                     background:
-                      "radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.06) 50%, transparent 100%)",
-                    animation: "breathe 4s ease-in-out infinite 0.5s",
+                      "radial-gradient(circle, rgba(16, 185, 129, 0.20) 0%, rgba(16, 185, 129, 0.12) 50%, rgba(16, 185, 129, 0.05) 80%, transparent 100%)",
+                    animation: "breathe 3s ease-in-out infinite 0.5s",
                   }}
                 ></div>
 
-                {/* 内层光晕 */}
+                {/* 内层光晕 - 增强颜色 */}
                 <div
                   className="absolute rounded-full w-64 h-64"
                   style={{
                     background:
-                      "radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 80%, transparent 100%)",
-                    animation: "breathe 4s ease-in-out infinite 1s",
+                      "radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.08) 80%, transparent 100%)",
+                    animation: "breathe 3s ease-in-out infinite 1s",
+                  }}
+                ></div>
+
+                {/* 新增：彩色呼吸环 */}
+                <div
+                  className="absolute rounded-full w-56 h-56"
+                  style={{
+                    background:
+                      "radial-gradient(circle, rgba(34, 197, 94, 0.3) 0%, rgba(16, 185, 129, 0.2) 30%, rgba(34, 197, 94, 0.1) 60%, transparent 100%)",
+                    animation: "breathe 2.5s ease-in-out infinite 0.3s",
                   }}
                 ></div>
               </div>
@@ -480,20 +525,20 @@ export default function LiquidityPage() {
           {/* 质押历史卡片 - 独立显示，一半会被白色背景覆盖 */}
           <div className="grid grid-cols-2 gap-3 mx-4 mb-4 relative z-10 mt-8">
             <Card
-              className="backdrop-blur-xl hover:shadow-xl transition-all duration-300 border border-white/20 rounded-2xl overflow-hidden shadow-lg"
+              className="backdrop-blur-xl hover:shadow-xl transition-all duration-300 border border-white/10 rounded-2xl overflow-hidden shadow-lg"
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.12)",
+                backgroundColor: "rgba(255, 255, 255, 0.06)",
                 backdropFilter: "blur(25px) saturate(200%)",
                 WebkitBackdropFilter: "blur(25px) saturate(200%)",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor =
-                  "rgba(255, 255, 255, 0.25)";
+                  "rgba(255, 255, 255, 0.15)";
                 e.currentTarget.style.transform = "translateY(-2px)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor =
-                  "rgba(255, 255, 255, 0.12)";
+                  "rgba(255, 255, 255, 0.06)";
                 e.currentTarget.style.transform = "translateY(0px)";
               }}
             >
@@ -525,20 +570,20 @@ export default function LiquidityPage() {
             </Card>
 
             <Card
-              className="backdrop-blur-xl hover:shadow-xl transition-all duration-300 border border-white/20 rounded-2xl overflow-hidden shadow-lg"
+              className="backdrop-blur-xl hover:shadow-xl transition-all duration-300 border border-white/10 rounded-2xl overflow-hidden shadow-lg"
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.12)",
+                backgroundColor: "rgba(255, 255, 255, 0.06)",
                 backdropFilter: "blur(25px) saturate(200%)",
                 WebkitBackdropFilter: "blur(25px) saturate(200%)",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor =
-                  "rgba(255, 255, 255, 0.25)";
+                  "rgba(255, 255, 255, 0.15)";
                 e.currentTarget.style.transform = "translateY(-2px)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor =
-                  "rgba(255, 255, 255, 0.12)";
+                  "rgba(255, 255, 255, 0.06)";
                 e.currentTarget.style.transform = "translateY(0px)";
               }}
             >
