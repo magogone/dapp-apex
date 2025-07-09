@@ -344,18 +344,17 @@ export default function ActivityPage() {
         {/* 活动分类标签 */}
         <div className="flex gap-2">
           {tabs.map((tab) => (
-            <Button
+            <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/20 ${
                 activeTab === tab
-                  ? "bg-gradient-to-r from-teal-400 to-green-500 text-white hover:from-teal-500 hover:to-green-600"
-                  : "bg-white text-green-600 border border-green-500 hover:bg-green-50"
+                  ? "bg-gradient-to-r from-teal-400 to-green-500 text-white hover:from-teal-500 hover:to-green-600 shadow-md"
+                  : "bg-white text-green-600 border border-green-500 hover:bg-green-50 hover:shadow-sm"
               }`}
-              variant="ghost"
             >
               {tab}
-            </Button>
+            </button>
           ))}
         </div>
 
