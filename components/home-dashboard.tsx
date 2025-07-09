@@ -106,6 +106,9 @@ export default function HomeDashboard() {
     "vip1"
   );
   const [nodeQuantity, setNodeQuantity] = useState("1");
+  const [purchaseSuccess, setPurchaseSuccess] = useState(false);
+  const [isPurchaseLoading, setIsPurchaseLoading] = useState(false);
+  const [inviteSuccess, setInviteSuccess] = useState(false);
 
   const pathname = usePathname();
 
@@ -219,6 +222,35 @@ export default function HomeDashboard() {
     }
   };
 
+  // 处理节点购买确认
+  const handlePurchaseConfirm = async () => {
+    if (!nodeQuantity || parseInt(nodeQuantity) <= 0) return;
+
+    setIsPurchaseLoading(true);
+    try {
+      // 模拟购买操作
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log(
+        `购买成功: ${nodeQuantity}个 ${
+          selectedVipType === "vip1" ? "VIP1" : "VIP2"
+        } 节点`
+      );
+
+      // 显示成功状态
+      setPurchaseSuccess(true);
+
+      // 2秒后关闭弹窗并重置状态
+      setTimeout(() => {
+        setPurchaseSuccess(false);
+        setNodeQuantity("1");
+      }, 2000);
+    } catch (error) {
+      console.error("购买失败:", error);
+    } finally {
+      setIsPurchaseLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen relative">
       {/* 统一白色背景 */}
@@ -322,8 +354,7 @@ export default function HomeDashboard() {
                         setIsCalculatorModalOpen(true);
                         setIsMenuOpen(false);
                       }}
-                      variant="outline"
-                      className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
+                      className="w-full bg-white hover:bg-green-50 text-green-600 rounded-full border border-green-500"
                     >
                       <Calculator className="h-4 w-4 mr-2" />
                       收益计算器
@@ -495,35 +526,40 @@ export default function HomeDashboard() {
                           <HelpCircle className="h-4 w-4 text-gray-500" />
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-md">
+                      <DialogContent className="max-w-2xl">
                         <DialogHeader>
                           <DialogTitle className="flex items-center gap-2">
                             <Coins className="w-5 h-5" />
                             节点售卖规则说明
                           </DialogTitle>
                         </DialogHeader>
-                        <div className="space-y-4 text-sm">
-                          <div>
-                            <h4 className="font-semibold mb-2">🎯 节点权益</h4>
-                            <p className="text-gray-600">
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                          <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                            <h4 className="font-semibold mb-2 text-blue-800">
+                              🎯 节点权益
+                            </h4>
+                            <p className="text-blue-700">
                               • 等同于360天质押合约（1.2%/天收益）
                             </p>
                           </div>
-                          <div>
-                            <h4 className="font-semibold mb-2">✨ 额外权益</h4>
-                            <p className="text-gray-600">
-                              • 配送5%（金本位）治理代币（只涨不跌）
+                          <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+                            <h4 className="font-semibold mb-2 text-green-800">
+                              ✨ 额外权益
+                            </h4>
+                            <p className="text-green-700 text-xs">
+                              • 配送5%治理代币
                               <br />
                               • 节点资金用于共建底池
                               <br />
-                              •
-                              利息提现手续费的30%（VIP1），30%（VIP2）用于节点加权分红
-                              <br />• 赠送工作室资格，上线后享受10万USDT政策扶持
+                              • 手续费30%用于节点分红
+                              <br />• 赠送工作室资格
                             </p>
                           </div>
-                          <div>
-                            <h4 className="font-semibold mb-2">📊 节点类型</h4>
-                            <p className="text-gray-600">
+                          <div className="bg-orange-50 rounded-lg p-3 border border-orange-200">
+                            <h4 className="font-semibold mb-2 text-orange-800">
+                              📊 节点类型
+                            </h4>
+                            <p className="text-orange-700">
                               • VIP 1：1000 USDT，限量1000份
                               <br />• VIP 2：5000 USDT，限量200份
                             </p>
@@ -582,10 +618,8 @@ export default function HomeDashboard() {
                                 const inviteLink =
                                   "https://apex-dapp.com/invite?ref=USER123456";
                                 navigator.clipboard.writeText(inviteLink);
-                                toast({
-                                  title: "复制成功",
-                                  description: "邀请链接已复制到剪贴板",
-                                });
+                                setInviteSuccess(true);
+                                setTimeout(() => setInviteSuccess(false), 3000);
                               }}
                               className="flex-1 bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white"
                             >
@@ -606,10 +640,11 @@ export default function HomeDashboard() {
                                   navigator.clipboard.writeText(
                                     `${shareData.text} ${shareData.url}`
                                   );
-                                  toast({
-                                    title: "已复制到剪贴板",
-                                    description: "可以分享到您喜欢的平台",
-                                  });
+                                  setInviteSuccess(true);
+                                  setTimeout(
+                                    () => setInviteSuccess(false),
+                                    3000
+                                  );
                                 }
                               }}
                               variant="outline"
@@ -682,77 +717,135 @@ export default function HomeDashboard() {
                         <DialogTitle>购买验证节点</DialogTitle>
                       </DialogHeader>
                       <div className="space-y-4">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700 mb-2 block">
-                            选择节点类型
-                          </label>
-                          <div className="grid grid-cols-2 gap-3">
-                            <button
-                              className={`p-4 rounded-lg text-center transition-colors ${
-                                selectedVipType === "vip1"
-                                  ? "bg-gradient-to-r from-teal-400 to-green-500 text-white"
-                                  : "bg-green-50 border-2 border-green-500 text-gray-700 hover:bg-green-100"
-                              }`}
-                              onClick={() => setSelectedVipType("vip1")}
+                        {purchaseSuccess ? (
+                          /* 购买成功状态显示 */
+                          <div className="flex flex-col items-center py-6 space-y-6">
+                            {/* 第一行：购买成功！ */}
+                            <div className="text-lg font-semibold text-gray-900">
+                              购买成功！
+                            </div>
+
+                            {/* 第二行：购买数量和类型 */}
+                            <div className="text-center">
+                              <div className="text-3xl font-bold text-green-600">
+                                {nodeQuantity}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {selectedVipType === "vip1" ? "VIP1" : "VIP2"}{" "}
+                                节点
+                              </div>
+                            </div>
+
+                            {/* 第三行：确定按钮 */}
+                            <Button
+                              onClick={() => {
+                                setPurchaseSuccess(false);
+                                setNodeQuantity("1");
+                              }}
+                              className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
                             >
-                              <div className="text-lg font-medium">VIP 1</div>
-                            </button>
-                            <button
-                              className={`p-4 rounded-lg text-center transition-colors ${
-                                selectedVipType === "vip2"
-                                  ? "bg-gradient-to-r from-teal-400 to-green-500 text-white"
-                                  : "bg-green-50 border-2 border-green-500 text-gray-700 hover:bg-green-100"
-                              }`}
-                              onClick={() => setSelectedVipType("vip2")}
+                              确定
+                            </Button>
+                          </div>
+                        ) : (
+                          <>
+                            <div>
+                              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                选择节点类型
+                              </label>
+                              <div className="grid grid-cols-2 gap-3">
+                                <button
+                                  className={`p-4 rounded-lg text-center transition-colors ${
+                                    selectedVipType === "vip1"
+                                      ? "bg-gradient-to-r from-teal-400 to-green-500 text-white"
+                                      : "bg-green-50 border-2 border-green-500 text-gray-700 hover:bg-green-100"
+                                  }`}
+                                  onClick={() => setSelectedVipType("vip1")}
+                                >
+                                  <div className="text-lg font-medium">
+                                    VIP 1
+                                  </div>
+                                </button>
+                                <button
+                                  className={`p-4 rounded-lg text-center transition-colors ${
+                                    selectedVipType === "vip2"
+                                      ? "bg-gradient-to-r from-teal-400 to-green-500 text-white"
+                                      : "bg-green-50 border-2 border-green-500 text-gray-700 hover:bg-green-100"
+                                  }`}
+                                  onClick={() => setSelectedVipType("vip2")}
+                                >
+                                  <div className="text-lg font-medium">
+                                    VIP 2
+                                  </div>
+                                </button>
+                              </div>
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                购买数量
+                              </label>
+                              <Input
+                                type="number"
+                                placeholder="输入购买数量"
+                                className="w-full"
+                                min="1"
+                                max="10"
+                                value={nodeQuantity}
+                                onChange={(e) =>
+                                  setNodeQuantity(e.target.value)
+                                }
+                              />
+                            </div>
+                            <div className="bg-green-50 p-3 rounded-lg">
+                              <div className="text-sm text-gray-600">
+                                <div className="flex justify-between">
+                                  <span>节点价格:</span>
+                                  <span className="font-medium">
+                                    {selectedVipType === "vip1"
+                                      ? "1000"
+                                      : "5000"}{" "}
+                                    USDT
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>购买数量:</span>
+                                  <span className="font-medium">
+                                    {nodeQuantity || "0"} 个
+                                  </span>
+                                </div>
+                                <div className="flex justify-between border-t border-green-200 pt-2 mt-2">
+                                  <span className="font-medium">总计:</span>
+                                  <span className="font-bold text-green-600">
+                                    {(
+                                      (selectedVipType === "vip1"
+                                        ? 1000
+                                        : 5000) * (parseInt(nodeQuantity) || 0)
+                                    ).toLocaleString()}{" "}
+                                    USDT
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <Button
+                              onClick={handlePurchaseConfirm}
+                              disabled={
+                                isPurchaseLoading ||
+                                !nodeQuantity ||
+                                parseInt(nodeQuantity) <= 0
+                              }
+                              className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white disabled:opacity-50"
                             >
-                              <div className="text-lg font-medium">VIP 2</div>
-                            </button>
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-700 mb-2 block">
-                            购买数量
-                          </label>
-                          <Input
-                            type="number"
-                            placeholder="输入购买数量"
-                            className="w-full"
-                            min="1"
-                            max="10"
-                            value={nodeQuantity}
-                            onChange={(e) => setNodeQuantity(e.target.value)}
-                          />
-                        </div>
-                        <div className="bg-green-50 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">
-                            <div className="flex justify-between">
-                              <span>节点价格:</span>
-                              <span className="font-medium">
-                                {selectedVipType === "vip1" ? "1000" : "5000"}{" "}
-                                USDT
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>购买数量:</span>
-                              <span className="font-medium">
-                                {nodeQuantity || "0"} 个
-                              </span>
-                            </div>
-                            <div className="flex justify-between border-t border-green-200 pt-2 mt-2">
-                              <span className="font-medium">总计:</span>
-                              <span className="font-bold text-green-600">
-                                {(
-                                  (selectedVipType === "vip1" ? 1000 : 5000) *
-                                  (parseInt(nodeQuantity) || 0)
-                                ).toLocaleString()}{" "}
-                                USDT
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <Button className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white">
-                          确认购买
-                        </Button>
+                              {isPurchaseLoading ? (
+                                <>
+                                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                                  购买中...
+                                </>
+                              ) : (
+                                "确认购买"
+                              )}
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </DialogContent>
                   </Dialog>
@@ -1008,17 +1101,32 @@ export default function HomeDashboard() {
               </div>
 
               {swapSuccess ? (
-                <div className="text-center">
-                  <div className="bg-green-50 p-4 rounded-lg border border-gray-200 mb-4">
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold">✓</span>
-                      </div>
-                      <span className="text-gray-800 font-semibold">
-                        兑换成功！
-                      </span>
-                    </div>
+                <div className="flex flex-col items-center py-6 space-y-6">
+                  {/* 第一行：兑换成功！ */}
+                  <div className="text-lg font-semibold text-gray-900">
+                    兑换成功！
                   </div>
+
+                  {/* 第二行：兑换数量 */}
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-green-600">
+                      {apexAmount}
+                    </div>
+                    <div className="text-sm text-gray-500">APEX</div>
+                  </div>
+
+                  {/* 第三行：确定按钮 */}
+                  <Button
+                    onClick={() => {
+                      setIsSwapNoticeOpen(false);
+                      setSwapSuccess(false);
+                      setUsdtAmount("");
+                      setApexAmount("");
+                    }}
+                    className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
+                  >
+                    确定
+                  </Button>
                 </div>
               ) : (
                 <div className="text-center">
@@ -1067,40 +1175,21 @@ export default function HomeDashboard() {
             <div className="space-y-4">
               {stakeSuccess ? (
                 /* 成功状态显示 */
-                <div className="text-center py-6">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">✓</span>
-                    </div>
-                  </div>
-
-                  <div className="text-lg font-semibold text-gray-900 mb-4">
+                <div className="flex flex-col items-center py-6 space-y-6">
+                  {/* 第一行：质押成功！ */}
+                  <div className="text-lg font-semibold text-gray-900">
                     质押成功！
                   </div>
 
-                  <div className="mb-2">
-                    <div className="text-sm text-gray-600">
-                      已成功质押 {stakeAmount || "4798"} APEX
+                  {/* 第二行：质押数量 */}
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-green-600">
+                      {stakeAmount || "4798"}
                     </div>
+                    <div className="text-sm text-gray-500">APEX</div>
                   </div>
 
-                  <div className="bg-green-50 rounded-lg p-4 border border-gray-200 mb-6">
-                    <div className="text-sm text-gray-600 space-y-2">
-                      <div className="flex justify-between">
-                        <span>质押期限:</span>
-                        <span className="font-medium text-gray-800">
-                          {stakeType === "7days" ? "7天" : "360天"}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>预期日收益:</span>
-                        <span className="font-medium text-green-600">
-                          {stakeType === "7days" ? "0.7%" : "1.2%"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
+                  {/* 第三行：确定按钮 */}
                   <Button
                     onClick={() => {
                       setIsStakeModalOpen(false);
@@ -1108,7 +1197,7 @@ export default function HomeDashboard() {
                       setStakeAmount("");
                       setAutoReinvest(false);
                     }}
-                    className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
+                    className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
                   >
                     确定
                   </Button>
@@ -1339,6 +1428,32 @@ export default function HomeDashboard() {
             </DialogHeader>
             <div className="space-y-4">
               <RewardCalculator />
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 邀请成功弹窗 */}
+        <Dialog open={inviteSuccess} onOpenChange={setInviteSuccess}>
+          <DialogContent className="max-w-sm">
+            <div className="flex flex-col items-center py-6 space-y-6">
+              {/* 第一行：邀请成功！ */}
+              <div className="text-lg font-semibold text-gray-900">
+                邀请成功！
+              </div>
+
+              {/* 第二行：成功图标或文字 */}
+              <div className="text-center">
+                <div className="text-3xl font-bold text-green-600">✓</div>
+                <div className="text-sm text-gray-500">链接已复制</div>
+              </div>
+
+              {/* 第三行：确定按钮 */}
+              <Button
+                onClick={() => setInviteSuccess(false)}
+                className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
+              >
+                确定
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

@@ -290,8 +290,7 @@ export default function ActivityPage() {
                       setIsCalculatorModalOpen(true);
                       setIsMenuOpen(false);
                     }}
-                    variant="outline"
-                    className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
+                    className="w-full bg-white hover:bg-green-50 text-green-600 rounded-full border border-green-500"
                   >
                     <Calculator className="h-4 w-4 mr-2" />
                     收益计算器
@@ -351,7 +350,7 @@ export default function ActivityPage() {
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 activeTab === tab
                   ? "bg-gradient-to-r from-teal-400 to-green-500 text-white hover:from-teal-500 hover:to-green-600"
-                  : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                  : "bg-white text-green-600 border border-green-500 hover:bg-green-50"
               }`}
               variant="ghost"
             >

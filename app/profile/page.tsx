@@ -46,12 +46,14 @@ import {
   Gift,
   Share2,
   Hash,
+  HelpCircle,
 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/language-context";
@@ -264,8 +266,7 @@ export default function ProfilePage() {
                       // 这里可以添加收益计算器弹窗逻辑
                       setIsMenuOpen(false);
                     }}
-                    variant="outline"
-                    className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
+                    className="w-full bg-white hover:bg-green-50 text-green-600 rounded-full border border-green-500"
                   >
                     <Calculator className="h-4 w-4 mr-2" />
                     收益计算器
@@ -1040,6 +1041,8 @@ export default function ProfilePage() {
 const StudioSection = ({ user }: { user: any }) => {
   const [isReimbursementModalOpen, setIsReimbursementModalOpen] =
     useState(false);
+  const [isReimbursementSuccessModalOpen, setIsReimbursementSuccessModalOpen] =
+    useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isRulesExpanded, setIsRulesExpanded] = useState(false);
   const [isTeamPerformanceModalOpen, setIsTeamPerformanceModalOpen] =
@@ -1085,7 +1088,7 @@ const StudioSection = ({ user }: { user: any }) => {
             <div className="bg-green-50 rounded-lg p-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-800">45,280</div>
-                <div className="text-sm text-green-600">总业绩 USDT</div>
+                <div className="text-sm text-gray-500">总业绩 USDT</div>
               </div>
             </div>
 
@@ -1126,14 +1129,66 @@ const StudioSection = ({ user }: { user: any }) => {
       {studioData.isWorkshop && studioData.dailyNewPerformance >= 1000 && (
         <Card className="bg-white shadow-sm border border-gray-200">
           <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-500 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-4 h-4 text-white" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-500 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-4 w-4 text-white" />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-800">餐费报销</div>
+                  <div className="text-xs text-gray-500">工作室专享</div>
+                </div>
               </div>
-              <div>
-                <div className="font-semibold text-gray-800">餐费报销</div>
-                <div className="text-xs text-gray-500">工作室专享</div>
-              </div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <HelpCircle className="h-4 w-4 text-gray-500" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <DollarSign className="w-5 h-5" />
+                      餐费申请规则
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                      <h4 className="font-semibold mb-2 text-green-800">
+                        💰 餐补标准
+                      </h4>
+                      <div className="text-green-700 text-sm space-y-1">
+                        <p>• 餐补 = 日新增业绩 × 5%</p>
+                        <p>• 4000U以上封顶200U</p>
+                        <p>• 仅限工作室成员申请</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <h4 className="font-semibold mb-2 text-blue-800">
+                        📋 申请条件
+                      </h4>
+                      <div className="text-blue-700 text-sm space-y-1">
+                        <p>• 必须是认证工作室</p>
+                        <p>• 日新增业绩 ≥ 1000 USDT</p>
+                        <p>• 当日可申请一次</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                      <h4 className="font-semibold mb-2 text-orange-800">
+                        ⚡ 申请流程
+                      </h4>
+                      <div className="text-orange-700 text-sm space-y-1">
+                        <p>1. 提交餐费申请</p>
+                        <p>2. 电报群提交用餐素材</p>
+                        <p>3. 等待管理员审核</p>
+                        <p>4. 审核通过后可提取</p>
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
 
             <div className="space-y-4">
@@ -1143,9 +1198,7 @@ const StudioSection = ({ user }: { user: any }) => {
                   <div className="text-2xl font-bold text-green-800">
                     {studioData.reimbursement.todayNewPerformance.toLocaleString()}
                   </div>
-                  <div className="text-sm text-green-600">
-                    今日新增业绩 USDT
-                  </div>
+                  <div className="text-sm text-gray-500">今日新增业绩 USDT</div>
                 </div>
               </div>
 
@@ -1159,7 +1212,7 @@ const StudioSection = ({ user }: { user: any }) => {
 
               {/* 申请按钮 */}
               <Button
-                onClick={() => setIsReimbursementModalOpen(true)}
+                onClick={() => setIsReimbursementSuccessModalOpen(true)}
                 className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
                 disabled={studioData.reimbursement.availableToday <= 0}
               >
@@ -1176,80 +1229,76 @@ const StudioSection = ({ user }: { user: any }) => {
         open={isReimbursementModalOpen}
         onOpenChange={setIsReimbursementModalOpen}
       >
-        <DialogContent className="max-w-sm">
-          <div className="text-center py-6">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <DollarSign className="w-8 h-8 text-green-600" />
-            </div>
-
-            <div className="text-lg font-semibold text-gray-900 mb-4">
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <DollarSign className="w-5 h-5" />
               申请餐费报销
-            </div>
-
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">今日新增业绩:</span>
-                <span className="font-medium text-gray-900">
-                  {studioData.reimbursement.todayNewPerformance.toLocaleString()}{" "}
-                  USDT
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">可申请餐补:</span>
-                <span className="font-medium text-green-600">
-                  {studioData.reimbursement.availableToday} USDT
-                </span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-4 gap-4">
+            {/* 今日新增业绩 */}
+            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+              <div className="text-center">
+                <div className="text-lg font-bold text-green-600">
+                  {studioData.reimbursement.todayNewPerformance.toLocaleString()}
+                </div>
+                <div className="text-sm text-green-700">今日新增业绩</div>
+                <div className="text-xs text-gray-500">USDT</div>
               </div>
             </div>
 
-            <div className="bg-blue-50 rounded-lg p-3 border border-blue-200 mb-4">
-              <div className="text-xs text-blue-800">
-                <div className="font-medium mb-1 flex items-center justify-center gap-2">
-                  <DollarSign className="w-4 h-4" />
-                  餐补规则
+            {/* 可申请餐补 */}
+            <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+              <div className="text-center">
+                <div className="text-lg font-bold text-blue-600">
+                  {studioData.reimbursement.availableToday}
                 </div>
-                <div className="text-left space-y-1">
-                  <div>• 餐补金额 = 日新增业绩 × 5%</div>
-                  <div>• 日业绩4000U以上可申请200U封顶</div>
-                  <div>• 工作室专享福利</div>
-                </div>
+                <div className="text-sm text-blue-700">可申请餐补</div>
+                <div className="text-xs text-gray-500">USDT</div>
               </div>
             </div>
 
-            <div className="bg-green-50 rounded-lg p-3 border border-green-200 mb-6">
-              <div className="text-xs text-gray-800">
-                <div className="font-medium mb-1 flex items-center justify-center gap-2">
-                  <Smartphone className="w-4 h-4" />
-                  申请流程
-                </div>
-                <div className="text-left space-y-1">
-                  <div>1. 提交申请</div>
-                  <div>2. 电报群提交素材</div>
-                  <div>3. 等待审核</div>
-                  <div>4. 审核通过后提取</div>
-                </div>
+            {/* 餐补规则 */}
+            <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
+              <div className="text-orange-800 text-xs">
+                <div className="font-medium mb-2">餐补规则</div>
+                <div>• 日业绩 × 5%</div>
+                <div>• 4000U以上200U封顶</div>
+                <div>• 工作室专享</div>
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setIsReimbursementModalOpen(false)}
-                className="flex-1"
-              >
-                取消
-              </Button>
-              <Button
-                onClick={() => {
-                  // 这里处理申请逻辑
-                  setIsReimbursementModalOpen(false);
-                  // 可以添加 toast 提示
-                }}
-                className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
-              >
-                确认申请
-              </Button>
+            {/* 申请流程 */}
+            <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+              <div className="text-purple-800 text-xs">
+                <div className="font-medium mb-2">申请流程</div>
+                <div>1. 提交申请</div>
+                <div>2. 电报群提交素材</div>
+                <div>3. 等待审核</div>
+                <div>4. 审核通过后提取</div>
+              </div>
             </div>
+          </div>
+
+          <div className="flex gap-3 mt-6">
+            <Button
+              variant="outline"
+              onClick={() => setIsReimbursementModalOpen(false)}
+              className="flex-1"
+            >
+              取消
+            </Button>
+            <Button
+              onClick={() => {
+                // 关闭申请弹窗，显示成功弹窗
+                setIsReimbursementModalOpen(false);
+                setIsReimbursementSuccessModalOpen(true);
+              }}
+              className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
+            >
+              确认申请
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -1471,6 +1520,34 @@ const StudioSection = ({ user }: { user: any }) => {
             {/* 第三行：确定按钮 */}
             <Button
               onClick={() => setIsClaimSuccessModalOpen(false)}
+              className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
+            >
+              确定
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* 餐费申请成功弹窗 */}
+      <Dialog
+        open={isReimbursementSuccessModalOpen}
+        onOpenChange={setIsReimbursementSuccessModalOpen}
+      >
+        <DialogContent className="max-w-sm">
+          <div className="flex flex-col items-center py-6 space-y-6">
+            {/* 第一行：申请提交成功！ */}
+            <div className="text-lg font-semibold text-gray-900">
+              申请提交成功！
+            </div>
+
+            {/* 第二行：请等待审核通过 */}
+            <div className="text-center">
+              <div className="text-base text-gray-600">请等待审核通过</div>
+            </div>
+
+            {/* 第三行：确定按钮 */}
+            <Button
+              onClick={() => setIsReimbursementSuccessModalOpen(false)}
               className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
             >
               确定

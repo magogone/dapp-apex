@@ -37,6 +37,7 @@ import {
   ArrowRight,
   Gift,
   HelpCircle,
+  Calculator,
   ArrowLeft,
   AlertCircle,
   CheckCircle,
@@ -72,6 +73,11 @@ export default function MyStakesPage() {
   const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [swapAmount, setSwapAmount] = useState("");
+  const [flashSwapSuccess, setFlashSwapSuccess] = useState(false);
+  const [isFlashSwapLoading, setIsFlashSwapLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"staking" | "completed">(
+    "staking"
+  );
   const pathname = usePathname();
 
   const navItems = [
@@ -136,6 +142,73 @@ export default function MyStakesPage() {
     return (numAmount * flashSwapPrice).toFixed(2);
   };
 
+  // 质押记录数据
+  const stakingRecords = [
+    {
+      id: 1,
+      type: "7天质押",
+      amount: 1000,
+      round: 3,
+      dailyRate: 0.8,
+      startDate: "2024-12-20",
+      endDate: "2024-12-27",
+      earnedApex: 56,
+      generatedAd: 12.5,
+      status: "staking",
+      daysLeft: 2,
+      autoReinvest: true, // 7天质押的自动再质押状态
+    },
+    {
+      id: 2,
+      type: "360天质押",
+      amount: 5000,
+      round: 1,
+      dailyRate: 1.2,
+      startDate: "2024-12-15",
+      endDate: "2025-12-10",
+      earnedApex: 360,
+      generatedAd: 75,
+      status: "staking",
+      daysLeft: 350,
+      autoReinvest: false, // 360天质押不支持自动再质押
+    },
+    {
+      id: 3,
+      type: "7天质押",
+      amount: 800,
+      round: 2,
+      dailyRate: 0.75,
+      startDate: "2024-12-10",
+      endDate: "2024-12-17",
+      earnedApex: 42,
+      generatedAd: 10.08,
+      status: "completed",
+      daysLeft: 0,
+      autoReinvest: false, // 已完成的记录
+    },
+    {
+      id: 4,
+      type: "7天质押",
+      amount: 1200,
+      round: 1,
+      dailyRate: 0.7,
+      startDate: "2024-12-05",
+      endDate: "2024-12-12",
+      earnedApex: 58.8,
+      generatedAd: 14.11,
+      status: "completed",
+      daysLeft: 0,
+      autoReinvest: true, // 已完成但之前开启了自动再质押
+    },
+  ];
+
+  // 根据当前标签过滤记录
+  const filteredRecords = stakingRecords.filter((record) =>
+    activeTab === "staking"
+      ? record.status === "staking"
+      : record.status === "completed"
+  );
+
   // 质押统计数据
   const stakingStats = {
     totalStaked: 4798,
@@ -191,11 +264,35 @@ export default function MyStakesPage() {
   };
 
   // 处理闪兑
-  const handleFlashSwap = () => {
-    // 这里添加闪兑逻辑
-    console.log("闪兑", swapAmount, "AD -> USDT");
-    setIsSwapModalOpen(false);
-    setSwapAmount("");
+  const handleFlashSwap = async () => {
+    if (!swapAmount || parseFloat(swapAmount) <= 0) return;
+
+    setIsFlashSwapLoading(true);
+    try {
+      // 模拟闪兑操作
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log(
+        "闪兑AD",
+        swapAmount,
+        "个，收到",
+        calculateSwapValue(swapAmount),
+        "USDT"
+      );
+
+      // 显示成功状态
+      setFlashSwapSuccess(true);
+
+      // 2秒后关闭弹窗并重置状态
+      setTimeout(() => {
+        setIsSwapModalOpen(false);
+        setFlashSwapSuccess(false);
+        setSwapAmount("");
+      }, 2000);
+    } catch (error) {
+      console.error("闪兑失败:", error);
+    } finally {
+      setIsFlashSwapLoading(false);
+    }
   };
 
   return (
@@ -294,10 +391,9 @@ export default function MyStakesPage() {
                       // 这里可以添加收益计算器弹窗逻辑
                       setIsMenuOpen(false);
                     }}
-                    variant="outline"
-                    className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
+                    className="w-full bg-white hover:bg-green-50 text-green-600 rounded-full border border-green-500"
                   >
-                    <HelpCircle className="h-4 w-4 mr-2" />
+                    <Calculator className="h-4 w-4 mr-2" />
                     收益计算器
                   </Button>
                   <Button className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full">
@@ -494,17 +590,44 @@ export default function MyStakesPage() {
           </CardContent>
         </Card>
 
-        {/* 资金记录 */}
+        {/* 质押记录 */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <ArrowUpDown className="w-5 h-5 text-green-600" />
+            <Lock className="w-5 h-5 text-green-600" />
             <span className="text-lg font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-              资金记录
+              质押记录
             </span>
           </div>
 
+          {/* 分页标签 */}
+          <div className="flex bg-gray-100 rounded-lg p-1 mb-4">
+            <button
+              onClick={() => setActiveTab("staking")}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                activeTab === "staking"
+                  ? "bg-white text-green-600 shadow-sm"
+                  : "text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              质押中 (
+              {stakingRecords.filter((r) => r.status === "staking").length})
+            </button>
+            <button
+              onClick={() => setActiveTab("completed")}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                activeTab === "completed"
+                  ? "bg-white text-green-600 shadow-sm"
+                  : "text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              已完成 (
+              {stakingRecords.filter((r) => r.status === "completed").length})
+            </button>
+          </div>
+
+          {/* 质押记录列表 */}
           <div className="space-y-4">
-            {withdrawHistory.map((record) => (
+            {filteredRecords.map((record) => (
               <Card
                 key={record.id}
                 className="bg-white shadow-sm border border-gray-200"
@@ -514,93 +637,114 @@ export default function MyStakesPage() {
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          record.status === "完成"
+                          record.status === "staking"
                             ? "bg-green-100"
-                            : record.status === "审核中"
-                            ? "bg-yellow-100"
                             : "bg-gray-100"
                         }`}
                       >
-                        {record.status === "完成" ? (
-                          <Download className="w-5 h-5 text-green-600" />
-                        ) : record.status === "审核中" ? (
-                          <Clock className="w-5 h-5 text-yellow-600" />
+                        {record.status === "staking" ? (
+                          <Lock className="w-5 h-5 text-green-600" />
                         ) : (
-                          <AlertCircle className="w-5 h-5 text-gray-600" />
+                          <CheckCircle className="w-5 h-5 text-gray-600" />
                         )}
                       </div>
                       <div>
                         <div className="font-semibold text-gray-800">
-                          提取 {record.amount} APEX
+                          {record.type}
                         </div>
                         <div className="text-sm text-gray-600">
-                          {record.time}
+                          第{record.round}轮 · {record.dailyRate}%/天
                         </div>
                       </div>
                     </div>
                     <div className="text-right">
                       <div
                         className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                          record.status === "完成"
+                          record.status === "staking"
                             ? "bg-green-100 text-green-800"
-                            : record.status === "审核中"
-                            ? "bg-yellow-100 text-yellow-800"
                             : "bg-gray-100 text-gray-800"
                         }`}
                       >
-                        {record.status}
+                        {record.status === "staking"
+                          ? `剩余${record.daysLeft}天`
+                          : "已完成"}
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">提取金额:</span>
+                      <span className="text-gray-600">质押金额:</span>
                       <span className="font-medium text-gray-900">
-                        {record.amount} APEX
+                        {record.amount.toLocaleString()} APEX
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">手续费:</span>
-                      <span className="font-medium text-gray-900">
-                        {record.fee} APEX
-                        {record.useAd && (
-                          <span className="ml-1 text-xs text-green-600">
-                            (AD抵扣)
-                          </span>
-                        )}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">实际到账:</span>
+                      <span className="text-gray-600">产出APEX:</span>
                       <span className="font-medium text-green-600">
-                        {record.received} APEX
+                        {record.earnedApex} APEX
                       </span>
                     </div>
-                    {record.txHash && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">产生AD:</span>
+                      <span className="font-medium text-blue-600">
+                        {record.generatedAd} AD
+                      </span>
+                    </div>
+                    {/* 7天质押显示自动再质押状态 */}
+                    {record.type === "7天质押" && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">交易哈希:</span>
-                        <span className="font-medium text-blue-600 font-mono text-xs">
-                          {record.txHash}
+                        <span className="text-gray-600">自动再质押:</span>
+                        <span
+                          className={`font-medium ${
+                            record.autoReinvest
+                              ? "text-green-600"
+                              : "text-gray-600"
+                          }`}
+                        >
+                          {record.autoReinvest ? "已开启" : "已关闭"}
                         </span>
                       </div>
                     )}
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">质押期间:</span>
+                      <span className="font-medium text-gray-900">
+                        {record.startDate} ~ {record.endDate}
+                      </span>
+                    </div>
                   </div>
 
-                  {record.status === "审核中" && (
-                    <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-yellow-600" />
-                        <span className="text-sm text-yellow-800">
-                          大额提取需要人工审核，预计1-3个工作日内完成
-                        </span>
-                      </div>
+                  {/* 根据质押类型显示不同的按钮 */}
+                  {record.status === "staking" && record.type === "7天质押" && (
+                    <div className="mt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleUnstake(record)}
+                        className="w-full"
+                      >
+                        解除质押
+                      </Button>
                     </div>
                   )}
+                  {/* 360天质押不显示任何按钮 */}
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          {filteredRecords.length === 0 && (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="w-8 h-8 text-gray-400" />
+              </div>
+              <p className="text-gray-500">
+                {activeTab === "staking"
+                  ? "暂无质押中的记录"
+                  : "暂无已完成的记录"}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -690,75 +834,120 @@ export default function MyStakesPage() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="bg-green-50 p-4 rounded-lg border border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-white" />
+            {flashSwapSuccess ? (
+              /* 闪兑成功状态显示 */
+              <div className="flex flex-col items-center py-6 space-y-6">
+                {/* 第一行：闪兑成功！ */}
+                <div className="text-lg font-semibold text-gray-900">
+                  闪兑成功！
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-800">
-                    闪兑价格: ${flashSwapPrice.toFixed(2)} USDT
-                  </h4>
-                  <p className="text-sm text-gray-600">系统定价70%，即时到账</p>
-                </div>
-              </div>
-            </div>
 
-            <div className="space-y-3">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  闪兑数量
-                </label>
-                <div className="flex items-center gap-3">
-                  <Input
-                    type="number"
-                    placeholder="输入闪兑数量"
-                    value={swapAmount}
-                    onChange={(e) => setSwapAmount(e.target.value)}
-                    className="flex-1"
-                    max={adData.userBalance}
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setSwapAmount(adData.userBalance.toString())}
-                    className="shrink-0"
-                  >
-                    全部
-                  </Button>
+                {/* 第二行：收到金额 */}
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-600">
+                    {calculateSwapValue(swapAmount)}
+                  </div>
+                  <div className="text-sm text-gray-500">USDT</div>
                 </div>
-              </div>
 
-              <div className="bg-gray-50 rounded-lg p-3">
-                <div className="flex justify-between text-sm font-medium">
-                  <span className="text-gray-600">预计收到:</span>
-                  <span className="text-gray-600">
-                    ${calculateSwapValue(swapAmount)} USDT
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
+                {/* 第三行：确定按钮 */}
                 <Button
-                  variant="outline"
-                  onClick={() => setIsSwapModalOpen(false)}
-                  className="flex-1"
+                  onClick={() => {
+                    setIsSwapModalOpen(false);
+                    setFlashSwapSuccess(false);
+                    setSwapAmount("");
+                  }}
+                  className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
                 >
-                  取消
-                </Button>
-                <Button
-                  onClick={handleFlashSwap}
-                  disabled={
-                    !swapAmount ||
-                    parseFloat(swapAmount) <= 0 ||
-                    parseFloat(swapAmount) > adData.userBalance
-                  }
-                  className="flex-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white"
-                >
-                  确认闪兑
+                  确定
                 </Button>
               </div>
-            </div>
+            ) : (
+              <>
+                <div className="bg-green-50 p-4 rounded-lg border border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
+                      <Zap className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-800">
+                        闪兑价格: ${flashSwapPrice.toFixed(2)} USDT
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        系统定价70%，即时到账
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      闪兑数量
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <Input
+                        type="number"
+                        placeholder="输入闪兑数量"
+                        value={swapAmount}
+                        onChange={(e) => setSwapAmount(e.target.value)}
+                        className="flex-1"
+                        max={adData.userBalance}
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          setSwapAmount(adData.userBalance.toString())
+                        }
+                        className="shrink-0"
+                      >
+                        全部
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <div className="flex justify-between text-sm font-medium">
+                      <span className="text-gray-600">预计收到:</span>
+                      <span className="text-gray-600">
+                        ${calculateSwapValue(swapAmount)} USDT
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsSwapModalOpen(false)}
+                      className="flex-1"
+                      disabled={isFlashSwapLoading}
+                    >
+                      取消
+                    </Button>
+                    <Button
+                      onClick={handleFlashSwap}
+                      disabled={
+                        isFlashSwapLoading ||
+                        !swapAmount ||
+                        parseFloat(swapAmount) <= 0 ||
+                        parseFloat(swapAmount) > adData.userBalance
+                      }
+                      className="flex-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white disabled:opacity-50"
+                    >
+                      {isFlashSwapLoading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                          闪兑中...
+                        </>
+                      ) : (
+                        "确认闪兑"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </DialogContent>
       </Dialog>

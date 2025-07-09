@@ -165,6 +165,8 @@ export default function AnalyticsPage() {
   const [shareSuccess, setShareSuccess] = useState(false);
   const [isTeamWithdrawModalOpen, setIsTeamWithdrawModalOpen] = useState(false);
   const [teamWithdrawAmount, setTeamWithdrawAmount] = useState("");
+  const [withdrawSuccess, setWithdrawSuccess] = useState(false);
+  const [isWithdrawLoading, setIsWithdrawLoading] = useState(false);
   const [isCalculatorModalOpen, setIsCalculatorModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
@@ -226,11 +228,29 @@ export default function AnalyticsPage() {
   };
 
   // 处理团队收益提取
-  const handleTeamWithdraw = () => {
-    // 这里添加团队提取逻辑，扣10%手续费
-    console.log("团队提取", teamWithdrawAmount, "APEX，扣10%手续费");
-    setIsTeamWithdrawModalOpen(false);
-    setTeamWithdrawAmount("");
+  const handleTeamWithdraw = async () => {
+    if (!teamWithdrawAmount || parseFloat(teamWithdrawAmount) <= 0) return;
+
+    setIsWithdrawLoading(true);
+    try {
+      // 模拟提取操作
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log("团队提取", teamWithdrawAmount, "APEX，扣10%手续费");
+
+      // 显示成功状态
+      setWithdrawSuccess(true);
+
+      // 2秒后关闭弹窗并重置状态
+      setTimeout(() => {
+        setIsTeamWithdrawModalOpen(false);
+        setWithdrawSuccess(false);
+        setTeamWithdrawAmount("");
+      }, 2000);
+    } catch (error) {
+      console.error("提取失败:", error);
+    } finally {
+      setIsWithdrawLoading(false);
+    }
   };
 
   return (
@@ -329,8 +349,7 @@ export default function AnalyticsPage() {
                       setIsCalculatorModalOpen(true);
                       setIsMenuOpen(false);
                     }}
-                    variant="outline"
-                    className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
+                    className="w-full bg-white hover:bg-green-50 text-green-600 rounded-full border border-green-500"
                   >
                     <Calculator className="h-4 w-4 mr-2" />
                     收益计算器
@@ -670,74 +689,119 @@ export default function AnalyticsPage() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                  <DollarSign className="w-4 h-4 text-white" />
+            {withdrawSuccess ? (
+              /* 提取成功状态显示 */
+              <div className="flex flex-col items-center py-6 space-y-6">
+                {/* 第一行：提取成功！ */}
+                <div className="text-lg font-semibold text-gray-900">
+                  提取成功！
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-800">
-                    可提取: {teamStats.totalEarnings} APEX
-                  </h4>
-                </div>
-              </div>
-            </div>
 
-            <div className="space-y-3">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  提取数量
-                </label>
-                <div className="flex items-center gap-3">
-                  <Input
-                    type="number"
-                    placeholder="输入提取数量"
-                    value={teamWithdrawAmount}
-                    onChange={(e) => setTeamWithdrawAmount(e.target.value)}
-                    className="flex-1"
-                    max={teamStats.totalEarnings}
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      setTeamWithdrawAmount(teamStats.totalEarnings.toString())
-                    }
-                    className="shrink-0"
-                  >
-                    全部
-                  </Button>
+                {/* 第二行：实际到账金额 */}
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-600">
+                    {teamWithdrawAmount
+                      ? (parseFloat(teamWithdrawAmount) * 0.9).toFixed(2)
+                      : "0"}
+                  </div>
+                  <div className="text-sm text-gray-500">APEX</div>
                 </div>
-                <div className="text-xs text-gray-500">
-                  实际到账:{" "}
-                  {teamWithdrawAmount
-                    ? (parseFloat(teamWithdrawAmount) * 0.9).toFixed(2)
-                    : "0"}{" "}
-                  APEX（扣除10%手续费）
-                </div>
-              </div>
 
-              <div className="flex gap-3">
+                {/* 第三行：确定按钮 */}
                 <Button
-                  variant="outline"
-                  onClick={() => setIsTeamWithdrawModalOpen(false)}
-                  className="flex-1"
+                  onClick={() => {
+                    setIsTeamWithdrawModalOpen(false);
+                    setWithdrawSuccess(false);
+                    setTeamWithdrawAmount("");
+                  }}
+                  className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
                 >
-                  取消
-                </Button>
-                <Button
-                  onClick={handleTeamWithdraw}
-                  disabled={
-                    !teamWithdrawAmount ||
-                    parseFloat(teamWithdrawAmount) <= 0 ||
-                    parseFloat(teamWithdrawAmount) > teamStats.totalEarnings
-                  }
-                  className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
-                >
-                  确认提取
+                  确定
                 </Button>
               </div>
-            </div>
+            ) : (
+              <>
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
+                      <DollarSign className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-800">
+                        可提取: {teamStats.totalEarnings} APEX
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      提取数量
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <Input
+                        type="number"
+                        placeholder="输入提取数量"
+                        value={teamWithdrawAmount}
+                        onChange={(e) => setTeamWithdrawAmount(e.target.value)}
+                        className="flex-1"
+                        max={teamStats.totalEarnings}
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          setTeamWithdrawAmount(
+                            teamStats.totalEarnings.toString()
+                          )
+                        }
+                        className="shrink-0"
+                      >
+                        全部
+                      </Button>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      实际到账:{" "}
+                      {teamWithdrawAmount
+                        ? (parseFloat(teamWithdrawAmount) * 0.9).toFixed(2)
+                        : "0"}{" "}
+                      APEX（扣除10%手续费）
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsTeamWithdrawModalOpen(false)}
+                      className="flex-1"
+                      disabled={isWithdrawLoading}
+                    >
+                      取消
+                    </Button>
+                    <Button
+                      onClick={handleTeamWithdraw}
+                      disabled={
+                        isWithdrawLoading ||
+                        !teamWithdrawAmount ||
+                        parseFloat(teamWithdrawAmount) <= 0 ||
+                        parseFloat(teamWithdrawAmount) > teamStats.totalEarnings
+                      }
+                      className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white disabled:opacity-50"
+                    >
+                      {isWithdrawLoading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                          提取中...
+                        </>
+                      ) : (
+                        "确认提取"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </DialogContent>
       </Dialog>
@@ -987,15 +1051,12 @@ const RewardCalculator = () => {
 };
 
 const TeamLevelCard = ({ levels }: { levels: any[] }) => {
-  const [expandedLevels, setExpandedLevels] = useState<number[]>([]);
+  const [showDirectReferrals, setShowDirectReferrals] = useState(false);
 
-  const toggleLevel = (levelNumber: number) => {
-    setExpandedLevels((prev) =>
-      prev.includes(levelNumber)
-        ? prev.filter((l) => l !== levelNumber)
-        : [...prev, levelNumber]
-    );
-  };
+  // 获取第1层（直推）数据
+  const directLevel = levels.find((level) => level.level === 1);
+  const directReferrals =
+    directLevel?.referrals?.filter((r: any) => r.isDirect) || [];
 
   return (
     <Card className="bg-white shadow-sm border border-gray-200">
@@ -1005,86 +1066,100 @@ const TeamLevelCard = ({ levels }: { levels: any[] }) => {
           <span className="text-lg font-semibold text-gray-800">团队层级</span>
         </div>
 
-        <div className="space-y-3">
-          {levels.map((level) => (
+        <div className="space-y-4">
+          {/* 直推人数 */}
+          <div className="bg-green-50 rounded-lg border border-green-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="font-medium text-gray-800">直推人数</div>
+                <div className="text-xs text-gray-500">第1层直接推荐</div>
+              </div>
+              <div className="text-2xl font-bold text-green-600">
+                {directReferrals.length}
+              </div>
+            </div>
+          </div>
+
+          {/* 直推地址列表 */}
+          <div className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-medium text-gray-800">直推地址</div>
+                  <div className="text-xs text-gray-500">直接推荐用户列表</div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowDirectReferrals(!showDirectReferrals)}
+                  className="p-1 h-8 w-8 hover:bg-gray-200/50 transition-all duration-200"
+                >
+                  {showDirectReferrals ? (
+                    <ChevronUp className="w-4 h-4 transition-transform duration-200" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {/* 展开的直推地址列表 */}
             <div
-              key={level.level}
-              className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden"
+              className={`border-t border-gray-200 bg-white overflow-hidden transition-all duration-300 ease-in-out ${
+                showDirectReferrals
+                  ? "max-h-64 opacity-100"
+                  : "max-h-0 opacity-0"
+              }`}
             >
-              <div className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">
-                        {level.level}
+              <div className="p-3">
+                <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                  {directReferrals.map((referral: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between py-1.5 px-2 bg-gray-50/50 rounded text-xs border border-gray-100 hover:bg-gray-100/80 transition-colors duration-200"
+                    >
+                      <span className="font-mono text-gray-600 text-xs">
+                        {referral.address}
+                      </span>
+                      <span className="font-medium text-gray-800 text-xs">
+                        {referral.staked} APEX
                       </span>
                     </div>
-                    <div>
-                      <div className="font-medium text-gray-800">
-                        第{level.level}层
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {level.totalStaked.toLocaleString()} APEX
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="text-center">
-                      <div className="font-bold text-gray-900">
-                        {level.directCount}
-                      </div>
-                      <div className="text-xs text-gray-500">人数</div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleLevel(level.level)}
-                      className="p-1 h-8 w-8 hover:bg-gray-200/50 transition-all duration-200"
-                    >
-                      {expandedLevels.includes(level.level) ? (
-                        <ChevronUp className="w-4 h-4 transition-transform duration-200" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 transition-transform duration-200" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              {/* 展开的钱包地址列表 */}
-              <div
-                className={`border-t border-gray-200 bg-white overflow-hidden transition-all duration-300 ease-in-out ${
-                  expandedLevels.includes(level.level)
-                    ? "max-h-64 opacity-100"
-                    : "max-h-0 opacity-0"
-                }`}
-              >
-                <div className="p-3">
-                  <div className="text-xs font-medium text-gray-600 mb-2">
-                    钱包地址
-                  </div>
-                  <div className="space-y-1.5 max-h-48 overflow-y-auto">
-                    {level.referrals
-                      .filter((r: any) => r.isDirect)
-                      .map((referral: any, index: number) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between py-1.5 px-2 bg-gray-50/50 rounded text-xs border border-gray-100 hover:bg-gray-100/80 transition-colors duration-200"
-                        >
-                          <span className="font-mono text-gray-600 text-xs">
-                            {referral.address}
-                          </span>
-                          <span className="font-medium text-gray-800 text-xs">
-                            {referral.staked} APEX
-                          </span>
-                        </div>
-                      ))}
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* 层级人数统计 */}
+          <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
+            <div className="mb-3">
+              <div className="font-medium text-gray-800">层级人数</div>
+              <div className="text-xs text-gray-500">各层级总人数统计</div>
+            </div>
+            <div className="space-y-2">
+              {levels.map((level) => (
+                <div
+                  key={level.level}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-gradient-to-br from-teal-400 to-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-xs">
+                        {level.level}
+                      </span>
+                    </div>
+                    <span className="text-sm text-gray-700">
+                      第{level.level}层
+                    </span>
+                  </div>
+                  <span className="font-medium text-gray-900">
+                    {level.levelCount} 人
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

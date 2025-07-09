@@ -365,8 +365,7 @@ export default function LiquidityPage() {
                         setIsCalculatorModalOpen(true);
                         setIsMenuOpen(false);
                       }}
-                      variant="outline"
-                      className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
+                      className="w-full bg-white hover:bg-green-50 text-green-600 rounded-full border border-green-500"
                     >
                       <Calculator className="h-4 w-4 mr-2" />
                       收益计算器
