@@ -5,8 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
+
 import {
   Dialog,
   DialogContent,
@@ -21,6 +20,7 @@ import {
   Zap,
   Flame,
   BarChart,
+  BarChart3,
   ChevronDown,
   ChevronUp,
   TrendingUp,
@@ -64,7 +64,7 @@ export default function MyStakesPage() {
     disconnectWallet,
     isConnecting,
   } = useWallet();
-  const [activeTab, setActiveTab] = useState("stakes");
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUnstakeModalOpen, setIsUnstakeModalOpen] = useState(false);
   const [selectedStake, setSelectedStake] = useState<any>(null);
@@ -77,7 +77,7 @@ export default function MyStakesPage() {
   const navItems = [
     {
       name: "质押",
-      icon: Coins,
+      icon: BarChart3,
       href: "/my-stakes",
       isActive: pathname === "/my-stakes",
     },
@@ -89,9 +89,21 @@ export default function MyStakesPage() {
     },
     {
       name: "个人中心",
-      icon: TrendingUp,
+      icon: User,
       href: "/profile",
       isActive: pathname === "/profile",
+    },
+    {
+      name: "活动中心",
+      icon: Gift,
+      href: "/activity",
+      isActive: pathname === "/activity",
+    },
+    {
+      name: "流动性生态",
+      icon: ArrowUpDown,
+      href: "/liquidity",
+      isActive: pathname === "/liquidity",
     },
   ];
 
@@ -132,43 +144,6 @@ export default function MyStakesPage() {
     availableRewards: 245.67,
   };
 
-  const stakesData = [
-    {
-      id: 1,
-      name: "7天质押",
-      apy: "0.8%",
-      duration: "7天",
-      status: "进行中",
-      type: "7天",
-      staked: 1500,
-      earned: 45.6,
-      autoCompound: true,
-      canUnstake: true,
-      currentRound: 3,
-      maxRounds: 10,
-      currentRate: 0.8,
-      startDate: "2024-01-15",
-      endDate: "2024-01-22",
-    },
-    {
-      id: 2,
-      name: "360天质押",
-      apy: "每日1.2%",
-      duration: "360天",
-      status: "进行中",
-      type: "360天",
-      staked: 2500,
-      earned: 89.2,
-      autoCompound: false,
-      canUnstake: false,
-      currentRound: 0,
-      maxRounds: 1,
-      currentRate: 1.2,
-      startDate: "2024-01-01",
-      endDate: "2024-12-26",
-    },
-  ];
-
   const withdrawHistory = [
     {
       id: 1,
@@ -192,8 +167,8 @@ export default function MyStakesPage() {
     },
     {
       id: 3,
-      amount: 1800,
-      fee: 180,
+      amount: 2100,
+      fee: 210,
       received: 0,
       useAd: false,
       time: "2天前",
@@ -223,47 +198,51 @@ export default function MyStakesPage() {
     setSwapAmount("");
   };
 
-  // 根据轮次计算显示的APY
-  const getDisplayApy = (stake: any) => {
-    if (stake.type === "7天" && stake.currentRound > 0) {
-      // 计算当前轮次的利息：0.7% + (轮次-1) * 0.05%，最高封顶1.1%
-      const currentRate = Math.min(0.7 + (stake.currentRound - 1) * 0.05, 1.1);
-      return `${currentRate.toFixed(1)}%`;
-    }
-    return stake.apy;
-  };
-
   return (
     <div className="min-h-screen bg-white relative">
       {/* 顶部导航栏 */}
-      <header className="bg-white shadow-sm border-b relative z-20">
-        <div className="max-w-md mx-auto px-6 py-4">
+      <header className="bg-white shadow-sm border-b border-gray-200 relative z-20 pb-2">
+        <div className="max-w-md mx-auto px-6 pt-0 pb-0 -mt-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-green-500 rounded-lg flex items-center justify-center">
-                <Leaf className="w-4 h-4 text-white" />
+            <div className="flex items-center gap-3 -ml-4">
+              <div className="w-32 h-32 rounded-lg overflow-hidden">
+                <img
+                  src="/logo.png"
+                  alt="APEX Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <div>
-                <div className="text-xl font-bold text-green-600">APEX</div>
+              <div className="-ml-6">
                 <div className="text-xs text-gray-500">我的质押</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200"
+                className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white to-gray-50 hover:from-gray-50 hover:to-gray-100 border border-gray-200/60 shadow-md hover:shadow-lg transition-all duration-300 group flex items-center justify-center translate-y-2 scale-90"
                 variant="ghost"
                 size="icon"
               >
                 {isMenuOpen ? (
-                  <X className="w-5 h-5 text-gray-700" />
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full blur-sm opacity-15 group-hover:opacity-25 transition-opacity duration-300"></div>
+                    <X className="w-5 h-5 text-gray-600 relative z-10 group-hover:text-gray-700 transition-colors duration-200" />
+                  </div>
                 ) : (
-                  <Menu className="w-5 h-5 text-gray-700" />
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full blur-sm opacity-15 group-hover:opacity-25 transition-opacity duration-300"></div>
+                    <div className="relative z-10 flex flex-col justify-center items-center space-y-1.5">
+                      {/* 现代化的汉堡菜单图标 - 绿色主题 */}
+                      <div className="w-5 h-0.5 bg-green-600 rounded-full group-hover:bg-green-700 transition-all duration-200 group-hover:scale-110"></div>
+                      <div className="w-4 h-0.5 bg-green-600 rounded-full group-hover:bg-green-700 transition-all duration-200 group-hover:scale-110"></div>
+                      <div className="w-5 h-0.5 bg-green-600 rounded-full group-hover:bg-green-700 transition-all duration-200 group-hover:scale-110"></div>
+                    </div>
+                  </div>
                 )}
               </Button>
             </div>
           </div>
-          <div className="mt-2">
+          <div className="-mt-10">
             <p className="text-sm text-gray-600">管理您的质押记录</p>
           </div>
         </div>
@@ -276,7 +255,7 @@ export default function MyStakesPage() {
             className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
             onClick={() => setIsMenuOpen(false)}
           />
-          <div className="fixed top-20 right-6 z-50 bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+          <div className="fixed top-20 right-6 z-50 bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden w-40 dropdown-menu-animate">
             <div className="py-2">
               <Link href="/" onClick={() => setIsMenuOpen(false)}>
                 <div className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-gray-700">
@@ -309,35 +288,23 @@ export default function MyStakesPage() {
                 );
               })}
               <div className="border-t border-gray-200 mt-2 pt-2">
-                {isConnected ? (
-                  <div className="mx-4 space-y-2">
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="text-xs text-gray-600">
-                        已连接: {address?.slice(0, 6)}...{address?.slice(-4)}
-                      </div>
-                      {/* VIP等级标识 - 基于360天质押金额 */}
-                      <div className="px-1.5 py-0.5 bg-gradient-to-r from-green-400 to-green-600 text-white text-xs font-bold rounded-full">
-                        VIP1
-                      </div>
-                    </div>
-                    <Button
-                      onClick={disconnectWallet}
-                      className="w-full bg-gray-500 hover:bg-gray-600 text-white rounded-full"
-                    >
-                      <Wallet className="h-4 w-4 mr-2" />
-                      断开连接
-                    </Button>
-                  </div>
-                ) : (
+                <div className="px-4 space-y-2">
                   <Button
-                    onClick={connectWallet}
-                    disabled={isConnecting}
-                    className="w-full mx-4 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full disabled:opacity-50"
+                    onClick={() => {
+                      // 这里可以添加收益计算器弹窗逻辑
+                      setIsMenuOpen(false);
+                    }}
+                    variant="outline"
+                    className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
                   >
-                    <Wallet className="h-4 w-4 mr-2" />
-                    {isConnecting ? "连接中..." : "连接钱包"}
+                    <HelpCircle className="h-4 w-4 mr-2" />
+                    收益计算器
                   </Button>
-                )}
+                  <Button className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full">
+                    <Wallet className="h-4 w-4 mr-2" />
+                    连接钱包
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -345,6 +312,51 @@ export default function MyStakesPage() {
       )}
 
       <div className="max-w-md mx-auto px-6 py-6 space-y-6 relative z-10">
+        {/* 质押统计概览 */}
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <BarChart className="w-5 h-5 text-green-600" />
+            <span className="text-lg font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              质押概览
+            </span>
+          </div>
+
+          <Card className="bg-white shadow-lg border border-green-400/30">
+            <CardContent className="p-0">
+              <div className="grid grid-cols-4">
+                <div className="text-left p-4 bg-white">
+                  <div className="text-xl font-bold text-gray-900">
+                    {stakingStats.totalStaked.toLocaleString()}
+                  </div>
+                  <div className="text-xs text-gray-500">APEX</div>
+                  <div className="text-xs text-gray-600">总质押量</div>
+                </div>
+                <div className="text-left p-4 bg-green-50">
+                  <div className="text-xl font-bold text-gray-600">
+                    {(stakingStats.dailyRewards * 30).toFixed(1)}
+                  </div>
+                  <div className="text-xs text-gray-500">APEX</div>
+                  <div className="text-xs text-gray-600">累计利息</div>
+                </div>
+                <div className="text-left p-4 bg-white">
+                  <div className="text-xl font-bold text-green-600">
+                    {stakingStats.availableRewards}
+                  </div>
+                  <div className="text-xs text-gray-500">APEX</div>
+                  <div className="text-xs text-gray-600">未领取</div>
+                </div>
+                <div className="text-left p-4 bg-green-50">
+                  <div className="text-xl font-bold text-gray-800">
+                    {stakingStats.adGenerated}
+                  </div>
+                  <div className="text-xs text-gray-500">AD</div>
+                  <div className="text-xs text-gray-600">累计产出</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* AD 价格卡片 */}
         <Card className="bg-white shadow-sm border border-gray-200">
           <CardContent className="p-6">
@@ -375,7 +387,7 @@ export default function MyStakesPage() {
               <div className="text-sm font-medium text-gray-700 mb-2">
                 价格走势
               </div>
-              <div className="h-32 bg-gray-50 rounded-lg p-3 relative">
+              <div className="h-32 bg-green-50 rounded-lg p-3 relative">
                 <svg className="w-full h-full" viewBox="0 0 280 100">
                   {/* 绘制网格线 */}
                   <defs>
@@ -482,215 +494,114 @@ export default function MyStakesPage() {
           </CardContent>
         </Card>
 
-        {/* 质押统计概览 */}
-        <Card className="bg-gradient-to-br from-green-400/20 via-emerald-500/15 to-green-600/20 backdrop-blur-md shadow-lg border border-green-400/30 hover:from-green-400/25 hover:via-emerald-500/20 hover:to-green-600/25 transition-all duration-300">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <BarChart className="w-5 h-5 text-green-600" />
-              <span className="text-lg font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                质押概览
-              </span>
-            </div>
+        {/* 资金记录 */}
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <ArrowUpDown className="w-5 h-5 text-green-600" />
+            <span className="text-lg font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              资金记录
+            </span>
+          </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900">
-                  {stakingStats.totalStaked.toLocaleString()}
-                </div>
-                <div className="text-xs text-gray-600">总质押量</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-gray-600">
-                  {stakingStats.dailyRewards}
-                </div>
-                <div className="text-xs text-gray-600">每日利息</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
-                  {stakingStats.adGenerated}
-                </div>
-                <div className="text-xs text-gray-600">已生成AD</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-gray-800">
-                  {stakingStats.availableRewards}
-                </div>
-                <div className="text-xs text-gray-600">可用利息</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 标签页导航 */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-white rounded-xl shadow-sm border border-gray-200">
-            <TabsTrigger
-              value="stakes"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-400 data-[state=active]:to-green-500 data-[state=active]:text-white"
-            >
-              质押记录
-            </TabsTrigger>
-            <TabsTrigger
-              value="withdrawals"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-400 data-[state=active]:to-green-500 data-[state=active]:text-white"
-            >
-              提现记录
-            </TabsTrigger>
-          </TabsList>
-
-          {/* 质押记录标签页 */}
-          <TabsContent value="stakes" className="space-y-4">
-            {stakesData.map((stake) => (
+          <div className="space-y-4">
+            {withdrawHistory.map((record) => (
               <Card
-                key={stake.id}
+                key={record.id}
                 className="bg-white shadow-sm border border-gray-200"
               >
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <div className="font-semibold text-gray-800">
-                        {stake.name}
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          record.status === "完成"
+                            ? "bg-green-100"
+                            : record.status === "审核中"
+                            ? "bg-yellow-100"
+                            : "bg-gray-100"
+                        }`}
+                      >
+                        {record.status === "完成" ? (
+                          <Download className="w-5 h-5 text-green-600" />
+                        ) : record.status === "审核中" ? (
+                          <Clock className="w-5 h-5 text-yellow-600" />
+                        ) : (
+                          <AlertCircle className="w-5 h-5 text-gray-600" />
+                        )}
                       </div>
-                      <div className="text-sm text-gray-600">
-                        {getDisplayApy(stake)}
+                      <div>
+                        <div className="font-semibold text-gray-800">
+                          提取 {record.amount} APEX
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          {record.time}
+                        </div>
                       </div>
                     </div>
                     <div className="text-right">
                       <div
                         className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                          stake.status === "进行中"
-                            ? "bg-green-100 text-gray-800"
+                          record.status === "完成"
+                            ? "bg-green-100 text-green-800"
+                            : record.status === "审核中"
+                            ? "bg-yellow-100 text-yellow-800"
                             : "bg-gray-100 text-gray-800"
                         }`}
                       >
-                        {stake.status}
+                        {record.status}
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">质押金额:</span>
+                      <span className="text-gray-600">提取金额:</span>
                       <span className="font-medium text-gray-900">
-                        {stake.staked} APEX
+                        {record.amount} APEX
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">已获得:</span>
-                      <span className="font-medium text-gray-600">
-                        {stake.earned} APEX
-                      </span>
-                    </div>
-                    {stake.type === "7天" && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">轮次:</span>
-                        <span className="font-medium text-gray-900">
-                          {stake.currentRound}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">起止日期:</span>
-                      <span className="font-medium text-gray-900">
-                        {stake.startDate.replace(/-/g, "/")} ~{" "}
-                        {stake.endDate.replace(/-/g, "/")}
-                      </span>
-                    </div>
-                    {stake.autoCompound && (
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-gray-600">自动复投:</span>
-                        <Switch checked={stake.autoCompound} disabled />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex gap-3 mt-4">
-                    {stake.canUnstake && (
-                      <Button
-                        onClick={() => handleUnstake(stake)}
-                        variant="outline"
-                        size="sm"
-                        className="w-full border-red-300 text-red-700 hover:bg-red-50"
-                      >
-                        <Lock className="w-4 h-4 mr-2" />
-                        解押
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </TabsContent>
-
-          {/* 提现记录标签页 */}
-          <TabsContent value="withdrawals" className="space-y-4">
-            {withdrawHistory.map((withdrawal) => (
-              <Card
-                key={withdrawal.id}
-                className="bg-white shadow-sm border border-gray-200"
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <div className="font-semibold text-gray-800">
-                        {withdrawal.amount} APEX
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {withdrawal.time}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div
-                        className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                          withdrawal.status === "完成"
-                            ? "bg-green-100 text-gray-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
-                      >
-                        {withdrawal.status}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">提现金额:</span>
-                      <span className="font-medium text-gray-900">
-                        {withdrawal.amount} APEX
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
                       <span className="text-gray-600">手续费:</span>
                       <span className="font-medium text-gray-900">
-                        {withdrawal.fee} APEX
+                        {record.fee} APEX
+                        {record.useAd && (
+                          <span className="ml-1 text-xs text-green-600">
+                            (AD抵扣)
+                          </span>
+                        )}
                       </span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between text-sm">
                       <span className="text-gray-600">实际到账:</span>
-                      <span className="font-medium text-gray-600">
-                        {withdrawal.received} APEX
+                      <span className="font-medium text-green-600">
+                        {record.received} APEX
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">AD抵扣:</span>
-                      <span className="font-medium text-gray-800">
-                        {withdrawal.useAd ? "是" : "否"}
-                      </span>
-                    </div>
-                    {withdrawal.txHash && (
-                      <div className="flex justify-between">
+                    {record.txHash && (
+                      <div className="flex justify-between text-sm">
                         <span className="text-gray-600">交易哈希:</span>
-                        <span className="font-medium text-blue-600 text-xs">
-                          {withdrawal.txHash}
+                        <span className="font-medium text-blue-600 font-mono text-xs">
+                          {record.txHash}
                         </span>
                       </div>
                     )}
                   </div>
+
+                  {record.status === "审核中" && (
+                    <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-yellow-600" />
+                        <span className="text-sm text-yellow-800">
+                          大额提取需要人工审核，预计1-3个工作日内完成
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
       </div>
 
       {/* 提取AD弹窗 */}

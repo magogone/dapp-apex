@@ -117,17 +117,23 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
       <div className="relative z-10 text-center">
         {/* Logo动画 */}
         <div className="mb-8">
-          <div className="relative w-32 h-32 mx-auto mb-6">
-            {/* 外圈旋转环 */}
-            <div className="absolute inset-0 border-4 border-transparent border-t-green-400 border-r-emerald-400 rounded-full animate-spin"></div>
-            <div className="absolute inset-2 border-4 border-transparent border-b-green-500 border-l-emerald-500 rounded-full animate-spin-reverse"></div>
+          <div className="relative w-40 h-40 mx-auto mb-6">
+            {/* 外圈旋转环 - 加粗 */}
+            <div className="absolute inset-0 border-8 border-transparent border-t-green-400 border-r-emerald-400 rounded-full animate-spin"></div>
+            <div className="absolute inset-4 border-8 border-transparent border-b-green-500 border-l-emerald-500 rounded-full animate-spin-reverse"></div>
 
-            {/* 中心Logo */}
-            <div className="absolute inset-6 bg-gradient-to-br from-green-400 via-emerald-500 to-green-600 rounded-full flex items-center justify-center shadow-2xl">
-              <div className="w-16 h-16 bg-gradient-to-br from-white to-gray-100 rounded-full flex items-center justify-center">
-                <span className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                  A
-                </span>
+            {/* 中心Logo - 半透明毛玻璃效果 */}
+            <div className="absolute inset-8 backdrop-blur-2xl rounded-full flex items-center justify-center shadow-2xl border border-white/20 glass-effect">
+              {/* 玻璃反光效果 */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/30 via-white/10 to-transparent opacity-70"></div>
+              <div className="absolute top-2 left-2 w-8 h-8 rounded-full bg-white/40 blur-sm"></div>
+
+              <div className="w-24 h-24 flex items-center justify-center relative z-10">
+                <img
+                  src="/logo.png"
+                  alt="APEX Logo"
+                  className="w-40 h-40 object-contain drop-shadow-lg"
+                />
               </div>
             </div>
 
@@ -137,13 +143,12 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
 
           {/* 品牌名称 */}
           <div className="animate-fade-in-up">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 bg-clip-text text-transparent mb-2 tracking-wide">
-              APEX
-            </h1>
-            <p className="text-gray-600 text-lg font-light mb-1">
+            <p className="text-gray-600 text-xl font-light mb-1">
               Advanced Privacy Exchange
             </p>
-            <p className="text-gray-500 text-sm font-light">顶尖隐私交换协议</p>
+            <p className="text-gray-500 text-base font-light">
+              顶尖隐私交换协议
+            </p>
           </div>
         </div>
 
@@ -186,11 +191,11 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
 
       {/* 底部装饰 */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-        <div className="flex space-x-3">
+        <div className="flex space-x-2">
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full animate-bounce"
+              className="w-1.5 h-1.5 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full animate-bounce"
               style={{ animationDelay: `${i * 0.2}s` }}
             ></div>
           ))}
@@ -198,6 +203,21 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
       </div>
 
       <style jsx>{`
+        .bg-gradient-radial {
+          background: radial-gradient(circle, var(--tw-gradient-stops));
+        }
+
+        .glass-effect {
+          background: rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(25px);
+          -webkit-backdrop-filter: blur(25px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          box-shadow: 0 8px 32px rgba(31, 38, 135, 0.25),
+            0 4px 16px rgba(34, 197, 94, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+        }
+
         @keyframes fade-in-up {
           from {
             opacity: 0;

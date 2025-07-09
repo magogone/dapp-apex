@@ -35,6 +35,11 @@ import {
   AlertTriangle,
   Leaf,
   Gem,
+  Gift,
+  BarChart3,
+  ChevronDown,
+  ChevronUp,
+  Copy,
 } from "lucide-react";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/language-context";
@@ -80,11 +85,68 @@ const dynamicRewardsData = {
 };
 
 // 团队层级数据
-const teamLevels = [
-  { level: 1, count: 5, totalStaked: 1250, commission: 15 },
-  { level: 2, count: 12, totalStaked: 2340, commission: 2 },
-  { level: 3, count: 28, totalStaked: 4560, commission: 2 },
-  { level: 4, count: 45, totalStaked: 7890, commission: 2 },
+const teamLevelsData = [
+  {
+    level: 1,
+    directCount: 5, // 人数
+    levelCount: 5, // 层级人数
+    totalStaked: 1250, // 层级总质押量
+    referrals: [
+      { address: "0x1234...5678", staked: 250, isDirect: true },
+      { address: "0x2345...6789", staked: 300, isDirect: true },
+      { address: "0x3456...7890", staked: 200, isDirect: true },
+      { address: "0x4567...8901", staked: 350, isDirect: true },
+      { address: "0x5678...9012", staked: 150, isDirect: true },
+    ],
+  },
+  {
+    level: 2,
+    directCount: 5, // 第一层的人数
+    levelCount: 12, // 第二层总人数
+    totalStaked: 2340,
+    referrals: [
+      { address: "0x6789...0123", staked: 180, isDirect: false },
+      { address: "0x7890...1234", staked: 220, isDirect: false },
+      { address: "0x8901...2345", staked: 190, isDirect: false },
+      { address: "0x9012...3456", staked: 280, isDirect: false },
+      { address: "0x0123...4567", staked: 160, isDirect: false },
+      { address: "0x1122...3344", staked: 200, isDirect: false },
+      { address: "0x2233...4455", staked: 170, isDirect: false },
+      { address: "0x3344...5566", staked: 240, isDirect: false },
+      { address: "0x4455...6677", staked: 150, isDirect: false },
+      { address: "0x5566...7788", staked: 190, isDirect: false },
+      { address: "0x6677...8899", staked: 210, isDirect: false },
+      { address: "0x7788...9900", staked: 180, isDirect: false },
+    ],
+  },
+  {
+    level: 3,
+    directCount: 5,
+    levelCount: 28,
+    totalStaked: 4560,
+    referrals: [
+      { address: "0x1357...2468", staked: 120, isDirect: false },
+      { address: "0x2468...3579", staked: 140, isDirect: false },
+      { address: "0x3579...4680", staked: 110, isDirect: false },
+      { address: "0x4680...5791", staked: 200, isDirect: false },
+      { address: "0x5791...6802", staked: 130, isDirect: false },
+      // 更多地址...
+    ],
+  },
+  {
+    level: 4,
+    directCount: 5,
+    levelCount: 45,
+    totalStaked: 7890,
+    referrals: [
+      { address: "0x1111...2222", staked: 90, isDirect: false },
+      { address: "0x2222...3333", staked: 110, isDirect: false },
+      { address: "0x3333...4444", staked: 85, isDirect: false },
+      { address: "0x4444...5555", staked: 150, isDirect: false },
+      { address: "0x5555...6666", staked: 95, isDirect: false },
+      // 更多地址...
+    ],
+  },
 ];
 
 export default function AnalyticsPage() {
@@ -103,11 +165,13 @@ export default function AnalyticsPage() {
   const [shareSuccess, setShareSuccess] = useState(false);
   const [isTeamWithdrawModalOpen, setIsTeamWithdrawModalOpen] = useState(false);
   const [teamWithdrawAmount, setTeamWithdrawAmount] = useState("");
+  const [isCalculatorModalOpen, setIsCalculatorModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   const navItems = [
     {
       name: "质押",
-      icon: Coins,
+      icon: BarChart3,
       href: "/my-stakes",
       isActive: pathname === "/my-stakes",
     },
@@ -119,9 +183,21 @@ export default function AnalyticsPage() {
     },
     {
       name: "个人中心",
-      icon: TrendingUp,
+      icon: User,
       href: "/profile",
       isActive: pathname === "/profile",
+    },
+    {
+      name: "活动中心",
+      icon: Gift,
+      href: "/activity",
+      isActive: pathname === "/activity",
+    },
+    {
+      name: "流动性生态",
+      icon: ArrowUpDown,
+      href: "/liquidity",
+      isActive: pathname === "/liquidity",
     },
   ];
 
@@ -135,7 +211,7 @@ export default function AnalyticsPage() {
   // 团队统计数据
   const teamStats = {
     totalValue: 45280,
-    weeklyGrowth: 12.5,
+    weeklyGrowth: 2340, // 7日增长的APEX数量
     teamSize: 158,
     activeLevels: 4,
     totalEarnings: 2365.8,
@@ -143,43 +219,10 @@ export default function AnalyticsPage() {
 
   const teamData = {
     tvl: "1,250,000",
-    growth24h: "+12.5%",
+    growth7d: "2,340", // 7日增长的APEX数量
     teamSize: "1,256",
-    apr: "9.16%",
-  };
-
-  const shareData = () => {
-    const content = `APEX DeFi 团队业绩分享
-
-TVL总锁定: $${teamData.tvl}
-24h增长: ${teamData.growth24h}
-团队规模: ${teamData.teamSize}人
-APR收益率: ${teamData.apr}
-
-#APEX #DeFi #TeamPerformance`;
-
-    if (navigator.share) {
-      navigator
-        .share({
-          title: "APEX DeFi 团队业绩",
-          text: content,
-        })
-        .then(() => {
-          setShareSuccess(true);
-          setTimeout(() => setShareSuccess(false), 3000);
-        })
-        .catch(() => {
-          // 如果原生分享失败，回退到复制
-          navigator.clipboard.writeText(content);
-          setShareSuccess(true);
-          setTimeout(() => setShareSuccess(false), 3000);
-        });
-    } else {
-      // 复制到剪贴板
-      navigator.clipboard.writeText(content);
-      setShareSuccess(true);
-      setTimeout(() => setShareSuccess(false), 3000);
-    }
+    smallAreaPerformance:
+      dynamicRewardsData.managementBonus.smallAreaPower.toLocaleString(),
   };
 
   // 处理团队收益提取
@@ -193,34 +236,48 @@ APR收益率: ${teamData.apr}
   return (
     <div className="min-h-screen bg-white relative">
       {/* 顶部导航栏 */}
-      <header className="bg-white shadow-sm border-b relative z-20">
-        <div className="max-w-md mx-auto px-6 py-4">
+      <header className="bg-white shadow-sm border-b border-gray-200 relative z-20 pb-2">
+        <div className="max-w-md mx-auto px-6 pt-0 pb-0 -mt-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-green-500 rounded-lg flex items-center justify-center">
-                <Leaf className="w-4 h-4 text-white" />
+            <div className="flex items-center gap-3 -ml-4">
+              <div className="w-32 h-32 rounded-lg overflow-hidden">
+                <img
+                  src="/logo.png"
+                  alt="APEX Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <div>
-                <div className="text-xl font-bold text-green-600">APEX</div>
+              <div className="-ml-6">
                 <div className="text-xs text-gray-500">团队</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200"
+                className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white to-gray-50 hover:from-gray-50 hover:to-gray-100 border border-gray-200/60 shadow-md hover:shadow-lg transition-all duration-300 group flex items-center justify-center translate-y-2 scale-90"
                 variant="ghost"
                 size="icon"
               >
                 {isMenuOpen ? (
-                  <X className="w-5 h-5 text-gray-700" />
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full blur-sm opacity-15 group-hover:opacity-25 transition-opacity duration-300"></div>
+                    <X className="w-5 h-5 text-gray-600 relative z-10 group-hover:text-gray-700 transition-colors duration-200" />
+                  </div>
                 ) : (
-                  <Menu className="w-5 h-5 text-gray-700" />
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full blur-sm opacity-15 group-hover:opacity-25 transition-opacity duration-300"></div>
+                    <div className="relative z-10 flex flex-col justify-center items-center space-y-1.5">
+                      {/* 现代化的汉堡菜单图标 - 绿色主题 */}
+                      <div className="w-5 h-0.5 bg-green-600 rounded-full group-hover:bg-green-700 transition-all duration-200 group-hover:scale-110"></div>
+                      <div className="w-4 h-0.5 bg-green-600 rounded-full group-hover:bg-green-700 transition-all duration-200 group-hover:scale-110"></div>
+                      <div className="w-5 h-0.5 bg-green-600 rounded-full group-hover:bg-green-700 transition-all duration-200 group-hover:scale-110"></div>
+                    </div>
+                  </div>
                 )}
               </Button>
             </div>
           </div>
-          <div className="mt-2">
+          <div className="-mt-10">
             <p className="text-sm text-gray-600">团队业绩和动态收益管理</p>
           </div>
         </div>
@@ -233,7 +290,7 @@ APR收益率: ${teamData.apr}
             className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
             onClick={() => setIsMenuOpen(false)}
           />
-          <div className="fixed top-20 right-6 z-50 bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+          <div className="fixed top-20 right-6 z-50 bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden w-40 dropdown-menu-animate">
             <div className="py-2">
               <Link href="/" onClick={() => setIsMenuOpen(false)}>
                 <div className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-gray-700">
@@ -266,10 +323,23 @@ APR收益率: ${teamData.apr}
                 );
               })}
               <div className="border-t border-gray-200 mt-2 pt-2">
-                <Button className="w-full mx-4 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full">
-                  <Wallet className="h-4 w-4 mr-2" />
-                  连接钱包
-                </Button>
+                <div className="px-4 space-y-2">
+                  <Button
+                    onClick={() => {
+                      setIsCalculatorModalOpen(true);
+                      setIsMenuOpen(false);
+                    }}
+                    variant="outline"
+                    className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
+                  >
+                    <Calculator className="h-4 w-4 mr-2" />
+                    收益计算器
+                  </Button>
+                  <Button className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full">
+                    <Wallet className="h-4 w-4 mr-2" />
+                    连接钱包
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -296,7 +366,7 @@ APR收益率: ${teamData.apr}
                 variant="outline"
                 size="sm"
                 className="border-gray-200 text-gray-600 hover:bg-gray-50"
-                onClick={shareData}
+                onClick={() => setIsInviteModalOpen(true)}
               >
                 <Share2 className="w-4 h-4" />
               </Button>
@@ -305,16 +375,17 @@ APR收益率: ${teamData.apr}
             <div className="flex gap-4 mb-4">
               {/* 左侧 - TVL总锁定（正方形卡片） */}
               <div className="flex-1 flex flex-col justify-center">
-                <div className="w-36 h-36 mx-auto bg-gray-50 rounded-lg flex flex-col items-center justify-center">
-                  <div className="text-3xl font-bold text-green-600">
+                <div className="w-32 h-32 mx-auto bg-gray-50 rounded-lg flex flex-col items-center justify-center">
+                  <div className="text-2xl font-bold text-green-600">
                     $19.3M
                   </div>
                   <div className="text-sm text-gray-600">TVL总锁定</div>
                 </div>
               </div>
 
-              {/* 右侧 - 其他三个指标（下划线样式） */}
-              <div className="flex-1 grid grid-cols-1 gap-1">
+              {/* 右侧 - 两个指标垂直排列 */}
+              <div className="flex-1 grid grid-cols-1 gap-3">
+                {/* 团队规模 */}
                 <div className="text-center py-1.5">
                   <div className="text-base font-bold text-gray-800">
                     {teamStats.teamSize}
@@ -323,21 +394,38 @@ APR收益率: ${teamData.apr}
                     团队规模
                   </div>
                 </div>
+
+                {/* 7日增长 */}
                 <div className="text-center py-1.5">
                   <div className="text-base font-bold text-gray-600">
-                    +{tvlData.change}%
+                    +{teamStats.weeklyGrowth.toLocaleString()}
                   </div>
                   <div className="text-xs text-gray-600 border-b border-green-400 pb-1">
-                    24h增长
+                    7日增长 APEX
                   </div>
                 </div>
-                <div className="text-center py-1.5">
-                  <div className="text-base font-bold text-gray-800">
-                    {tvlData.apr}%
-                  </div>
-                  <div className="text-xs text-gray-600 border-b border-green-400 pb-1">
-                    APR收益率
-                  </div>
+              </div>
+            </div>
+
+            {/* 底部两个指标并排 */}
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              {/* 全网小区业绩 */}
+              <div className="text-center py-1.5">
+                <div className="text-base font-bold text-gray-800">
+                  {dynamicRewardsData.managementBonus.totalNetworkPower.toLocaleString()}
+                </div>
+                <div className="text-xs text-gray-600 border-b border-green-400 pb-1">
+                  全网小区业绩
+                </div>
+              </div>
+
+              {/* 小区总业绩 */}
+              <div className="text-center py-1.5">
+                <div className="text-base font-bold text-gray-800">
+                  {dynamicRewardsData.managementBonus.smallAreaPower.toLocaleString()}
+                </div>
+                <div className="text-xs text-gray-600 border-b border-green-400 pb-1">
+                  小区总业绩
                 </div>
               </div>
             </div>
@@ -395,18 +483,12 @@ APR收益率: ${teamData.apr}
           value={selectedTab}
           onValueChange={setSelectedTab}
         >
-          <TabsList className="grid w-full grid-cols-3 bg-white rounded-xl shadow-sm border border-gray-200">
+          <TabsList className="grid w-full grid-cols-2 bg-white rounded-xl shadow-sm border border-gray-200">
             <TabsTrigger
               value="overview"
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-400 data-[state=active]:to-green-500 data-[state=active]:text-white"
             >
               动态收益
-            </TabsTrigger>
-            <TabsTrigger
-              value="calculator"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-400 data-[state=active]:to-green-500 data-[state=active]:text-white"
-            >
-              收益计算器
             </TabsTrigger>
             <TabsTrigger
               value="team"
@@ -558,7 +640,8 @@ APR收益率: ${teamData.apr}
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">7日增长:</span>
                       <span className="font-medium text-gray-900">
-                        {dynamicRewardsData.weightedDividend.sevenDayIncrease.toLocaleString()}
+                        {dynamicRewardsData.weightedDividend.sevenDayIncrease.toLocaleString()}{" "}
+                        APEX
                       </span>
                     </div>
                   </div>
@@ -567,14 +650,9 @@ APR收益率: ${teamData.apr}
             </div>
           </TabsContent>
 
-          {/* 收益计算器标签页 */}
-          <TabsContent value="calculator" className="space-y-4">
-            <RewardCalculator />
-          </TabsContent>
-
           {/* 团队层级标签页 */}
           <TabsContent value="team" className="space-y-4">
-            <TeamLevelCard levels={teamLevels} />
+            <TeamLevelCard levels={teamLevelsData} />
           </TabsContent>
         </Tabs>
       </div>
@@ -664,6 +742,24 @@ APR收益率: ${teamData.apr}
         </DialogContent>
       </Dialog>
 
+      {/* 收益计算器弹窗 */}
+      <Dialog
+        open={isCalculatorModalOpen}
+        onOpenChange={setIsCalculatorModalOpen}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calculator className="w-5 h-5 text-gray-500" />
+              收益计算器
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <RewardCalculator />
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* 分享成功提示 */}
       {shareSuccess && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
@@ -672,6 +768,121 @@ APR收益率: ${teamData.apr}
           </div>
         </div>
       )}
+
+      {/* 邀请好友弹窗 */}
+      <Dialog open={isInviteModalOpen} onOpenChange={setIsInviteModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              邀请好友
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {/* 团队奖励规则 */}
+            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+              <div className="text-sm font-medium text-green-700 mb-3">
+                团队奖励机制
+              </div>
+              <div className="space-y-2 text-sm text-green-700">
+                <div className="flex justify-between">
+                  <span>• 直推奖:</span>
+                  <span className="font-medium">好友质押收益的15%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>• 层级奖:</span>
+                  <span className="font-medium">2-15层用户收益的2%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>• 管理奖:</span>
+                  <span className="font-medium">基于小区算力占比</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>• 加权分红:</span>
+                  <span className="font-medium">按7日新增算力分配</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 层级权益说明 */}
+            <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+              <div className="text-sm font-medium text-blue-700 mb-2">
+                层级权益解锁
+              </div>
+              <div className="space-y-1 text-xs text-blue-600">
+                <div>直推2个有效用户 → 拿4层奖励</div>
+                <div>直推3个有效用户 → 拿7层奖励</div>
+                <div>直推4个有效用户 → 拿10层奖励</div>
+                <div>直推5个有效用户 → 拿15层奖励</div>
+                <div className="text-blue-500 mt-2">
+                  *有效用户需质押≥10枚APEX
+                </div>
+              </div>
+            </div>
+
+            {/* 封顶机制说明 */}
+            <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
+              <div className="text-sm font-medium text-orange-700 mb-2">
+                收益封顶机制
+              </div>
+              <div className="text-xs text-orange-600">
+                每账号封顶 = (质押量(最大200) + 销毁AD数量) × 4
+              </div>
+            </div>
+
+            {/* 邀请链接展示 */}
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="text-sm font-medium text-gray-700 mb-2">
+                您的专属邀请链接
+              </div>
+              <div className="bg-white rounded border p-3 text-sm text-gray-800 break-all">
+                https://apex-dapp.com/invite?ref=USER123456
+              </div>
+            </div>
+
+            {/* 操作按钮 */}
+            <div className="flex gap-2">
+              <Button
+                onClick={() => {
+                  const inviteLink =
+                    "https://apex-dapp.com/invite?ref=USER123456";
+                  navigator.clipboard.writeText(inviteLink);
+                  setShareSuccess(true);
+                  setTimeout(() => setShareSuccess(false), 3000);
+                }}
+                className="flex-1 bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white"
+              >
+                <Copy className="w-4 h-4 mr-2" />
+                复制链接
+              </Button>
+              <Button
+                onClick={() => {
+                  const shareData = {
+                    title: "APEX邀请",
+                    text: "加入APEX，开启您的DeFi收益之旅！",
+                    url: "https://apex-dapp.com/invite?ref=USER123456",
+                  };
+                  if (navigator.share) {
+                    navigator.share(shareData);
+                  } else {
+                    // 降级处理
+                    navigator.clipboard.writeText(
+                      `${shareData.text} ${shareData.url}`
+                    );
+                    setShareSuccess(true);
+                    setTimeout(() => setShareSuccess(false), 3000);
+                  }
+                }}
+                variant="outline"
+                className="flex-1 border-green-500 text-green-600 hover:bg-green-50"
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                分享
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -700,136 +911,182 @@ const RewardCalculator = () => {
   const rewards = calculateRewards();
 
   return (
+    <div className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          投资金额: {investmentAmount[0]} APEX
+        </label>
+        <Slider
+          value={investmentAmount}
+          onValueChange={setInvestmentAmount}
+          max={10000}
+          min={100}
+          step={100}
+          className="w-full"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          推荐人数: {referralCount[0]}
+        </label>
+        <Slider
+          value={referralCount}
+          onValueChange={setReferralCount}
+          max={50}
+          min={1}
+          step={1}
+          className="w-full"
+        />
+      </div>
+
+      <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+        <div className="text-sm font-medium text-gray-700 mb-2">预计收益:</div>
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">直推奖 (15%):</span>
+            <span className="font-medium text-green-600">
+              {rewards.directBonus.toFixed(2)}{" "}
+              <span className="text-xs text-gray-500">APEX</span>
+            </span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">层级奖 (2%):</span>
+            <span className="font-medium text-green-600">
+              {rewards.levelBonus.toFixed(2)}{" "}
+              <span className="text-xs text-gray-500">APEX</span>
+            </span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">管理奖:</span>
+            <span className="font-medium text-green-600">
+              {rewards.managementBonus.toFixed(2)}{" "}
+              <span className="text-xs text-gray-500">APEX</span>
+            </span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">加权分红:</span>
+            <span className="font-medium text-green-600">
+              {rewards.weightedDividend.toFixed(2)}{" "}
+              <span className="text-xs text-gray-500">APEX</span>
+            </span>
+          </div>
+          <div className="border-t pt-2">
+            <div className="flex justify-between font-medium">
+              <span className="text-gray-900">总收益:</span>
+              <span className="text-gray-600">
+                {rewards.total.toFixed(2)}{" "}
+                <span className="text-xs text-gray-500">APEX</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const TeamLevelCard = ({ levels }: { levels: any[] }) => {
+  const [expandedLevels, setExpandedLevels] = useState<number[]>([]);
+
+  const toggleLevel = (levelNumber: number) => {
+    setExpandedLevels((prev) =>
+      prev.includes(levelNumber)
+        ? prev.filter((l) => l !== levelNumber)
+        : [...prev, levelNumber]
+    );
+  };
+
+  return (
     <Card className="bg-white shadow-sm border border-gray-200">
       <CardContent className="p-6">
         <div className="flex items-center gap-2 mb-6">
-          <Calculator className="w-5 h-5 text-gray-500" />
-          <span className="text-lg font-semibold text-gray-800">
-            收益计算器
-          </span>
+          <Users className="w-5 h-5 text-gray-500" />
+          <span className="text-lg font-semibold text-gray-800">团队层级</span>
         </div>
 
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              投资金额: {investmentAmount[0]} APEX
-            </label>
-            <Slider
-              value={investmentAmount}
-              onValueChange={setInvestmentAmount}
-              max={10000}
-              min={100}
-              step={100}
-              className="w-full"
-            />
-          </div>
+        <div className="space-y-3">
+          {levels.map((level) => (
+            <div
+              key={level.level}
+              className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden"
+            >
+              <div className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">
+                        {level.level}
+                      </span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-800">
+                        第{level.level}层
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {level.totalStaked.toLocaleString()} APEX
+                      </div>
+                    </div>
+                  </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              推荐人数: {referralCount[0]}
-            </label>
-            <Slider
-              value={referralCount}
-              onValueChange={setReferralCount}
-              max={50}
-              min={1}
-              step={1}
-              className="w-full"
-            />
-          </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-center">
+                      <div className="font-bold text-gray-900">
+                        {level.directCount}
+                      </div>
+                      <div className="text-xs text-gray-500">人数</div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleLevel(level.level)}
+                      className="p-1 h-8 w-8 hover:bg-gray-200/50 transition-all duration-200"
+                    >
+                      {expandedLevels.includes(level.level) ? (
+                        <ChevronUp className="w-4 h-4 transition-transform duration-200" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
 
-          <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-            <div className="text-sm font-medium text-gray-700 mb-2">
-              预计收益:
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">直推奖 (15%):</span>
-                <span className="font-medium text-gray-900">
-                  {rewards.directBonus.toFixed(2)} APEX
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">层级奖 (2%):</span>
-                <span className="font-medium text-gray-900">
-                  {rewards.levelBonus.toFixed(2)} APEX
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">管理奖:</span>
-                <span className="font-medium text-gray-900">
-                  {rewards.managementBonus.toFixed(2)} APEX
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">加权分红:</span>
-                <span className="font-medium text-gray-900">
-                  {rewards.weightedDividend.toFixed(2)} APEX
-                </span>
-              </div>
-              <div className="border-t pt-2">
-                <div className="flex justify-between font-medium">
-                  <span className="text-gray-900">总收益:</span>
-                  <span className="text-gray-600">
-                    {rewards.total.toFixed(2)} APEX
-                  </span>
+              {/* 展开的钱包地址列表 */}
+              <div
+                className={`border-t border-gray-200 bg-white overflow-hidden transition-all duration-300 ease-in-out ${
+                  expandedLevels.includes(level.level)
+                    ? "max-h-64 opacity-100"
+                    : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="p-3">
+                  <div className="text-xs font-medium text-gray-600 mb-2">
+                    钱包地址
+                  </div>
+                  <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                    {level.referrals
+                      .filter((r: any) => r.isDirect)
+                      .map((referral: any, index: number) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between py-1.5 px-2 bg-gray-50/50 rounded text-xs border border-gray-100 hover:bg-gray-100/80 transition-colors duration-200"
+                        >
+                          <span className="font-mono text-gray-600 text-xs">
+                            {referral.address}
+                          </span>
+                          <span className="font-medium text-gray-800 text-xs">
+                            {referral.staked} APEX
+                          </span>
+                        </div>
+                      ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
       </CardContent>
     </Card>
   );
 };
-
-const TeamLevelCard = ({ levels }: { levels: any[] }) => (
-  <Card className="bg-white shadow-sm border border-gray-200">
-    <CardContent className="p-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Users className="w-5 h-5 text-gray-500" />
-        <span className="text-lg font-semibold text-gray-800">团队层级</span>
-      </div>
-
-      <div className="space-y-4">
-        {levels.map((level) => (
-          <div
-            key={level.level}
-            className="border border-gray-200 rounded-lg p-4"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-green-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">
-                    {level.level}
-                  </span>
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800">
-                    第{level.level}层
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {level.commission}% 佣金
-                  </div>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="font-bold text-gray-900">{level.count}</div>
-                <div className="text-xs text-gray-500">成员</div>
-              </div>
-            </div>
-
-            <div className="bg-gray-50 rounded-lg p-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">总质押量:</span>
-                <span className="font-medium text-gray-900">
-                  {level.totalStaked.toLocaleString()} APEX
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </CardContent>
-  </Card>
-);
