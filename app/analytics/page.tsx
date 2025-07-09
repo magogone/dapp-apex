@@ -1124,7 +1124,7 @@ const TeamLevelCard = ({ levels }: { levels: any[] }) => {
           </div>
 
           {/* 层级人数统计 */}
-          <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
             <div className="mb-3">
               <div className="font-medium text-gray-800">层级人数</div>
               <div className="text-xs text-gray-500">各层级总人数统计</div>
