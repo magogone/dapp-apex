@@ -1067,45 +1067,37 @@ const TeamLevelCard = ({ levels }: { levels: any[] }) => {
         </div>
 
         <div className="space-y-4">
-          {/* 直推人数 */}
-          <div className="bg-green-50 rounded-lg border border-green-200 p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="font-medium text-gray-800">直推人数</div>
-                <div className="text-xs text-gray-500">第1层直接推荐</div>
-              </div>
-              <div className="text-2xl font-bold text-green-600">
-                {directReferrals.length}
-              </div>
-            </div>
-          </div>
-
-          {/* 直推地址列表 */}
-          <div className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
+          {/* 直推人数 - 带展开功能 */}
+          <div className="bg-green-50 rounded-lg border border-green-200 overflow-hidden">
             <div className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-medium text-gray-800">直推地址</div>
-                  <div className="text-xs text-gray-500">直接推荐用户列表</div>
+                  <div className="font-medium text-gray-800">直推人数</div>
+                  <div className="text-xs text-gray-500">第1层直接推荐</div>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowDirectReferrals(!showDirectReferrals)}
-                  className="p-1 h-8 w-8 hover:bg-gray-200/50 transition-all duration-200"
-                >
-                  {showDirectReferrals ? (
-                    <ChevronUp className="w-4 h-4 transition-transform duration-200" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 transition-transform duration-200" />
-                  )}
-                </Button>
+                <div className="flex items-center gap-3">
+                  <div className="text-2xl font-bold text-green-600">
+                    {directReferrals.length}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowDirectReferrals(!showDirectReferrals)}
+                    className="p-1 h-8 w-8 hover:bg-green-100 transition-all duration-200"
+                  >
+                    {showDirectReferrals ? (
+                      <ChevronUp className="w-4 h-4 transition-transform duration-200 text-green-600" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 transition-transform duration-200 text-green-600" />
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
 
             {/* 展开的直推地址列表 */}
             <div
-              className={`border-t border-gray-200 bg-white overflow-hidden transition-all duration-300 ease-in-out ${
+              className={`border-t border-green-200 bg-white overflow-hidden transition-all duration-300 ease-in-out ${
                 showDirectReferrals
                   ? "max-h-64 opacity-100"
                   : "max-h-0 opacity-0"
@@ -1116,12 +1108,12 @@ const TeamLevelCard = ({ levels }: { levels: any[] }) => {
                   {directReferrals.map((referral: any, index: number) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between py-1.5 px-2 bg-gray-50/50 rounded text-xs border border-gray-100 hover:bg-gray-100/80 transition-colors duration-200"
+                      className="flex items-center justify-between py-2 px-3 bg-gray-50/50 rounded text-sm border border-gray-100 hover:bg-gray-100/80 transition-colors duration-200"
                     >
-                      <span className="font-mono text-gray-600 text-xs">
+                      <span className="font-mono text-gray-600">
                         {referral.address}
                       </span>
-                      <span className="font-medium text-gray-800 text-xs">
+                      <span className="font-medium text-gray-800">
                         {referral.staked} APEX
                       </span>
                     </div>
