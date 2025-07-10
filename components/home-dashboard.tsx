@@ -359,9 +359,20 @@ export default function HomeDashboard() {
                       <Calculator className="h-4 w-4 mr-2" />
                       收益计算器
                     </Button>
-                    <Button className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full">
+                    <Button
+                      onClick={() => {
+                        connectWallet();
+                        setIsMenuOpen(false);
+                      }}
+                      disabled={isConnecting}
+                      className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full"
+                    >
                       <Wallet className="h-4 w-4 mr-2" />
-                      连接钱包
+                      {isConnecting
+                        ? "连接中..."
+                        : isConnected
+                        ? "已连接"
+                        : "连接钱包"}
                     </Button>
                   </div>
                 </div>

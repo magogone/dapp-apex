@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
 import { useLanguage } from "@/contexts/language-context";
+import { useWallet } from "@/contexts/wallet-context";
 
 export default function ActivityPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,6 +38,7 @@ export default function ActivityPage() {
   const [isCalculatorModalOpen, setIsCalculatorModalOpen] = useState(false);
   const pathname = usePathname();
   const { t } = useLanguage();
+  const { connectWallet, isConnected, isConnecting } = useWallet();
 
   // 导航菜单项
   const navItems = [
@@ -299,9 +301,20 @@ export default function ActivityPage() {
                     <Calculator className="h-4 w-4 mr-2" />
                     收益计算器
                   </Button>
-                  <Button className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full">
+                  <Button
+                    onClick={() => {
+                      connectWallet();
+                      setIsMenuOpen(false);
+                    }}
+                    disabled={isConnecting}
+                    className="w-full bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white rounded-full"
+                  >
                     <Wallet className="h-4 w-4 mr-2" />
-                    连接钱包
+                    {isConnecting
+                      ? "连接中..."
+                      : isConnected
+                      ? "已连接"
+                      : "连接钱包"}
                   </Button>
                 </div>
               </div>
