@@ -95,7 +95,7 @@ export default function ProfilePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
-  const [withdrawType, setWithdrawType] = useState<"APEX" | "USDT">("APEX");
+  const [withdrawType, setWithdrawType] = useState<"APEX">("APEX");
   const [isLoading, setIsLoading] = useState(false);
   const [isAssetsExpanded, setIsAssetsExpanded] = useState(false);
   const [isRecordsModalOpen, setIsRecordsModalOpen] = useState(false);
@@ -106,7 +106,256 @@ export default function ProfilePage() {
   const [isTeamPerformanceModalOpen, setIsTeamPerformanceModalOpen] =
     useState(false);
   const [isClaimSuccessModalOpen, setIsClaimSuccessModalOpen] = useState(false);
+  const [isWithdrawSuccessModalOpen, setIsWithdrawSuccessModalOpen] =
+    useState(false);
+  const [withdrawnAmount, setWithdrawnAmount] = useState("");
+  const [isFlashSwapSuccessModalOpen, setIsFlashSwapSuccessModalOpen] =
+    useState(false);
+  const [swappedAmount, setSwappedAmount] = useState("");
+  const [isReimbursementSuccessModalOpen, setIsReimbursementSuccessModalOpen] =
+    useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [recordsPerPage] = useState(5);
   const pathname = usePathname();
+
+  // 模拟的完整记录数据
+  const allRecords = [
+    {
+      id: 1,
+      type: "withdraw",
+      title: "APEX提取",
+      status: "已完成",
+      amount: "500 APEX",
+      fee: "16.67 AD",
+      time: "2024-12-20 14:30",
+      color: "green",
+    },
+    {
+      id: 2,
+      type: "exchange",
+      title: "兑换APEX",
+      status: "已完成",
+      payment: "-100 USDT",
+      received: "+2000 APEX",
+      time: "2024-12-20 10:15",
+      color: "purple",
+    },
+    {
+      id: 3,
+      type: "income",
+      title: "质押收益",
+      status: "+24 APEX",
+      source: "360天质押合约",
+      time: "2024-12-20 00:00",
+      color: "green",
+    },
+    {
+      id: 4,
+      type: "exchange",
+      title: "AD闪兑",
+      status: "已完成",
+      payment: "-25 AD",
+      received: "+21.5 USDT",
+      time: "2024-12-19 16:45",
+      color: "blue",
+    },
+    {
+      id: 5,
+      type: "income",
+      title: "AD生成",
+      status: "+2.4 AD",
+      source: "360天质押利息",
+      time: "2024-12-19 00:00",
+      color: "blue",
+    },
+    {
+      id: 6,
+      type: "withdraw",
+      title: "APEX提取",
+      status: "处理中",
+      amount: "1200 APEX",
+      fee: "40.01 AD",
+      time: "2024-12-18 10:15",
+      color: "yellow",
+    },
+    {
+      id: 7,
+      type: "income",
+      title: "质押收益",
+      status: "+16 APEX",
+      source: "7天质押合约",
+      time: "2024-12-18 00:00",
+      color: "green",
+    },
+    {
+      id: 8,
+      type: "exchange",
+      title: "兑换APEX",
+      status: "已完成",
+      payment: "-50 USDT",
+      received: "+1000 APEX",
+      time: "2024-12-17 15:20",
+      color: "purple",
+    },
+    {
+      id: 9,
+      type: "income",
+      title: "质押收益",
+      status: "+24 APEX",
+      source: "360天质押合约",
+      time: "2024-12-17 00:00",
+      color: "green",
+    },
+    {
+      id: 10,
+      type: "income",
+      title: "AD生成",
+      status: "+1.8 AD",
+      source: "360天质押利息",
+      time: "2024-12-17 00:00",
+      color: "blue",
+    },
+    {
+      id: 11,
+      type: "exchange",
+      title: "AD闪兑",
+      status: "已完成",
+      payment: "-30 AD",
+      received: "+25.8 USDT",
+      time: "2024-12-16 14:30",
+      color: "blue",
+    },
+    {
+      id: 12,
+      type: "income",
+      title: "质押收益",
+      status: "+15.5 APEX",
+      source: "7天质押合约",
+      time: "2024-12-16 00:00",
+      color: "green",
+    },
+  ];
+
+  // 分页逻辑
+  const totalPages = Math.ceil(allRecords.length / recordsPerPage);
+  const startIndex = (currentPage - 1) * recordsPerPage;
+  const endIndex = startIndex + recordsPerPage;
+  const currentRecords = allRecords.slice(startIndex, endIndex);
+
+  // 分页按钮处理
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // 根据类型过滤记录
+  const getFilteredRecords = (type: string) => {
+    if (type === "all") return allRecords;
+    return allRecords.filter((record) => record.type === type);
+  };
+
+  // 标签页切换时重置分页
+  const handleTabChange = (value: string) => {
+    setCurrentPage(1);
+  };
+
+  // 渲染记录组件
+  const renderRecord = (record: any) => {
+    const getColorClass = (color: string) => {
+      switch (color) {
+        case "green":
+          return "bg-green-500";
+        case "blue":
+          return "bg-blue-500";
+        case "purple":
+          return "bg-purple-500";
+        case "yellow":
+          return "bg-yellow-500";
+        default:
+          return "bg-gray-500";
+      }
+    };
+
+    const getStatusColor = (status: string) => {
+      if (status === "已完成") return "text-green-600";
+      if (status === "处理中") return "text-yellow-600";
+      if (status.startsWith("+"))
+        return status.includes("APEX") ? "text-green-600" : "text-blue-600";
+      return "text-gray-600";
+    };
+
+    return (
+      <div
+        key={record.id}
+        className="bg-white border border-gray-200 rounded-lg p-3"
+      >
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-2 h-2 ${getColorClass(record.color)} rounded-full`}
+            ></div>
+            <span className="font-medium text-gray-800">{record.title}</span>
+          </div>
+          <span className={`text-xs ${getStatusColor(record.status)}`}>
+            {record.status}
+          </span>
+        </div>
+        <div className="text-sm text-gray-600">
+          {record.type === "withdraw" && (
+            <>
+              <div className="flex justify-between">
+                <span>提取数量:</span>
+                <span className="font-medium">{record.amount}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>手续费(AD抵扣):</span>
+                <span className="text-orange-600">{record.fee}</span>
+              </div>
+            </>
+          )}
+          {record.type === "exchange" && (
+            <>
+              {record.payment && (
+                <div className="flex justify-between">
+                  <span>
+                    {record.title === "AD闪兑" ? "闪兑数量:" : "支付:"}
+                  </span>
+                  <span className="font-medium text-red-600">
+                    {record.payment}
+                  </span>
+                </div>
+              )}
+              {record.received && (
+                <div className="flex justify-between">
+                  <span>
+                    {record.title === "AD闪兑" ? "获得USDT:" : "获得:"}
+                  </span>
+                  <span className="text-green-600">{record.received}</span>
+                </div>
+              )}
+            </>
+          )}
+          {record.type === "income" && record.source && (
+            <div className="flex justify-between">
+              <span>来源:</span>
+              <span>{record.source}</span>
+            </div>
+          )}
+          <div className="flex justify-between">
+            <span>时间:</span>
+            <span>{record.time}</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const navItems = [
     {
@@ -146,23 +395,21 @@ export default function ProfilePage() {
     setIsLoading(true);
 
     // 个人页面提取需要销毁AD抵扣手续费
-    if (withdrawType === "APEX") {
-      const feeInAD = (parseFloat(withdrawAmount) * 0.1 * 0.963) / 2.89; // 10%手续费转换为AD
-      console.log(
-        "个人提取",
-        withdrawAmount,
-        "APEX，销毁",
-        feeInAD.toFixed(4),
-        "AD抵扣手续费"
-      );
-    } else {
-      console.log("个人提取", withdrawAmount, withdrawType);
-    }
+    const feeInAD = (parseFloat(withdrawAmount) * 0.1 * 0.963) / 2.89; // 10%手续费转换为AD
+    console.log(
+      "个人提取",
+      withdrawAmount,
+      "APEX，销毁",
+      feeInAD.toFixed(4),
+      "AD抵扣手续费"
+    );
 
     // 模拟提取处理
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsLoading(false);
     setIsWithdrawModalOpen(false);
+    setWithdrawnAmount(withdrawAmount);
+    setIsWithdrawSuccessModalOpen(true);
     setWithdrawAmount("");
   };
 
@@ -583,44 +830,18 @@ export default function ProfilePage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Download className="w-5 h-5" />
-              提取代币
+              提取个人收益
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            {/* 代币类型选择 */}
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant={withdrawType === "APEX" ? "default" : "outline"}
-                onClick={() => setWithdrawType("APEX")}
-                className={
-                  withdrawType === "APEX"
-                    ? "bg-gradient-to-r from-teal-400 to-green-500 text-white"
-                    : ""
-                }
-              >
-                APEX
-              </Button>
-              <Button
-                variant={withdrawType === "USDT" ? "default" : "outline"}
-                onClick={() => setWithdrawType("USDT")}
-                className={
-                  withdrawType === "USDT"
-                    ? "bg-gradient-to-r from-teal-400 to-green-500 text-white"
-                    : ""
-                }
-              >
-                USDT
-              </Button>
-            </div>
-
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
-                提取数量 ({withdrawType})
+                提取数量 (APEX)
               </label>
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
-                  placeholder={`输入${withdrawType}数量`}
+                  placeholder="输入APEX数量"
                   value={withdrawAmount}
                   onChange={(e) => setWithdrawAmount(e.target.value)}
                   className="flex-1 text-lg"
@@ -628,22 +849,14 @@ export default function ProfilePage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() =>
-                    setWithdrawAmount(
-                      withdrawType === "APEX"
-                        ? user.apexBalance.toString()
-                        : "2485"
-                    )
-                  }
+                  onClick={() => setWithdrawAmount(user.apexBalance.toString())}
                   className="text-green-600 border-green-200"
                 >
                   全部
                 </Button>
               </div>
               <div className="text-xs text-gray-500">
-                可提取余额:{" "}
-                {withdrawType === "APEX" ? user.apexBalance : "2485"}{" "}
-                {withdrawType}
+                可提取余额: {user.apexBalance} APEX
               </div>
             </div>
 
@@ -652,42 +865,25 @@ export default function ProfilePage() {
                 <div className="flex justify-between">
                   <span>提取数量:</span>
                   <span className="font-medium">
-                    {withdrawAmount || "0"} {withdrawType}
+                    {withdrawAmount || "0"} APEX
                   </span>
                 </div>
-                {withdrawType === "APEX" ? (
-                  <div className="flex justify-between">
-                    <span>销毁AD:</span>
-                    <span className="font-medium text-orange-600">
-                      {withdrawAmount
-                        ? (
-                            (parseFloat(withdrawAmount) * 0.1 * 0.963) /
-                            2.89
-                          ).toFixed(4)
-                        : "0"}{" "}
-                      AD
-                    </span>
-                  </div>
-                ) : (
-                  <div className="flex justify-between">
-                    <span>手续费 (10%):</span>
-                    <span className="font-medium text-red-600">
-                      {withdrawAmount
-                        ? (parseFloat(withdrawAmount) * 0.1).toFixed(2)
-                        : "0"}{" "}
-                      {withdrawType}
-                    </span>
-                  </div>
-                )}
+                <div className="flex justify-between">
+                  <span>手续费(AD抵扣):</span>
+                  <span className="font-medium text-orange-600">
+                    {withdrawAmount
+                      ? (
+                          (parseFloat(withdrawAmount) * 0.1 * 0.963) /
+                          2.89
+                        ).toFixed(4)
+                      : "0"}{" "}
+                    AD
+                  </span>
+                </div>
                 <div className="flex justify-between border-t pt-2 mt-2">
                   <span>实际到账:</span>
                   <span className="font-bold text-green-600">
-                    {withdrawAmount
-                      ? withdrawType === "APEX"
-                        ? withdrawAmount
-                        : (parseFloat(withdrawAmount) * 0.9).toFixed(2)
-                      : "0"}{" "}
-                    {withdrawType}
+                    {withdrawAmount || "0"} APEX
                   </span>
                 </div>
               </div>
@@ -709,8 +905,7 @@ export default function ProfilePage() {
                   isLoading ||
                   !withdrawAmount ||
                   parseFloat(withdrawAmount) <= 0 ||
-                  parseFloat(withdrawAmount) >
-                    (withdrawType === "APEX" ? user.apexBalance : 2485)
+                  parseFloat(withdrawAmount) > user.apexBalance
                 }
               >
                 {isLoading ? "提取中..." : "确认提取"}
@@ -731,220 +926,198 @@ export default function ProfilePage() {
           </DialogHeader>
           <div className="space-y-4">
             {/* 记录类型标签页 */}
-            <Tabs defaultValue="withdraw" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-gray-100">
+            <Tabs
+              defaultValue="all"
+              className="w-full"
+              onValueChange={handleTabChange}
+            >
+              <TabsList className="grid w-full grid-cols-4 bg-gray-100">
+                <TabsTrigger value="all">全部记录</TabsTrigger>
                 <TabsTrigger value="withdraw">提取记录</TabsTrigger>
                 <TabsTrigger value="income">生息记录</TabsTrigger>
+                <TabsTrigger value="exchange">兑换记录</TabsTrigger>
               </TabsList>
+
+              {/* 全部记录 */}
+              <TabsContent value="all" className="space-y-3 mt-4">
+                <div className="space-y-2">
+                  {getFilteredRecords("all")
+                    .slice(
+                      (currentPage - 1) * recordsPerPage,
+                      currentPage * recordsPerPage
+                    )
+                    .map((record) => renderRecord(record))}
+                </div>
+
+                {/* 分页按钮 */}
+                <div className="flex justify-center items-center gap-3 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-8 h-8 p-0"
+                    disabled={currentPage === 1}
+                    onClick={handlePreviousPage}
+                  >
+                    ←
+                  </Button>
+                  <span className="text-sm text-gray-600 font-medium">
+                    {currentPage}/
+                    {Math.ceil(
+                      getFilteredRecords("all").length / recordsPerPage
+                    )}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-8 h-8 p-0"
+                    disabled={
+                      currentPage ===
+                      Math.ceil(
+                        getFilteredRecords("all").length / recordsPerPage
+                      )
+                    }
+                    onClick={handleNextPage}
+                  >
+                    →
+                  </Button>
+                </div>
+              </TabsContent>
 
               {/* 提取记录 */}
               <TabsContent value="withdraw" className="space-y-3 mt-4">
                 <div className="space-y-2">
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="font-medium text-gray-800">
-                          APEX提取
-                        </span>
-                      </div>
-                      <span className="text-xs text-green-600">已完成</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <div className="flex justify-between">
-                        <span>提取数量:</span>
-                        <span className="font-medium">500 APEX</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>销毁AD:</span>
-                        <span className="text-orange-600">16.67 AD</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>时间:</span>
-                        <span>2024-12-20 14:30</span>
-                      </div>
-                    </div>
-                  </div>
+                  {getFilteredRecords("withdraw")
+                    .slice(
+                      (currentPage - 1) * recordsPerPage,
+                      currentPage * recordsPerPage
+                    )
+                    .map((record) => renderRecord(record))}
+                </div>
 
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="font-medium text-gray-800">
-                          AD提取
-                        </span>
-                      </div>
-                      <span className="text-xs text-green-600">已完成</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <div className="flex justify-between">
-                        <span>提取数量:</span>
-                        <span className="font-medium">25 AD</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>手续费:</span>
-                        <span className="text-red-600">免费</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>时间:</span>
-                        <span>2024-12-19 16:45</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                        <span className="font-medium text-gray-800">
-                          APEX提取
-                        </span>
-                      </div>
-                      <span className="text-xs text-yellow-600">处理中</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <div className="flex justify-between">
-                        <span>提取数量:</span>
-                        <span className="font-medium">1200 APEX</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>销毁AD:</span>
-                        <span className="text-orange-600">40.01 AD</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>时间:</span>
-                        <span>2024-12-20 10:15</span>
-                      </div>
-                    </div>
-                  </div>
+                {/* 分页按钮 */}
+                <div className="flex justify-center items-center gap-3 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-8 h-8 p-0"
+                    disabled={currentPage === 1}
+                    onClick={handlePreviousPage}
+                  >
+                    ←
+                  </Button>
+                  <span className="text-sm text-gray-600 font-medium">
+                    {currentPage}/
+                    {Math.ceil(
+                      getFilteredRecords("withdraw").length / recordsPerPage
+                    )}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-8 h-8 p-0"
+                    disabled={
+                      currentPage ===
+                      Math.ceil(
+                        getFilteredRecords("withdraw").length / recordsPerPage
+                      )
+                    }
+                    onClick={handleNextPage}
+                  >
+                    →
+                  </Button>
                 </div>
               </TabsContent>
 
               {/* 生息记录 */}
               <TabsContent value="income" className="space-y-3 mt-4">
                 <div className="space-y-2">
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="font-medium text-gray-800">
-                          质押收益
-                        </span>
-                      </div>
-                      <span className="text-xs text-green-600">+24 APEX</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <div className="flex justify-between">
-                        <span>来源:</span>
-                        <span>360天质押合约</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>时间:</span>
-                        <span>2024-12-20 00:00</span>
-                      </div>
-                    </div>
-                  </div>
+                  {getFilteredRecords("income")
+                    .slice(
+                      (currentPage - 1) * recordsPerPage,
+                      currentPage * recordsPerPage
+                    )
+                    .map((record) => renderRecord(record))}
+                </div>
 
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="font-medium text-gray-800">
-                          质押收益
-                        </span>
-                      </div>
-                      <span className="text-xs text-green-600">+16 APEX</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <div className="flex justify-between">
-                        <span>来源:</span>
-                        <span>7天质押合约</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>时间:</span>
-                        <span>2024-12-20 00:00</span>
-                      </div>
-                    </div>
-                  </div>
+                {/* 分页按钮 */}
+                <div className="flex justify-center items-center gap-3 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-8 h-8 p-0"
+                    disabled={currentPage === 1}
+                    onClick={handlePreviousPage}
+                  >
+                    ←
+                  </Button>
+                  <span className="text-sm text-gray-600 font-medium">
+                    {currentPage}/
+                    {Math.ceil(
+                      getFilteredRecords("income").length / recordsPerPage
+                    )}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-8 h-8 p-0"
+                    disabled={
+                      currentPage ===
+                      Math.ceil(
+                        getFilteredRecords("income").length / recordsPerPage
+                      )
+                    }
+                    onClick={handleNextPage}
+                  >
+                    →
+                  </Button>
+                </div>
+              </TabsContent>
 
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        <span className="font-medium text-gray-800">
-                          AD生成
-                        </span>
-                      </div>
-                      <span className="text-xs text-blue-600">+2.4 AD</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <div className="flex justify-between">
-                        <span>来源:</span>
-                        <span>360天质押利息</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>时间:</span>
-                        <span>2024-12-20 00:00</span>
-                      </div>
-                    </div>
-                  </div>
+              {/* 兑换记录 */}
+              <TabsContent value="exchange" className="space-y-3 mt-4">
+                <div className="space-y-2">
+                  {getFilteredRecords("exchange")
+                    .slice(
+                      (currentPage - 1) * recordsPerPage,
+                      currentPage * recordsPerPage
+                    )
+                    .map((record) => renderRecord(record))}
+                </div>
 
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="font-medium text-gray-800">
-                          质押收益
-                        </span>
-                      </div>
-                      <span className="text-xs text-green-600">+24 APEX</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <div className="flex justify-between">
-                        <span>来源:</span>
-                        <span>360天质押合约</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>时间:</span>
-                        <span>2024-12-19 00:00</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="font-medium text-gray-800">
-                          质押收益
-                        </span>
-                      </div>
-                      <span className="text-xs text-green-600">+15.5 APEX</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <div className="flex justify-between">
-                        <span>来源:</span>
-                        <span>7天质押合约</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>时间:</span>
-                        <span>2024-12-19 00:00</span>
-                      </div>
-                    </div>
-                  </div>
+                {/* 分页按钮 */}
+                <div className="flex justify-center items-center gap-3 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-8 h-8 p-0"
+                    disabled={currentPage === 1}
+                    onClick={handlePreviousPage}
+                  >
+                    ←
+                  </Button>
+                  <span className="text-sm text-gray-600 font-medium">
+                    {currentPage}/
+                    {Math.ceil(
+                      getFilteredRecords("exchange").length / recordsPerPage
+                    )}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-8 h-8 p-0"
+                    disabled={
+                      currentPage ===
+                      Math.ceil(
+                        getFilteredRecords("exchange").length / recordsPerPage
+                      )
+                    }
+                    onClick={handleNextPage}
+                  >
+                    →
+                  </Button>
                 </div>
               </TabsContent>
             </Tabs>
-
-            <div className="flex justify-center pt-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsRecordsModalOpen(false)}
-                className="px-8"
-              >
-                关闭
-              </Button>
-            </div>
           </div>
         </DialogContent>
       </Dialog>
@@ -1028,9 +1201,11 @@ export default function ProfilePage() {
               <Button
                 onClick={() => {
                   // 这里处理闪兑逻辑
+                  console.log("闪兑按钮被点击", adAmount);
+                  setSwappedAmount(adAmount);
                   setIsFlashSwapModalOpen(false);
+                  setIsFlashSwapSuccessModalOpen(true);
                   setAdAmount("");
-                  // 可以添加 toast 提示
                 }}
                 className="flex-1 bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white"
                 disabled={
@@ -1042,6 +1217,71 @@ export default function ProfilePage() {
                 确认闪兑
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* 提取成功弹窗 */}
+      <Dialog
+        open={isWithdrawSuccessModalOpen}
+        onOpenChange={setIsWithdrawSuccessModalOpen}
+      >
+        <DialogContent className="max-w-sm">
+          <div className="flex flex-col items-center py-6 space-y-6">
+            {/* 第一行：提取成功！ */}
+            <div className="text-lg font-semibold text-gray-900">
+              提取成功！
+            </div>
+
+            {/* 第二行：提取的数量 */}
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600">
+                {withdrawnAmount || "0"}
+              </div>
+              <div className="text-sm text-gray-500">APEX</div>
+            </div>
+
+            {/* 第三行：确定按钮 */}
+            <Button
+              onClick={() => setIsWithdrawSuccessModalOpen(false)}
+              className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
+            >
+              确定
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* 闪兑成功弹窗 */}
+      <Dialog
+        open={isFlashSwapSuccessModalOpen}
+        onOpenChange={setIsFlashSwapSuccessModalOpen}
+      >
+        <DialogContent className="max-w-sm">
+          <div className="flex flex-col items-center py-6 space-y-6">
+            {/* 第一行：闪兑成功！ */}
+            <div className="text-lg font-semibold text-gray-900">
+              闪兑成功！
+            </div>
+
+            {/* 第二行：闪兑的数量 */}
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600">
+                $
+                {swappedAmount
+                  ? (parseFloat(swappedAmount) * 0.86).toFixed(2)
+                  : "0.00"}
+              </div>
+              <div className="text-sm text-gray-500">USDT</div>
+            </div>
+
+            {/* 第三行：确定按钮 */}
+            <Button
+              onClick={() => setIsFlashSwapSuccessModalOpen(false)}
+              className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
+            >
+              确定
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -1531,34 +1771,6 @@ const StudioSection = ({ user }: { user: any }) => {
             {/* 第三行：确定按钮 */}
             <Button
               onClick={() => setIsClaimSuccessModalOpen(false)}
-              className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
-            >
-              确定
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* 餐费申请成功弹窗 */}
-      <Dialog
-        open={isReimbursementSuccessModalOpen}
-        onOpenChange={setIsReimbursementSuccessModalOpen}
-      >
-        <DialogContent className="max-w-sm">
-          <div className="flex flex-col items-center py-6 space-y-6">
-            {/* 第一行：申请提交成功！ */}
-            <div className="text-lg font-semibold text-gray-900">
-              申请提交成功！
-            </div>
-
-            {/* 第二行：请等待审核通过 */}
-            <div className="text-center">
-              <div className="text-base text-gray-600">请等待审核通过</div>
-            </div>
-
-            {/* 第三行：确定按钮 */}
-            <Button
-              onClick={() => setIsReimbursementSuccessModalOpen(false)}
               className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
             >
               确定

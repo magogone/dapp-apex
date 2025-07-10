@@ -732,84 +732,86 @@ export default function AnalyticsPage() {
               </div>
             ) : (
               <>
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                      <DollarSign className="w-4 h-4 text-white" />
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    提取数量 (APEX)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      placeholder="输入APEX数量"
+                      value={teamWithdrawAmount}
+                      onChange={(e) => setTeamWithdrawAmount(e.target.value)}
+                      className="flex-1 text-lg"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setTeamWithdrawAmount(
+                          teamStats.totalEarnings.toString()
+                        )
+                      }
+                      className="text-green-600 border-green-200"
+                    >
+                      全部
+                    </Button>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    可提取余额: {teamStats.totalEarnings} APEX
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="text-sm text-gray-600">
+                    <div className="flex justify-between">
+                      <span>提取数量:</span>
+                      <span className="font-medium">
+                        {teamWithdrawAmount || "0"} APEX
+                      </span>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-800">
-                        可提取: {teamStats.totalEarnings} APEX
-                      </h4>
+                    <div className="flex justify-between">
+                      <span>手续费(10%):</span>
+                      <span className="font-medium text-orange-600">
+                        {teamWithdrawAmount
+                          ? (parseFloat(teamWithdrawAmount) * 0.1).toFixed(4)
+                          : "0"}{" "}
+                        APEX
+                      </span>
+                    </div>
+                    <div className="flex justify-between border-t pt-2 mt-2">
+                      <span>实际到账:</span>
+                      <span className="font-bold text-green-600">
+                        {teamWithdrawAmount
+                          ? (parseFloat(teamWithdrawAmount) * 0.9).toFixed(2)
+                          : "0"}{" "}
+                        APEX
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      提取数量
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <Input
-                        type="number"
-                        placeholder="输入提取数量"
-                        value={teamWithdrawAmount}
-                        onChange={(e) => setTeamWithdrawAmount(e.target.value)}
-                        className="flex-1"
-                        max={teamStats.totalEarnings}
-                      />
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setTeamWithdrawAmount(
-                            teamStats.totalEarnings.toString()
-                          )
-                        }
-                        className="shrink-0"
-                      >
-                        全部
-                      </Button>
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      实际到账:{" "}
-                      {teamWithdrawAmount
-                        ? (parseFloat(teamWithdrawAmount) * 0.9).toFixed(2)
-                        : "0"}{" "}
-                      APEX（扣除10%手续费）
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <Button
-                      variant="outline"
-                      onClick={() => setIsTeamWithdrawModalOpen(false)}
-                      className="flex-1"
-                      disabled={isWithdrawLoading}
-                    >
-                      取消
-                    </Button>
-                    <Button
-                      onClick={handleTeamWithdraw}
-                      disabled={
-                        isWithdrawLoading ||
-                        !teamWithdrawAmount ||
-                        parseFloat(teamWithdrawAmount) <= 0 ||
-                        parseFloat(teamWithdrawAmount) > teamStats.totalEarnings
-                      }
-                      className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white disabled:opacity-50"
-                    >
-                      {isWithdrawLoading ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                          提取中...
-                        </>
-                      ) : (
-                        "确认提取"
-                      )}
-                    </Button>
-                  </div>
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsTeamWithdrawModalOpen(false)}
+                    className="flex-1"
+                    disabled={isWithdrawLoading}
+                  >
+                    取消
+                  </Button>
+                  <Button
+                    onClick={handleTeamWithdraw}
+                    className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
+                    disabled={
+                      isWithdrawLoading ||
+                      !teamWithdrawAmount ||
+                      parseFloat(teamWithdrawAmount) <= 0 ||
+                      parseFloat(teamWithdrawAmount) > teamStats.totalEarnings
+                    }
+                  >
+                    {isWithdrawLoading ? "提取中..." : "确认提取"}
+                  </Button>
                 </div>
               </>
             )}

@@ -625,7 +625,7 @@ export default function MyStakesPage() {
             <div className="flex gap-3">
               <Button
                 onClick={() => setIsSwapModalOpen(true)}
-                className="flex-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white"
+                className="flex-1 bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white"
               >
                 <ArrowUpDown className="w-4 h-4 mr-2" />
                 闪兑
@@ -649,7 +649,7 @@ export default function MyStakesPage() {
               onClick={() => setActiveTab("staking")}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
                 activeTab === "staking"
-                  ? "bg-white text-green-600 shadow-sm"
+                  ? "bg-gradient-to-r from-teal-400 to-green-500 text-white shadow-sm"
                   : "text-gray-600 hover:text-gray-800"
               }`}
             >
@@ -660,7 +660,7 @@ export default function MyStakesPage() {
               onClick={() => setActiveTab("completed")}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
                 activeTab === "completed"
-                  ? "bg-white text-green-600 shadow-sm"
+                  ? "bg-gradient-to-r from-teal-400 to-green-500 text-white shadow-sm"
                   : "text-gray-600 hover:text-gray-800"
               }`}
             >
