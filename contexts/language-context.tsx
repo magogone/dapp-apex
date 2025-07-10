@@ -131,6 +131,13 @@ const translations = {
     "nav.analytics": "Team",
     "nav.profile": "Profile",
 
+    // Activity
+    "activity.title": "Activity Center",
+    "activity.subtitle":
+      "Discover exciting activities and participate to win rewards",
+    "activity.activityList": "Activity List",
+    "activity.participationRecords": "Participation Records",
+
     // Common
     "common.loading": "Loading...",
     "common.error": "Error",
@@ -207,6 +214,12 @@ const translations = {
     "nav.analytics": "团队",
     "nav.profile": "我的",
 
+    // Activity
+    "activity.title": "活动中心",
+    "activity.subtitle": "发现精彩活动，参与赢取奖励",
+    "activity.activityList": "活动列表",
+    "activity.participationRecords": "参与记录",
+
     // Common
     "common.loading": "加载中...",
     "common.error": "错误",
@@ -219,13 +232,16 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 );
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>("zh");
 
   useEffect(() => {
     // Load saved language from localStorage
     const savedLanguage = localStorage.getItem("language") as Language;
     if (savedLanguage && (savedLanguage === "en" || savedLanguage === "zh")) {
       setLanguage(savedLanguage);
+    } else {
+      // Set default language to Chinese if no saved preference
+      setLanguage("zh");
     }
   }, []);
 

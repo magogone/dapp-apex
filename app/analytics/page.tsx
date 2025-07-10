@@ -55,7 +55,7 @@ const dynamicRewardsData = {
     rate: 15, // 15%
     earned: 145.5,
     referrals: 5,
-    validReferrals: 3, // ≥10 APEX的有效推荐
+    validReferrals: 3, // ≥5 APEX的有效推荐
   },
   levelBonus: {
     rate: 2, // 2%
@@ -843,45 +843,55 @@ export default function AnalyticsPage() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
-            {/* 团队奖励规则 - 简化版本 */}
-            <div className="bg-green-50 rounded-lg p-3 border border-green-200">
-              <div className="text-xs font-medium text-green-700 mb-2">
-                🎯 团队奖励机制
+            {/* 直推奖励 */}
+            <div className="bg-white rounded-lg p-3 border border-green-200">
+              <div className="text-xs font-medium text-gray-800 mb-2">
+                🎁 直推奖励
               </div>
-              <div className="space-y-1 text-xs text-green-700">
-                <div className="flex justify-between">
-                  <span>直推奖:</span>
-                  <span className="font-medium">15%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>层级奖:</span>
-                  <span className="font-medium">2%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>管理奖+分红:</span>
-                  <span className="font-medium">算力占比</span>
-                </div>
+              <div className="text-xs text-gray-700">
+                • 奖励比例：直推用户质押收益的15%
+                <br />
+                • 有效条件：直推账户质押≥5枚APEX
+                <br />• 节点购买：直推购买奖励10%
               </div>
             </div>
 
-            {/* 层级权益说明 - 简化版本 */}
-            <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-              <div className="text-xs font-medium text-blue-700 mb-1">
-                🔓 层级解锁
+            {/* 层级奖励 */}
+            <div className="bg-white rounded-lg p-3 border border-green-200">
+              <div className="text-xs font-medium text-gray-800 mb-2">
+                🏅 层级奖励
               </div>
-              <div className="text-xs text-blue-600 leading-tight">
-                直推2/3/4/5个 → 拿4/7/10/15层奖励
+              <div className="text-xs text-gray-700">
+                • 奖励比例：2-15层用户质押收益的2%
                 <br />
-                <span className="text-blue-500">*需质押≥10枚APEX</span>
+                • 直推2个 → 拿4层奖励
+                <br />
+                • 直推3个 → 拿7层奖励
+                <br />
+                • 直推4个 → 拿10层奖励
+                <br />• 直推5个 → 拿15层奖励
+              </div>
+            </div>
+
+            {/* 管理奖与分红 */}
+            <div className="bg-white rounded-lg p-3 border border-green-200">
+              <div className="text-xs font-medium text-gray-800 mb-2">
+                💰 管理奖与分红
+              </div>
+              <div className="text-xs text-gray-700">
+                • 管理奖：个人小区算力/全网小区算力×全网静态产出60%
+                <br />
+                • 加权分红：7日内小区新增算力分配全网质押收益10%
+                <br />• 封顶机制：(账号质押量+销毁量)×4
               </div>
             </div>
 
             {/* 邀请链接展示 */}
-            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-              <div className="text-xs font-medium text-gray-700 mb-2">
+            <div className="bg-white rounded-lg p-3 border border-green-200">
+              <div className="text-xs font-medium text-gray-800 mb-2">
                 🔗 您的专属邀请链接
               </div>
-              <div className="bg-white rounded border p-2 text-xs text-gray-800 break-all">
+              <div className="bg-gray-50 rounded border p-2 text-xs text-gray-800 break-all">
                 https://apex-dapp.com/invite?ref=USER123456
               </div>
             </div>

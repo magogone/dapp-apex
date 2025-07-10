@@ -29,12 +29,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function ActivityPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("活动列表");
   const [isCalculatorModalOpen, setIsCalculatorModalOpen] = useState(false);
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   // 导航菜单项
   const navItems = [
@@ -148,7 +150,7 @@ export default function ActivityPage() {
     },
   ];
 
-  const tabs = ["活动列表", "参与记录"];
+  const tabs = [t("activity.activityList"), t("activity.participationRecords")];
 
   // 参与记录数据
   const participationRecords = [
@@ -209,7 +211,9 @@ export default function ActivityPage() {
                 />
               </div>
               <div className="-ml-6">
-                <div className="text-xs text-gray-500">活动中心</div>
+                <div className="text-xs text-gray-500">
+                  {t("activity.title")}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -239,7 +243,7 @@ export default function ActivityPage() {
             </div>
           </div>
           <div className="-mt-10">
-            <p className="text-sm text-gray-600">发现精彩活动，参与赢取奖励</p>
+            <p className="text-sm text-gray-600">{t("activity.subtitle")}</p>
           </div>
         </div>
       </header>
@@ -360,7 +364,7 @@ export default function ActivityPage() {
 
         {/* 活动列表 */}
         <div className="space-y-4">
-          {activeTab === "活动列表"
+          {activeTab === t("activity.activityList")
             ? // 活动列表
               activities.map((activity) => {
                 const Icon = activity.icon;

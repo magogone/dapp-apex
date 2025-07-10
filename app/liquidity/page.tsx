@@ -30,12 +30,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function LiquidityPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRulesOpen, setIsRulesOpen] = useState(false);
   const [isCalculatorModalOpen, setIsCalculatorModalOpen] = useState(false);
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   // 锁仓代币数据
   const lockTokenData = {

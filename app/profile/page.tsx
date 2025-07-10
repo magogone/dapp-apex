@@ -1418,7 +1418,7 @@ const StudioSection = ({ user }: { user: any }) => {
                     </div>
                     <div className="text-blue-700 space-y-1">
                       <div>• 获得直推用户质押收益的15%</div>
-                      <div>• 有效账户条件：直推账户质押≥10枚APEX</div>
+                      <div>• 有效账户条件：直推账户质押≥5枚APEX</div>
                     </div>
                   </div>
 

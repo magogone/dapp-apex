@@ -493,16 +493,16 @@ export default function HomeDashboard() {
                 <div className="flex items-center p-4">
                   <div className="flex-1">
                     <h3 className="text-lg font-bold text-gray-800 mb-1">
-                      APEX空投大放送
+                      验证节点限量发售
                     </h3>
                     <p className="text-sm text-gray-600">
-                      完成任务即可获得APEX代币奖励！
+                      购买验证节点，享受1.2%日收益+额外权益！
                     </p>
                   </div>
                   <div className="w-20 h-16 ml-4">
                     <img
                       src="/apex-airdrop.png"
-                      alt="APEX空投活动"
+                      alt="节点限量发售"
                       className="w-full h-full object-contain"
                     />
                   </div>
@@ -526,43 +526,47 @@ export default function HomeDashboard() {
                           <HelpCircle className="h-4 w-4 text-gray-500" />
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-2xl">
+                      <DialogContent className="max-w-md">
                         <DialogHeader>
                           <DialogTitle className="flex items-center gap-2">
                             <Coins className="w-5 h-5" />
-                            节点售卖规则说明
+                            节点规则说明
                           </DialogTitle>
                         </DialogHeader>
-                        <div className="grid grid-cols-3 gap-4 text-sm">
-                          <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                            <h4 className="font-semibold mb-2 text-blue-800">
-                              🎯 节点权益
-                            </h4>
-                            <p className="text-blue-700">
+                        <div className="space-y-3">
+                          {/* 基础权益 */}
+                          <div className="bg-white rounded-lg p-3 border border-green-200">
+                            <div className="text-xs font-medium text-gray-800 mb-2">
+                              🎯 基础权益
+                            </div>
+                            <div className="text-xs text-gray-700">
                               • 等同于360天质押合约（1.2%/天收益）
-                            </p>
+                              <br />• 配送5%（金本位）治理代币
+                            </div>
                           </div>
-                          <div className="bg-green-50 rounded-lg p-3 border border-green-200">
-                            <h4 className="font-semibold mb-2 text-green-800">
+
+                          {/* 额外权益 */}
+                          <div className="bg-white rounded-lg p-3 border border-green-200">
+                            <div className="text-xs font-medium text-gray-800 mb-2">
                               ✨ 额外权益
-                            </h4>
-                            <p className="text-green-700 text-xs">
-                              • 配送5%治理代币
-                              <br />
+                            </div>
+                            <div className="text-xs text-gray-700">
                               • 节点资金用于共建底池
                               <br />
-                              • 手续费30%用于节点分红
-                              <br />• 赠送工作室资格
-                            </p>
+                              • 享受提现手续费分红（VIP1/VIP2各30%）
+                              <br />• 赠送工作室资格，享受10万USDT政策扶持
+                            </div>
                           </div>
-                          <div className="bg-orange-50 rounded-lg p-3 border border-orange-200">
-                            <h4 className="font-semibold mb-2 text-orange-800">
+
+                          {/* 节点类型 */}
+                          <div className="bg-white rounded-lg p-3 border border-green-200">
+                            <div className="text-xs font-medium text-gray-800 mb-2">
                               📊 节点类型
-                            </h4>
-                            <p className="text-orange-700">
+                            </div>
+                            <div className="text-xs text-gray-700">
                               • VIP 1：1000 USDT，限量1000份
                               <br />• VIP 2：5000 USDT，限量200份
-                            </p>
+                            </div>
                           </div>
                         </div>
                       </DialogContent>
@@ -594,19 +598,27 @@ export default function HomeDashboard() {
                           </DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
-                          {/* 奖励规则 */}
-                          <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                            <div className="text-sm text-green-700">
-                              直推好友购买节点获得10%收益
+                          {/* 节点邀请奖励 */}
+                          <div className="bg-white rounded-lg p-3 border border-green-200">
+                            <div className="text-xs font-medium text-gray-800 mb-2">
+                              🎁 节点邀请奖励
+                            </div>
+                            <div className="text-xs text-gray-700">
+                              • 邀请好友购买节点，即可获得10%奖励
+                              <br />
+                              • 奖励与被邀请人购买的节点类型相关
+                              <br />
+                              • VIP1节点：获得100 USDT奖励
+                              <br />• VIP2节点：获得500 USDT奖励
                             </div>
                           </div>
 
                           {/* 邀请链接展示 */}
-                          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                            <div className="text-sm font-medium text-gray-700 mb-2">
-                              您的专属邀请链接
+                          <div className="bg-white rounded-lg p-3 border border-green-200">
+                            <div className="text-xs font-medium text-gray-800 mb-2">
+                              🔗 您的专属邀请链接
                             </div>
-                            <div className="bg-white rounded border p-3 text-sm text-gray-800 break-all">
+                            <div className="bg-gray-50 rounded border p-2 text-xs text-gray-800 break-all">
                               https://apex-dapp.com/invite?ref=USER123456
                             </div>
                           </div>
@@ -898,59 +910,58 @@ export default function HomeDashboard() {
                                 静态质押规则说明
                               </DialogTitle>
                             </DialogHeader>
-                            <div className="space-y-4 text-sm">
-                              <div>
-                                <h4 className="font-semibold mb-2">
+                            <div className="space-y-3">
+                              <div className="bg-white rounded-lg p-3 border border-green-200">
+                                <div className="text-xs font-medium text-gray-800 mb-2">
                                   📋 基本规则
-                                </h4>
-                                <p className="text-gray-600">
+                                </div>
+                                <div className="text-xs text-gray-700">
                                   • 利息发放：以币本位实时结算
                                   <br />
                                   • AD 生成：钱包中利息按金本位每天 1.2%
                                   <br />
                                   • 解押：无需服务费
-                                  <br />• 提现：收取 10% 服务费（可用 AD 抵扣）
-                                </p>
+                                  <br />• 提现：收取 10% 服务费（使用 AD 享 7
+                                  折优惠）
+                                </div>
                               </div>
-                              <div>
-                                <h4 className="font-semibold mb-2">
+                              <div className="bg-white rounded-lg p-3 border border-green-200">
+                                <div className="text-xs font-medium text-gray-800 mb-2">
                                   ⏰ 7天质押合约
-                                </h4>
-                                <p className="text-gray-600">
-                                  • 每轮 0.05% 间隔（支持一键复利）
+                                </div>
+                                <div className="text-xs text-gray-700">
+                                  • 每轮 0.05% 递增（支持一键复利）
                                   <br />
                                   • 第一轮：0.7%/天
                                   <br />
                                   • 第二轮：0.75%/天
                                   <br />
                                   • 第三轮：0.8%/天
-                                  <br />• 利息递增，最高封顶 1.2%/天
-                                </p>
+                                  <br />• 利息递增，最高封顶 1.1%/天
+                                </div>
                               </div>
 
-                              <div>
-                                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                                  <Award className="w-4 h-4" />
-                                  360天质押合约
-                                </h4>
-                                <p className="text-gray-600">
+                              <div className="bg-white rounded-lg p-3 border border-green-200">
+                                <div className="text-xs font-medium text-gray-800 mb-2">
+                                  🏆 360天质押合约
+                                </div>
+                                <div className="text-xs text-gray-700">
                                   • 固定利息：1.2%/天
                                   <br />
                                   • 治理代币奖励：按利息金本位发放 AD
                                   <br />• 长期收益更稳定
-                                </p>
+                                </div>
                               </div>
-                              <div>
-                                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                                  <Download className="w-4 h-4" />
-                                  提现规则
-                                </h4>
-                                <p className="text-gray-600">
+                              <div className="bg-white rounded-lg p-3 border border-green-200">
+                                <div className="text-xs font-medium text-gray-800 mb-2">
+                                  📥 提现规则
+                                </div>
+                                <div className="text-xs text-gray-700">
                                   • 单次提币：1-2000 枚 APEX
                                   <br />
                                   • ≤2000 枚：智能合约即时执行
                                   <br />• &gt;2000 枚：需人工审核
-                                </p>
+                                </div>
                               </div>
                             </div>
                           </DialogContent>
@@ -984,7 +995,7 @@ export default function HomeDashboard() {
                             <div className="text-sm text-gray-500">
                               0.7%～1.1%/天
                             </div>
-                            <div className="text-xs text-gray-400">
+                            <div className="text-xs text-green-600">
                               递增收益
                             </div>
                           </div>
@@ -1026,7 +1037,7 @@ export default function HomeDashboard() {
                             <div className="text-sm text-gray-500">
                               1.2%/天+AD
                             </div>
-                            <div className="text-xs text-gray-400">
+                            <div className="text-xs text-green-600">
                               稳定收益
                             </div>
                           </div>
