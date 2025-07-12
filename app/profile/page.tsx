@@ -114,6 +114,8 @@ export default function ProfilePage() {
   const [swappedAmount, setSwappedAmount] = useState("");
   const [isReimbursementSuccessModalOpen, setIsReimbursementSuccessModalOpen] =
     useState(false);
+  const [isReimbursementModalOpen, setIsReimbursementModalOpen] =
+    useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(5);
   const pathname = usePathname();
@@ -1771,6 +1773,34 @@ const StudioSection = ({ user }: { user: any }) => {
             {/* 第三行：确定按钮 */}
             <Button
               onClick={() => setIsClaimSuccessModalOpen(false)}
+              className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
+            >
+              确定
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* 报销申请成功弹窗 */}
+      <Dialog
+        open={isReimbursementSuccessModalOpen}
+        onOpenChange={setIsReimbursementSuccessModalOpen}
+      >
+        <DialogContent className="max-w-sm">
+          <div className="flex flex-col items-center py-6 space-y-6">
+            {/* 第一行：申请成功！ */}
+            <div className="text-lg font-semibold text-gray-900">
+              申请成功！
+            </div>
+
+            {/* 第二行：等待审核提示 */}
+            <div className="text-center text-gray-600">
+              <div className="text-sm">等待审核通过</div>
+            </div>
+
+            {/* 第三行：确定按钮 */}
+            <Button
+              onClick={() => setIsReimbursementSuccessModalOpen(false)}
               className="bg-gradient-to-r from-teal-400 to-green-500 hover:from-teal-500 hover:to-green-600 text-white w-full"
             >
               确定
